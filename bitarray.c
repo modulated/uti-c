@@ -14,8 +14,6 @@ int bitread(int in, unsigned out[]) {
 	return (out[bitindex] >> (mod-1) ) & 0x1;
 }
 
-/* Need to figure out failsafe way for implementing
-
 void biton(int in, unsigned out[]) {
 	// can potentially optimise modulo to rounding
 	int mod = in%8;
@@ -27,6 +25,5 @@ void bitoff(int in, unsigned out[]) {
 	// can potentially optimise modulo to rounding
 	int mod = in%8;
 	int bitindex = (in - mod)/8;
-	out[bitindex] = out[bitindex] & 0x1<<(mod-1);
+	out[bitindex] = out[bitindex] & !0x1<<(mod-1);
 }
-*/
