@@ -1,9 +1,11 @@
 #pragma once
 
-void bitflip(int in, unsigned out[]);
 
-int bitread(int in, unsigned out[]);
 
-void biton(int in, unsigned out[]);
+void bitflip(unsigned long in, unsigned long out[]);
 
-void bitoff(int in, unsigned out[]);
+unsigned long bitread(unsigned long in, unsigned long out[]);
+
+void biton(unsigned long in, unsigned long out[]);
+
+void bitoff(unsigned long in, unsigned long out[]);

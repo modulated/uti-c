@@ -1,29 +1,27 @@
-
-
-void bitflip(int in, unsigned out[]) {
+void bitflip(unsigned long in, unsigned long out[]) {
 	// can potentially optimise modulo to rounding
-	int mod = in%8;
-	int bitindex = (in - mod)/8;
+	unsigned long mod = in & 7;
+	unsigned long bitindex = (in - mod)/8;
 	out[bitindex] = out[bitindex] ^ 0x1<<(mod-1);
 }
 
-int bitread(int in, unsigned out[]) {
-	int mod = in%8;
-	int bitindex = (in - mod)/8;	
+unsigned long bitread(unsigned long in, unsigned long out[]) {
+	unsigned long mod = in & 7;
+	unsigned long bitindex = (in - mod)/8;	
 	
 	return (out[bitindex] >> (mod-1) ) & 0x1;
 }
 
-void biton(int in, unsigned out[]) {
+void biton(unsigned long in, unsigned long out[]) {
 	// can potentially optimise modulo to rounding
-	int mod = in%8;
-	int bitindex = (in - mod)/8;
+	unsigned long mod = in & 7;
+	unsigned long bitindex = (in - mod)/8;
 	out[bitindex] = out[bitindex] | 0x1<<(mod-1);
 }
 
-void bitoff(int in, unsigned out[]) {
+void bitoff(unsigned long in, unsigned long out[]) {
 	// can potentially optimise modulo to rounding
-	int mod = in%8;
-	int bitindex = (in - mod)/8;
+	unsigned long mod = in & 7;
+	unsigned long bitindex = (in - mod)/8;
 	out[bitindex] = out[bitindex] & !0x1<<(mod-1);
 }

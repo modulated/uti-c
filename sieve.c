@@ -1,33 +1,51 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "bitarray.h"
 
-#define MAXINT 128
+#define MAXINT (unsigned long)4000
+#define MAXINTSQR (unsigned long)sqrt(MAXINT)
 
-unsigned int bitfield[MAXINT/sizeof(unsigned int)/8] = {0};
+unsigned long bitfield[MAXINT/sizeof(unsigned long)/8] = {0};
 
-
-
-int main(int argc, char* argv[]) {
-
-	bitflip(2,bitfield);
-	printf("Bitfield[0]: %d\n",bitfield[0]);
-
-	bitflip(127, bitfield);
-	//printf("Bitfield[0]: %d\n",bitfield[0]);
-	
-	printf("%d: %d\n",127,bitread(127, bitfield));
-
-	bitflip(2, bitfield);
-	printf("Bitfield[0]: %d\n",bitfield[0]);	
-
-	bitflip(4, bitfield);
-	printf("Bitfield[0]: %d\n",bitfield[0]);
-	
-	printf("%d: %d\n",4,bitread(4, bitfield));
+void flagmult(unsigned long in, unsigned long array[]) {
+	unsigned long i = in;
+	while( (i = i + in) <= MAXINT) {
+		biton(i, array);
+	}
 }
 
+int main(int argc, char* argv[]) {
+	
+	unsigned long i;
+	
+	for (i = 2; i <= MAXINTSQR; i++) {
+		printf("Multing %lu\n",i);
+		flagmult(i, bitfield);
+	}
+	
+	unsigned long count = 0;
+	
+	for (i = 2; i <= MAXINT; i++) {
+		unsigned long out = bitread(i, bitfield);
+		if (out == 0) {
+			printf("Prime: %lu\n", i);
+			count++;
+		}
+	}
+	
+	
+	printf("Count: %lu\n",count);
+}
+
+/* Pseudo
+
+init bitarray[MAXINT]
+iterate through bitarary elements up to sqrt(MAXINT)
+flag multiples of iteration but not iteration itself
+count
 
 
+*/
 
 
