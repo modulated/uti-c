@@ -1,3 +1,4 @@
+
 #ifndef _BITARRAY_H
 #define _BITARRAY_H
 
@@ -12,3 +13,4 @@ void destroybitarray(struct bitarray ba);
 void bitarrayon(struct bitarray* ba, position);
 
 #endif
+

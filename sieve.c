@@ -1,28 +1,51 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAXINT 128
+#include <math.h>
+#include "bitarray.h"
 
-unsigned int bitfield[MAXINT/sizeof(unsigned int)/8] = {0};
-void biton(int in, unsigned out[]);
+#define MAXINT (unsigned long)4000
+#define MAXINTSQR (unsigned long)sqrt(MAXINT)
 
+unsigned long bitfield[MAXINT/sizeof(unsigned long)/8] = {0};
+
+void flagmult(unsigned long in, unsigned long array[]) {
+	unsigned long i = in;
+	while( (i = i + in) <= MAXINT) {
+		biton(i, array);
+	}
+}
 
 int main(int argc, char* argv[]) {
-/*
-	for (unsigned i = 2; i<MAXINT; i++) {
-
+	
+	unsigned long i;
+	
+	for (i = 2; i <= MAXINTSQR; i++) {
+		printf("Multing %lu\n",i);
+		flagmult(i, bitfield);
 	}
+	
+	unsigned long count = 0;
+	
+	for (i = 2; i <= MAXINT; i++) {
+		unsigned long out = bitread(i, bitfield);
+		if (out == 0) {
+			printf("Prime: %lu\n", i);
+			count++;
+		}
+	}
+	
+	
+	printf("Count: %lu\n",count);
+}
+
+/* Pseudo
+
+init bitarray[MAXINT]
+iterate through bitarary elements up to sqrt(MAXINT)
+flag multiples of iteration but not iteration itself
+count
+
+
 */
-	biton(1,bitfield);
-	printf("Bitfield[0]: %d\n",bitfield[0]);
 
-	biton(3, bitfield);
-	printf("Bitfield[0]: %d\n",bitfield[0]);
 
-}
-
-void biton(int in, unsigned out[]) {
-	// can potentially optimise modulo to round
-	int mod = in%8;
-	int bitindex = (in - mod)/8;
-	out[bitindex] = 1<<(mod-1);
-}
