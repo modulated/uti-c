@@ -1,4 +1,5 @@
 
 CC=gcc
-CFLAGS=-std=c99 -Wall -g
+CFLAGS=-Wall -g
+CLIBS=-lm
 
