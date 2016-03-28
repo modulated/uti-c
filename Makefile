@@ -1,5 +1,9 @@
+CC = gcc
+CFLAGS = -Wall
+LIBS = -lm
 
-CC=gcc
-CFLAGS=-Wall -g
-CLIBS=-lm
+SRC = $(shell find . -name '*.c')
+OBJS = $(addprefix ./,$(SRC:%.c=%.o))
 
+make: $(OBJS)
+	$(CC) $(CFLAGS) -o bin $(OBJS) $(LIBS)

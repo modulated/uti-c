@@ -15,8 +15,17 @@ struct bitarray bitarray_create(int size) {
 
 
 // deconstructor
-void bitarray_destroy(struct bitarray* ba) {
+int bitarray_destroy(struct bitarray* ba) {
     free(ba->array);
+    return 0;
+}
+
+// resize array to new length;
+int bitarray_resize(struct bitarray* ba, int size) {
+    int length = ceil((float)size / (INTLENGTH * 8));
+    ba->length = length;
+    ba->array = (int*) realloc(ba->array, length * INTLENGTH);
+    return 0;
 }
 
 // read position and return int value
@@ -26,7 +35,7 @@ int bitarray_read(struct bitarray* ba, int position) {
 
     if (position >= (INTLENGTH * ba->length * 8) || position < 0) {
         printf("Error: bitarray out of bounds.");
-        exit(1);
+        return -1;
     }
 
     int offset = position%(INTLENGTH*8);
@@ -38,13 +47,13 @@ int bitarray_read(struct bitarray* ba, int position) {
 }
 
 // set to 1
-void bitarray_on(struct bitarray* ba, int position) {
+int bitarray_on(struct bitarray* ba, int position) {
     
     int length = ba->length;
 
     if (position >= (INTLENGTH * ba->length * 8) || position < 0) {
         printf("Error: bitarray out of bounds.");
-        exit(1);
+        return -1;
     }
 
     int offset = position%(INTLENGTH*8);
@@ -53,17 +62,19 @@ void bitarray_on(struct bitarray* ba, int position) {
     int mask = 0x1 << offset;
     int output = element | mask;
     ba->array[index] = output;
+    
+    return 0;
 }
 
 
 // set position to 0
-void bitarray_off(struct bitarray* ba, int position) {
+int bitarray_off(struct bitarray* ba, int position) {
     
     int length = ba->length;
 
     if (position >= (INTLENGTH * ba->length * 8) || position < 0) {
         printf("Error: bitarray out of bounds.");
-        exit(1);
+        return -1;
     }
 
     int offset = position%(INTLENGTH*8);
@@ -72,16 +83,17 @@ void bitarray_off(struct bitarray* ba, int position) {
     int mask = 0x1 << offset;
     int output = element & ~mask;
     ba->array[index] = output;
+    return 0;
 }
 
-// flip position
-void bitarray_flip(struct bitarray* ba, int position) {
+// flip bit at position
+int bitarray_flip(struct bitarray* ba, int position) {
 
     int length = ba->length;
     
     if (position >= (INTLENGTH * ba->length * 8) || position < 0) {
         printf("Error: bitarray out of bounds.");
-        exit(1);
+        return -1;
     }
 
     int offset = position%(INTLENGTH*8);
@@ -90,6 +102,7 @@ void bitarray_flip(struct bitarray* ba, int position) {
     int mask = 0x1 << offset;
     int output = element ^ mask;
     ba->array[index] = output;
+    return 0;
 }
 
 
