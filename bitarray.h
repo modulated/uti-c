@@ -9,17 +9,17 @@ struct bitarray {
     int* array;
 };
 
-struct bitarray createbitarray(int size);
+struct bitarray bitarray_create(int size);
 
-void destroybitarray(struct bitarray* ba);
+void bitarray_destroy(struct bitarray* ba);
 
-void bitarraytoggle(struct bitarray* ba, int position);
+int bitarray_read(struct bitarray* ba, int position);
 
-void bitarrayon(struct bitarray* ba, int position);
+void bitarray_on(struct bitarray* ba, int position);
 
-void bitarrayoff(struct bitarray* ba, int position);
+void bitarray_off(struct bitarray* ba, int position);
 
-int bitarrayread(struct bitarray* ba, int position);
+void bitarray_flip(struct bitarray* ba, int position);
 
 #endif
 
