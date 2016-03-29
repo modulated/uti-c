@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "bitarray.h"
+#include "color.h"
 
 int running = 1;
 struct bitarray ba;
@@ -14,13 +15,13 @@ int main () {
     
     int length;
     char command[20];
-    
+    printf(KWHT"Welcome to the bitarray test suite...\n"RESET);
     getsize(&length);
     
     ba = bitarray_create(length);
     
     while (running) {
-        printf("Enter command: ");
+        printf(KRED"Enter command: "RESET);
         scanf("%s",command);
         execute(command);  
     }
@@ -30,7 +31,7 @@ int main () {
 }
 
 void getsize (int* length) {
-    printf("How many bits? ");
+    printf(KBLU"How many bits? "RESET);
     scanf("%d",length);
 }
 
@@ -51,7 +52,8 @@ void execute (char command[]) {
         printf("on\n");
     }
     
-    else if (strcmp(command, "exit")==0) {
+    else if (strcmp(command, "exit")==0 || strcmp(command, "quit")==0 || strcmp(command, "q")==0) {
+        printf(KBLU"Bye..."RESET);
         running = 0;
     }
     
@@ -62,7 +64,7 @@ void execute (char command[]) {
 
 int getposition () {
     int position;
-    printf("What position? ");
+    printf(KYEL"What position? "RESET);
     scanf("%d",&position);
     return position;
 }
