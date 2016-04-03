@@ -1,20 +1,32 @@
 #include <stdio.h>
+#include "list.h"
 
-struct Node {
-    struct Node* next;
-    int data;
-} Node;
+struct list list_create() {
+	struct list rlist;
+	struct node rnode;
+	rlist.first = &rnode;
+	rlist.last = &rnode;
+	return rlist;
+}
 
-typedef struct {
-    struct Node* first;
-    struct Node* last;
-} List; 
+int list_append(struct list* list, int data) {
+	struct node new;
+	new.data = data;
+	new.next = NULL;
 
-int main() {
-    List mylist;
-    struct Node mynode;
-    mynode.data = 1;
-    mynode.next = NULL;
-    
-    //printf("List val: %d", mylist->first)
+	list->last->next = &new;
+	list->last = &new;
+
+	return 0;
+
+}
+
+int list_prepend(struct list* list, int data) {
+	struct node new;
+	new.data = data;
+	new.next = list->first;
+
+	list->first = &new;
+
+	return 0;
 }
