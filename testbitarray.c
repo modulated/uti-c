@@ -47,9 +47,20 @@ void execute (char command[]) {
         int position = getposition();
         printf("Position %d: %d\n",position, bitarray_read(bitarray, position));
     }
-    
+      
     else if (strcmp(command, "on")==0) {
-        printf("on\n");
+    	bitarray_on(bitarray, getposition());
+	}
+    
+    else if (strcmp(command, "off")==0) {
+        bitarray_off(bitarray, getposition());
+    }
+    
+    else if (strcmp(command, "resize")==0) {
+        printf("Enter new size: ");
+		int size;
+		scanf("%d",&size);
+		bitarray_resize(bitarray,size);
     }
     
     else if (strcmp(command, "exit")==0 || strcmp(command, "quit")==0 || strcmp(command, "q")==0) {
