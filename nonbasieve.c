@@ -12,7 +12,11 @@ unsigned long MAXINTSQR;
 void flagmult(unsigned long in, unsigned long ba[]) {
 	unsigned long i = in;
 	while( (i = i + in) <= MAXINT) {
-	    ba[i] = 1;
+		
+		if (ba[i] == 0) {
+	    	ba[i] = 1;
+			printf("Flip at %lu, multing %lu\n", i, in);			
+		}
 	}
 }
 
@@ -22,17 +26,22 @@ int main(int argc, char* argv[]) {
     scanf("%lu",&MAXINT);
     MAXINTSQR = (unsigned long)sqrt(MAXINT);
 
-    unsigned long ba[MAXINT+1];
-	unsigned long i;
+    unsigned long* ba = calloc(MAXINT+1, sizeof(unsigned long));
 	
-	for (i = 2; i <= MAXINTSQR; i++) {
+	// Exclude evens, 0 and 1.
+	flagmult(2, ba);
+	ba[1] = 1;
+	ba[0] = 1;
+	
+	for (unsigned long i = 3; i <= MAXINTSQR; i = i + 2) {
 		printf("Multing %lu\n",i);
 		flagmult(i, ba);
 	}
 	
-	unsigned long count = 0;
+	unsigned long count = 1;
+	printf("Prime: 2\n");
 	
-	for (i = 2; i <= MAXINT; i++) {
+	for (unsigned long i = 3; i <= MAXINT; i = i + 2) {
 		unsigned long out = ba[i];
 		if (out == 0) {
 			printf("Prime: %lu\n", i);
