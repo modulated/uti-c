@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 unsigned long MAXINT;
 unsigned long MAXINTSQR;
@@ -29,12 +30,25 @@ void flagmult(unsigned long in, unsigned long ba[]) {
 
 int main(int argc, char* argv[]) {
 	
-    puts("Enter max number: ");
-    scanf("%lu",&MAXINT);
+	if (argc == 1) {
+		puts("Enter max number: ");
+		scanf("%lu",&MAXINT);
+	}
+	else {
+		if( (MAXINT = strtoul(argv[1],NULL,10)) == 0) {
+			puts("Error parsing input");
+			exit(1);
+		}
+	}
+		
     MAXINTSQR = (unsigned long)sqrt(MAXINT);
 
 	// inititalise array of size MAXINT+1.
     unsigned long* ba = calloc(MAXINT+1, sizeof(unsigned long));
+	
+	// start timing
+	clock_t t1, t2;
+	t1 = clock();
 	
 	// Exclude evens, 0 and 1.
 	flagmult(2, ba);
@@ -56,12 +70,15 @@ int main(int argc, char* argv[]) {
 		
 	}	
 	
+	t2 = clock();
+	float diff = ((float)(t2-t1)/CLOCKS_PER_SEC)*1000;
+	
 	free(ba);
 	
 	printfcomma(counter); 
 	printf(" primes under ");
 	printfcomma(MAXINT);
-	puts(".");
+	printf(" in %.3f milliseconds.\n", diff);
 }
 
 
