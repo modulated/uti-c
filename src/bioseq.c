@@ -9,6 +9,7 @@
 void bioseq_reverse_string(char* str);
 void bioseq_complement_string(char* str);
 void bioseq_capital_string(char* str);
+char bioseq_protein_dnatuple(char a, char b, char c);
 
 bioseq bioseq_new(sequence_type type, char seq[]) {
 	
@@ -54,6 +55,24 @@ bioseq bioseq_complement(bioseq seq) {
 	
 }
 
+bioseq bioseq_translate(bioseq seq) {
+	int offset = seq.length % 3;
+	int len = (seq.length - offset)/3;
+	char string[len+2];
+	string[len] = '\0';
+	
+	for (int i = 0; i < len; i++) {
+		
+		char a = seq.sequence[i*3];
+		char b = seq.sequence[i*3+1];
+		char c = seq.sequence[i*3+2];
+		
+		string[i] = bioseq_protein_dnatuple(a, b, c);
+	}
+	
+	return bioseq_new(SEQUENCE_PROTEIN, string);
+}
+
 int main() {
 	char buffer[BUFFER_SIZE];
 	
@@ -69,11 +88,135 @@ int main() {
 	printf("Reversed: %s\n", bioseq_reverse(test).sequence);
 	printf("Complement: %s\n", bioseq_complement(test).sequence);
 	
+	bioseq prot = bioseq_translate(test);
+	printf("Protein: %s \tLen: %u\n", prot.sequence, prot.length);
+	
 	bioseq_delete(test);
 	
 	
 	
 	return 0;
+}
+
+
+
+/*******************
+Utility Functions
+*******************/
+
+char bioseq_protein_dnatuple(char a, char b, char c) {
+	
+	switch (a) {
+		
+		case 'U': case 'T':
+		
+			switch (b) {
+				
+				case 'U': case'T':
+					switch (c) {
+						case 'U': case 'T': case 'C':
+							return 'F';  // Phenylalanine for UU[UC]
+						
+						case 'A': case 'G':
+							return 'L'; // Leucine for UU[AG]
+					}
+					
+				case 'C':
+					return 'S'; // Serine for UCX
+					
+				case 'A':
+					switch (c) {
+						case 'A': case 'G':
+							return 'X'; // Stop codon
+						default: 
+							return 'Y'; // Tyrosine for UA[UC] 
+					}
+				
+				case 'G':
+					switch (c) {
+						case 'U': case 'T': case 'C':
+							return 'C'; // Cysteine for UG[UC]
+						case 'A':
+							return 'X';
+						case 'G':
+							return 'W'; // Tryptophan for UGG	
+							
+					}
+					
+			}
+			
+		case 'C':
+		
+			switch (b) {
+				
+				case 'U': case'T':
+					return 'L'; // Leucine for CUX
+					
+				case 'C':
+					return 'P'; // Proline for CCX
+					
+				case 'A':
+					switch (c) {
+						case 'A': case 'G':
+							return 'Q'; // Glutamine for CA[AG]
+						default: 
+							return 'H'; // Tyrosine for UA[UC] 
+					}
+				case 'G':
+					return 'R'; // Arginine for CGX
+			}
+
+		case 'A':
+		
+			switch (b) {
+				
+				case 'U': case'T':
+					if (c == 'G') {
+						return 'M'; // Methionine for AUG ** Start Codon
+					}
+					return 'I'; // Isoluceine for AU[UCA]
+					
+				case 'C':
+					return 'T'; // Threonine for ACX
+					
+				case 'A':
+					switch (c) {
+						case 'A': case 'G':
+							return 'K'; // Lysine for AA[AG]
+						default: 
+							return 'N'; // Asparagine for AA[UC] 
+					}
+				case 'G':
+					switch (c) {
+						case 'A': case 'G':
+							return 'R'; // Arginine for AG[AG]
+						default:
+							return 'S'; // Serine for AG[UC]
+					}
+			}
+			
+		case 'G':
+		
+			switch (b) {
+				
+				case 'U': case'T':
+					return 'V'; // Valine for GUX
+					
+				case 'C':
+					return 'A'; // Alanine for GCX
+					
+				case 'A':
+					switch (c) {
+						case 'A': case 'G':
+							return 'E'; // Glutamic acid for GA[AG]
+						default: 
+							return 'D'; // Aspartic acid for GA[UC] 
+					}
+				case 'G':
+					return 'G'; // Glycine for GGX
+			}						
+	}
+	return '\0';
 }
 
 void bioseq_reverse_string(char* str)
