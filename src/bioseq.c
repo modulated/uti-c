@@ -12,11 +12,14 @@ void bioseq_complement_string(char* str);
 void bioseq_capital_string(char* str);
 char bioseq_protein_dnatuple(char a, char b, char c);
 int bioseq_search_string (char* str, char cmp[]);
+char bioseq_protein_charge (char in);
+void bioseq_protein_terminate (char* str);
 
 bioseq bioseq_new(sequence_type type, char seq[]) {
 	
 	int len = strlen(seq);
 	char* string = malloc((len) * sizeof(char));
+	char* charge = malloc((len) * sizeof(char));
 	strcpy(string, seq);
 	
 	bioseq_capital_string(string);
@@ -24,7 +27,8 @@ bioseq bioseq_new(sequence_type type, char seq[]) {
 	bioseq new = {
 		type,
 		len,
-		string
+		string,
+		charge
 	};
 	
 	return new;
@@ -75,17 +79,26 @@ bioseq bioseq_dna_protein(bioseq dna, int offset) {
 	return bioseq_new(SEQUENCE_PROTEIN, string);
 }
 
+void bioseq_protein_interactions(bioseq seq) {
+	for (int i = 0; i < seq.length; i++) {
+		seq.electrostatic_sequence[i] = bioseq_protein_charge(seq.sequence[i]);
+	}
+}
+
 bioseq bioseq_translate(bioseq seq) {
 	int offset = bioseq_search_string(seq.sequence, START_CODON);
 	
 	bioseq out;
 	if (offset >= 0) out = bioseq_dna_protein(seq, offset);
-	
+
 	else {
 		out.sequence = "";
 		out.length = -1;
 		out.type = SEQUENCE_PROTEIN;
 	}
+	
+	bioseq_protein_terminate(out.sequence);
+	bioseq_protein_interactions(out);
 	
 	return out;
 }
@@ -100,12 +113,13 @@ int main() {
 	
 	bioseq test = bioseq_new(SEQUENCE_NONE, buffer);
 	
-	printf("Sequence: %s \tLen: %u\n", test.sequence, test.length);
-	printf("Reversed: %s\n", bioseq_reverse(test).sequence);
-	printf("Complement: %s\n", bioseq_complement(test).sequence);
+	printf("Sequence: \t%s \tLen: %u\n", test.sequence, test.length);
+	printf("Reversed: \t%s\n", bioseq_reverse(test).sequence);
+	printf("Complement: \t%s\n", bioseq_complement(test).sequence);
 	
 	bioseq prot = bioseq_translate(test);
-	printf("Protein: %s \tLen: %u\n", prot.sequence, prot.length);
+	printf("Protein: \t%s \tLen: %u\n", prot.sequence, prot.length);
+	printf("Charge: \t%s\n", prot.electrostatic_sequence);
 	
 	bioseq_delete(test);
 	
@@ -288,6 +302,17 @@ void bioseq_complement_string(char* str) {
 	
 }
 
+void bioseq_protein_terminate (char* str) {
+	int i = 0;
+	while (str[i] != '\0') {
+		if (str[i] == 'X') {
+			str[i] = '\0';
+		}
+		i++;
+	}
+	
+}
+
 void bioseq_capital_string (char* str) {
 	int i = 0;
 	while (str[i]) {
@@ -303,4 +328,44 @@ int bioseq_search_string (char* str, char cmp[]) {
 	if (out) return loc;
 	
 	else return -1;
+}
+
+char bioseq_protein_charge (char in) {
+	switch (in) {
+		
+		// Positive electric charge
+		case 'R': 
+		case 'H':
+		case 'K':
+			return '+';
+		
+		// Positive electric charge
+		case 'D':
+		case 'E':
+			return '-';
+		
+		// Hydrophobic	
+		case 'A':
+		case 'C':
+		case 'F':
+		case 'G':
+		case 'I':
+		case 'L':
+		case 'M':
+		case 'P':
+		case 'V':
+		case 'W':
+		case 'Y':
+			return '#';
+			
+		// Hydrophilic
+		case 'N':
+		case 'S':
+		case 'T':
+		case 'Q':
+			return '*';
+		
+		default: 
+			return '?';
+	}
 }

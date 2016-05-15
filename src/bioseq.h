@@ -13,7 +13,7 @@ typedef struct {
 	sequence_type type;
 	unsigned length;
 	char* sequence;
-	
+	char* electrostatic_sequence;
 } bioseq;
 
 bioseq bioseq_new(sequence_type type, char seq[]);
@@ -25,5 +25,7 @@ bioseq bioseq_reverse(bioseq seq);
 bioseq bioseq_complement(bioseq seq);
 
 bioseq bioseq_dna_protein(bioseq dna, int offset);
+
+void bioseq_protein_interactions(bioseq seq);
 
 #endif
