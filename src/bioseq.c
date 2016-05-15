@@ -5,11 +5,13 @@
 #include "bioseq.h"
 
 #define BUFFER_SIZE 1024
+#define START_CODON "ATG"
 
 void bioseq_reverse_string(char* str);
 void bioseq_complement_string(char* str);
 void bioseq_capital_string(char* str);
 char bioseq_protein_dnatuple(char a, char b, char c);
+int bioseq_search_string (char* str, char cmp[]);
 
 bioseq bioseq_new(sequence_type type, char seq[]) {
 	
@@ -55,17 +57,17 @@ bioseq bioseq_complement(bioseq seq) {
 	
 }
 
-bioseq bioseq_translate(bioseq seq) {
-	int offset = seq.length % 3;
-	int len = (seq.length - offset)/3;
+bioseq bioseq_dna_protein(bioseq dna, int offset) {
+	int remainder = dna.length % 3;
+	int len = (dna.length - remainder)/3;
 	char string[len+2];
 	string[len] = '\0';
 	
-	for (int i = 0; i < len; i++) {
+	for (int i = offset; i < len; i++) {
 		
-		char a = seq.sequence[i*3];
-		char b = seq.sequence[i*3+1];
-		char c = seq.sequence[i*3+2];
+		char a = dna.sequence[i*3];
+		char b = dna.sequence[i*3+1];
+		char c = dna.sequence[i*3+2];
 		
 		string[i] = bioseq_protein_dnatuple(a, b, c);
 	}
@@ -73,9 +75,23 @@ bioseq bioseq_translate(bioseq seq) {
 	return bioseq_new(SEQUENCE_PROTEIN, string);
 }
 
+bioseq bioseq_translate(bioseq seq) {
+	int offset = bioseq_search_string(seq.sequence, START_CODON);
+	
+	bioseq out;
+	if (offset >= 0) out = bioseq_dna_protein(seq, offset);
+	
+	else {
+		out.sequence = "";
+		out.length = -1;
+		out.type = SEQUENCE_PROTEIN;
+	}
+	
+	return out;
+}
+
 int main() {
 	char buffer[BUFFER_SIZE];
-	
 	
 	puts("Bioseq Tester");
 	printf("Seq: ");
@@ -92,8 +108,6 @@ int main() {
 	printf("Protein: %s \tLen: %u\n", prot.sequence, prot.length);
 	
 	bioseq_delete(test);
-	
-	
 	
 	return 0;
 }
@@ -219,8 +233,7 @@ char bioseq_protein_dnatuple(char a, char b, char c) {
 	return '\0';
 }
 
-void bioseq_reverse_string(char* str)
-{
+void bioseq_reverse_string(char* str) {
     /* skip null */
     if (str == 0)
     {
@@ -281,4 +294,13 @@ void bioseq_capital_string (char* str) {
 		str[i] = toupper(str[i]);
 		i++;
 	}
+}
+
+int bioseq_search_string (char* str, char cmp[]) {
+	char* out = strstr(str, cmp);
+	int loc = (int) (out - str);
+	
+	if (out) return loc;
+	
+	else return -1;
 }

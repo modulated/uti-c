@@ -24,4 +24,6 @@ bioseq bioseq_reverse(bioseq seq);
 
 bioseq bioseq_complement(bioseq seq);
 
+bioseq bioseq_dna_protein(bioseq dna, int offset);
+
 #endif
