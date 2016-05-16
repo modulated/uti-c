@@ -1,4 +1,4 @@
-# UTI-C Bitarray Module
+# Bitarray Module
 
 ## Functions
 
