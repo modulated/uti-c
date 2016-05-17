@@ -13,7 +13,7 @@ typedef struct {
 	sequence_type type;
 	unsigned length;
 	char* sequence;
-	char* electrostatic_sequence;
+	char* charge;
 } bioseq;
 
 bioseq bioseq_new(sequence_type type, char seq[]);

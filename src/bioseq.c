@@ -35,7 +35,12 @@ bioseq bioseq_new(sequence_type type, char seq[]) {
 }
 
 void bioseq_delete(bioseq seq) {
+	
 	free(seq.sequence);
+	seq.sequence = NULL;
+	
+	free(seq.charge);
+	seq.charge = NULL;
 }
 
 bioseq bioseq_reverse(bioseq seq) {
@@ -81,7 +86,7 @@ bioseq bioseq_dna_protein(bioseq dna, int offset) {
 
 void bioseq_protein_interactions(bioseq seq) {
 	for (int i = 0; i < seq.length; i++) {
-		seq.electrostatic_sequence[i] = bioseq_protein_charge(seq.sequence[i]);
+		seq.charge[i] = bioseq_protein_charge(seq.sequence[i]);
 	}
 }
 
@@ -101,29 +106,6 @@ bioseq bioseq_translate(bioseq seq) {
 	bioseq_protein_interactions(out);
 	
 	return out;
-}
-
-int main() {
-	char buffer[BUFFER_SIZE];
-	
-	puts("Bioseq Tester");
-	printf("Seq: ");
-	scanf("%s", buffer);
-	
-	
-	bioseq test = bioseq_new(SEQUENCE_NONE, buffer);
-	
-	printf("Sequence: \t%s \tLen: %u\n", test.sequence, test.length);
-	printf("Reversed: \t%s\n", bioseq_reverse(test).sequence);
-	printf("Complement: \t%s\n", bioseq_complement(test).sequence);
-	
-	bioseq prot = bioseq_translate(test);
-	printf("Protein: \t%s \tLen: %u\n", prot.sequence, prot.length);
-	printf("Charge: \t%s\n", prot.electrostatic_sequence);
-	
-	bioseq_delete(test);
-	
-	return 0;
 }
 
 
