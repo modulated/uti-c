@@ -11,23 +11,43 @@ int test_count = 0;
 
 
 
-static char* test_construct () {
+static char* test_dna_construct () {
 	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
 	
-	test_assert(KRED"ERROR: bioseq_construct does not return appropriate struct"RESET, strcmp(test_seq.sequence, TEST_SEQ) == 0);
-	puts("bioseq_construct \t "KGRN"PASSED"RESET);
+	test_assert(KRED"ERROR: bioseq_dna_construct does not return appropriate struct"RESET, strcmp(test_seq.sequence, TEST_SEQ) == 0);
+	puts("bioseq_dna_construct \t "KGRN"PASSED"RESET);
 	
 	bioseq_dna_destruct(&test_seq);
 	return 0;
 } 
 
-static char* test_destruct () {
+static char* test_dna_destruct () {
 	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
 	bioseq_dna_destruct(&test_seq);
 	
-	test_assert(KRED"ERROR: bioseq_destruct does not NULL pointers"RESET, !test_seq.sequence);
+	test_assert(KRED"ERROR: bioseq_dna_destruct does not NULL pointers"RESET, !test_seq.sequence);
 	
-	puts("bioseq_destruct \t "KGRN"PASSED"RESET);	
+	puts("bioseq_dna_destruct \t "KGRN"PASSED"RESET);	
+	return 0;
+}
+
+static char* test_protein_construct () {
+	bioseq_protein test_seq = bioseq_protein_construct(TEST_SEQ_PROT);
+	
+	test_assert(KRED"ERROR: bioseq_protein_construct does not return appropriate struct"RESET, strcmp(test_seq.sequence, TEST_SEQ_PROT) == 0);
+	puts("bioseq_protein_construct \t "KGRN"PASSED"RESET);
+	
+	bioseq_protein_destruct(&test_seq);
+	return 0;
+} 
+
+static char* test_protein_destruct () {
+	bioseq_protein test_seq = bioseq_protein_construct(TEST_SEQ_PROT);
+	bioseq_protein_destruct(&test_seq);
+	
+	test_assert(KRED"ERROR: bioseq_protein_destruct does not NULL pointers"RESET, !test_seq.sequence && !test_seq.charge);
+	
+	puts("bioseq_protien_destruct \t "KGRN"PASSED"RESET);	
 	return 0;
 }
 
@@ -145,8 +165,10 @@ static char* test_dna_protein () {
 
 static char* test_all() {
 	
-	test_run(test_construct);
-	test_run(test_destruct);
+	test_run(test_dna_construct);
+	test_run(test_dna_destruct);
+	test_run(test_protein_construct);
+	test_run(test_protein_destruct);
 	test_run(test_complement);
 	test_run(test_reverse);
 	test_run(test_protein_terminate);
