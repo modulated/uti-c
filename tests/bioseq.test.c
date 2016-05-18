@@ -12,21 +12,20 @@ int test_count = 0;
 
 
 static char* test_construct () {
-	bioseq test_seq = bioseq_construct(SEQUENCE_DNA, TEST_SEQ);
+	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
 	
 	test_assert(KRED"ERROR: bioseq_construct does not return appropriate struct"RESET, strcmp(test_seq.sequence, TEST_SEQ) == 0);
-	test_assert(KRED"ERROR: bioseq_construct does not return appropriate sequence_type"RESET, test_seq.type == SEQUENCE_DNA);
 	puts("bioseq_construct \t "KGRN"PASSED"RESET);
 	
-	bioseq_destruct(&test_seq);
+	bioseq_dna_destruct(&test_seq);
 	return 0;
 } 
 
 static char* test_destruct () {
-	bioseq test_seq = bioseq_construct(SEQUENCE_DNA, TEST_SEQ);
-	bioseq_destruct(&test_seq);
+	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
+	bioseq_dna_destruct(&test_seq);
 	
-	test_assert(KRED"ERROR: bioseq_destruct does not NULL pointers"RESET, !test_seq.sequence && !test_seq.charge);
+	test_assert(KRED"ERROR: bioseq_destruct does not NULL pointers"RESET, !test_seq.sequence);
 	
 	puts("bioseq_destruct \t "KGRN"PASSED"RESET);	
 	return 0;
@@ -34,11 +33,11 @@ static char* test_destruct () {
 
 static char* test_complement () {
 	
-	bioseq test_comp = bioseq_complement(bioseq_construct(SEQUENCE_DNA, TEST_SEQ));
+	bioseq_dna test_comp = bioseq_complement(bioseq_dna_construct(TEST_SEQ));
 	
 	test_assert(KRED"ERROR: bioseq_complement does not return expected value"RESET, strcmp(test_comp.sequence, TEST_SEQ_COMP) == 0);
 	
-	bioseq_destruct(&test_comp);
+	bioseq_dna_destruct(&test_comp);
 	
 	puts("bioseq_complement \t "KGRN"PASSED"RESET);
 	return 0;
@@ -46,11 +45,11 @@ static char* test_complement () {
 
 static char* test_reverse () {
 	
-	bioseq test_rev = bioseq_reverse(bioseq_construct(SEQUENCE_DNA, TEST_SEQ));
+	bioseq_dna test_rev = bioseq_reverse(bioseq_dna_construct(TEST_SEQ));
 	
 	test_assert(KRED"ERROR: bioseq_reverse does not return expected value"RESET, strcmp(test_rev.sequence, TEST_SEQ_REV) == 0);
 	
-	bioseq_destruct(&test_rev);
+	bioseq_dna_destruct(&test_rev);
 	
 	puts("bioseq_reverse \t\t "KGRN"PASSED"RESET);
 	return 0;
@@ -124,13 +123,13 @@ static char* test_dna_tuple () {
 static char* test_dna_protein () {
 	
 	// Case 1 -- Start codon
-	bioseq test_seq = bioseq_construct(SEQUENCE_DNA, TEST_SEQ);	
-	bioseq test_prot = bioseq_dna_protein(test_seq, 0);	
+	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);	
+	bioseq_protein test_prot = bioseq_dna_protein(test_seq, 0);	
 	
 	test_assert(KRED"ERROR: bioseq_dna_protein does not return expected value"RESET, strcmp(test_prot.sequence, TEST_SEQ_PROT) == 0);
 	
 	// Case 2 -- Start and Stop
-	test_seq = bioseq_construct(SEQUENCE_DNA, "AUGGCGAGGGAGUUAUGGUGA");
+	test_seq = bioseq_dna_construct("AUGGCGAGGGAGUUAUGGUGA");
 	test_prot = bioseq_dna_protein(test_seq, 0);
 	
 	test_assert(KRED"ERROR: bioseq_dna_protein does not return expected value"RESET, strcmp(test_prot.sequence, "MARELWX") == 0);

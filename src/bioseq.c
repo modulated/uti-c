@@ -4,8 +4,10 @@
 #include <ctype.h>
 #include "bioseq.h"
 
-#define BUFFER_SIZE 100000
+#define BUFFER_SIZE 1024
 #define START_CODON "ATG"
+
+// Write sanitize function
 
 static void bioseq_reverse_string(char* str);
 static void bioseq_complement_string(char* str);
@@ -15,27 +17,45 @@ static int bioseq_search_string (char* str, char cmp[]);
 static char bioseq_protein_charge (char in);
 static void bioseq_protein_terminate (char* str);
 
-bioseq bioseq_construct(sequence_type type, char seq[]) {
+bioseq_dna bioseq_dna_construct(char seq[]) {
 	
-	int len = strlen(seq);
-	char* sequence = malloc(len * sizeof(char));
-	char* charge = malloc(len * sizeof(char));
-	strcpy(sequence, seq);
+	int len = strlen(seq);	
 	
-	bioseq_capital_string(sequence);
-	
-	bioseq new = {
-		type,
+	bioseq_dna new = {
 		len,
-		sequence,
-		charge
+		strdup(seq)		
 	};
+	
+	bioseq_capital_string(new.sequence);	
 	
 	return new;
 }
 
-void bioseq_destruct(bioseq* seq) {
-	// Free allocated heap and set pointers to NULL
+void bioseq_dna_destruct(bioseq_dna* seq) {
+	// Free allocated heap and set pointers to NULL	
+	
+	free(seq->sequence);
+	seq->sequence = NULL;
+}
+
+bioseq_protein bioseq_protein_construct(char seq[]) {
+	
+	int len = strlen(seq);
+	char* charge = malloc(len * sizeof(char));
+	
+	bioseq_protein new = {
+		len,
+		strdup(seq),
+		charge
+	};
+	
+	bioseq_capital_string(new.sequence);	
+	
+	return new;
+}
+
+void bioseq_protein_destruct(bioseq_protein* seq) {
+	// Free allocated heap and set pointers to NULL	
 	
 	free(seq->sequence);
 	seq->sequence = NULL;
@@ -44,7 +64,7 @@ void bioseq_destruct(bioseq* seq) {
 	seq->charge = NULL;
 }
 
-bioseq bioseq_reverse(bioseq seq) {
+bioseq_dna bioseq_reverse(bioseq_dna seq) {
 	
 	int len = seq.length;
 	char string[len];
@@ -52,10 +72,10 @@ bioseq bioseq_reverse(bioseq seq) {
 	
 	bioseq_reverse_string(string);
 	
-	return bioseq_construct(seq.type, string);
+	return bioseq_dna_construct(string);
 }
 
-bioseq bioseq_complement(bioseq seq) {
+bioseq_dna bioseq_complement(bioseq_dna seq) {
 	
 	int len = seq.length;
 	char string[len];
@@ -63,11 +83,11 @@ bioseq bioseq_complement(bioseq seq) {
 	
 	bioseq_complement_string(string);
 	
-	return bioseq_construct(seq.type, string);
+	return bioseq_dna_construct(string);
 	
 }
 
-bioseq bioseq_dna_protein(bioseq dna, int offset) {
+bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
 	
 	int seqlength = dna.length - offset;
 	int rem = seqlength % 3;
@@ -85,25 +105,26 @@ bioseq bioseq_dna_protein(bioseq dna, int offset) {
 	
 	string[len] = '\0';
 	
-	return bioseq_construct(SEQUENCE_PROTEIN, string);
+	return bioseq_protein_construct(string);
 }
 
-void bioseq_protein_interactions(bioseq seq) {
+void bioseq_protein_interactions(bioseq_protein seq) {
+	
 	for (int i = 0; i < seq.length; i++) {
 		seq.charge[i] = bioseq_protein_charge(seq.sequence[i]);
 	}
 }
 
-bioseq bioseq_translate(bioseq seq) {
+bioseq_protein bioseq_translate(bioseq_dna seq) {
+	
 	int offset = bioseq_search_string(seq.sequence, START_CODON);
 	
-	bioseq out;
+	bioseq_protein out;
 	if (offset >= 0) out = bioseq_dna_protein(seq, offset);
 
 	else {
 		out.sequence = "";
-		out.length = -1;
-		out.type = SEQUENCE_PROTEIN;
+		out.length = 0;
 	}
 	
 	bioseq_protein_terminate(out.sequence);

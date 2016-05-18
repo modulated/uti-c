@@ -2,30 +2,37 @@
 
 #define _BIOSEQ_H
 
-typedef enum SEQUENCE_TYPE {
-	SEQUENCE_NONE,
-	SEQUENCE_DNA,
-	SEQUENCE_RNA,
-	SEQUENCE_PROTEIN
-} sequence_type;
 
 typedef struct {
-	sequence_type type;
+	unsigned length;
+	char* sequence;
+} bioseq_dna;
+
+typedef struct {
 	unsigned length;
 	char* sequence;
 	char* charge;
-} bioseq;
+} bioseq_protein;
 
-bioseq bioseq_new(sequence_type type, char seq[]);
+typedef struct {
+	unsigned length;
+	bioseq_protein* list[];
+} bioseq_orf;
 
-void bioseq_delete(bioseq* seq);
+bioseq_dna bioseq_dna_construct(char seq[]);
 
-bioseq bioseq_reverse(bioseq seq);
+void bioseq_dna_destruct(bioseq_dna* seq);
 
-bioseq bioseq_complement(bioseq seq);
+bioseq_protein bioseq_protein_construct(char seq[]);
 
-bioseq bioseq_dna_protein(bioseq dna, int offset);
+void bioseq_protein_destruct(bioseq_protein* seq);
 
-void bioseq_protein_interactions(bioseq seq);
+bioseq_dna bioseq_reverse(bioseq_dna seq);
+
+bioseq_dna bioseq_complement(bioseq_dna seq);
+
+bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset);
+
+void bioseq_protein_interactions(bioseq_protein seq);
 
 #endif
