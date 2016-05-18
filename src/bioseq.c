@@ -7,15 +7,15 @@
 #define BUFFER_SIZE 100000
 #define START_CODON "ATG"
 
-void bioseq_reverse_string(char* str);
-void bioseq_complement_string(char* str);
-void bioseq_capital_string(char* str);
-char bioseq_protein_dnatuple(char a, char b, char c);
-int bioseq_search_string (char* str, char cmp[]);
-char bioseq_protein_charge (char in);
-void bioseq_protein_terminate (char* str);
+static void bioseq_reverse_string(char* str);
+static void bioseq_complement_string(char* str);
+static void bioseq_capital_string(char* str);
+static char bioseq_protein_dnatuple(char a, char b, char c);
+static int bioseq_search_string (char* str, char cmp[]);
+static char bioseq_protein_charge (char in);
+static void bioseq_protein_terminate (char* str);
 
-bioseq bioseq_new(sequence_type type, char seq[]) {
+bioseq bioseq_construct(sequence_type type, char seq[]) {
 	
 	int len = strlen(seq);
 	char* sequence = malloc(len * sizeof(char));
@@ -34,7 +34,8 @@ bioseq bioseq_new(sequence_type type, char seq[]) {
 	return new;
 }
 
-void bioseq_delete(bioseq* seq) {
+void bioseq_destruct(bioseq* seq) {
+	// Free allocated heap and set pointers to NULL
 	
 	free(seq->sequence);
 	seq->sequence = NULL;
@@ -51,7 +52,7 @@ bioseq bioseq_reverse(bioseq seq) {
 	
 	bioseq_reverse_string(string);
 	
-	return bioseq_new(seq.type, string);
+	return bioseq_construct(seq.type, string);
 }
 
 bioseq bioseq_complement(bioseq seq) {
@@ -62,26 +63,29 @@ bioseq bioseq_complement(bioseq seq) {
 	
 	bioseq_complement_string(string);
 	
-	return bioseq_new(seq.type, string);
+	return bioseq_construct(seq.type, string);
 	
 }
 
 bioseq bioseq_dna_protein(bioseq dna, int offset) {
-	int remainder = dna.length % 3;
-	int len = (dna.length - remainder)/3;
-	char string[len+2];
-	string[len] = '\0';
 	
-	for (int i = offset; i < len; i++) {
+	int seqlength = dna.length - offset;
+	int rem = seqlength % 3;
+	int len = (seqlength - rem)/3;
+	char string[len+1];
+	
+	for (int i = 0; i < len; i++) {
 		
-		char a = dna.sequence[i*3];
-		char b = dna.sequence[i*3+1];
-		char c = dna.sequence[i*3+2];
+		char a = dna.sequence[i * 3 + offset];
+		char b = dna.sequence[i * 3 + 1 + offset];
+		char c = dna.sequence[i * 3 + 2 + offset];
 		
 		string[i] = bioseq_protein_dnatuple(a, b, c);
 	}
 	
-	return bioseq_new(SEQUENCE_PROTEIN, string);
+	string[len] = '\0';
+	
+	return bioseq_construct(SEQUENCE_PROTEIN, string);
 }
 
 void bioseq_protein_interactions(bioseq seq) {
@@ -111,10 +115,11 @@ bioseq bioseq_translate(bioseq seq) {
 
 
 /*******************
-Utility Functions
+** PRIVATE Utility Functions
 *******************/
 
-char bioseq_protein_dnatuple(char a, char b, char c) {
+
+static char bioseq_protein_dnatuple(char a, char b, char c) {
 	
 	switch (a) {
 		
@@ -129,17 +134,30 @@ char bioseq_protein_dnatuple(char a, char b, char c) {
 						
 						case 'A': case 'G':
 							return 'L'; // Leucine for UU[AG]
+							
+						default:
+							return '?';
 					}
 					
 				case 'C':
-					return 'S'; // Serine for UCX
+					if (c == 'A' || c == 'C' || c == 'G' || c == 'T' || c == 'U') {					
+						return 'S'; // Serine for UCX
+					}
+					
+					else {
+						return '?';
+					}
 					
 				case 'A':
 					switch (c) {
 						case 'A': case 'G':
 							return 'X'; // Stop codon
-						default: 
-							return 'Y'; // Tyrosine for UA[UC] 
+						
+						case 'T': case 'U': case 'C': 
+							return 'Y'; // Tyrosine for UA[UC]
+						
+						default:
+							return '?'; 
 					}
 				
 				case 'G':
@@ -149,10 +167,15 @@ char bioseq_protein_dnatuple(char a, char b, char c) {
 						case 'A':
 							return 'X';
 						case 'G':
-							return 'W'; // Tryptophan for UGG	
+							return 'W'; // Tryptophan for UGG
+							
+						default:
+							return '?';
 							
 					}
 					
+				default:
+					return '?';					
 			}
 			
 		case 'C':
@@ -169,11 +192,18 @@ char bioseq_protein_dnatuple(char a, char b, char c) {
 					switch (c) {
 						case 'A': case 'G':
 							return 'Q'; // Glutamine for CA[AG]
-						default: 
-							return 'H'; // Tyrosine for UA[UC] 
+						
+						case 'U': case 'T': case 'C': 
+							return 'H'; // Tyrosine for UA[UC]
+						
+						default:
+							return '?';
 					}
 				case 'G':
 					return 'R'; // Arginine for CGX
+					
+				default:
+					return '?';
 			}
 
 		case 'A':
@@ -184,25 +214,49 @@ char bioseq_protein_dnatuple(char a, char b, char c) {
 					if (c == 'G') {
 						return 'M'; // Methionine for AUG ** Start Codon
 					}
-					return 'I'; // Isoluceine for AU[UCA]
+					
+					else if (c == 'A' || c == 'C' || c == 'T' || c == 'U') {						
+						return 'I'; // Isoluceine for AU[UCA]
+					}
+					
+					else {
+						return '?';
+					}
 					
 				case 'C':
-					return 'T'; // Threonine for ACX
+					if (c == 'A' || c == 'C' || c == 'G' || c == 'T' || c == 'U') {
+						return 'T'; // Threonine for ACX
+					}
+					
+					else {
+						return '?';
+					}
 					
 				case 'A':
 					switch (c) {
 						case 'A': case 'G':
 							return 'K'; // Lysine for AA[AG]
-						default: 
-							return 'N'; // Asparagine for AA[UC] 
+							
+						case 'T': case 'U': case 'C': 
+							return 'N'; // Asparagine for AA[UC]
+							
+						default:
+							return '?';
 					}
 				case 'G':
 					switch (c) {
 						case 'A': case 'G':
 							return 'R'; // Arginine for AG[AG]
-						default:
+							
+						case 'C': case 'T': case 'U':
 							return 'S'; // Serine for AG[UC]
+							
+						default:
+							return '?';
 					}
+				
+				default:
+					return '?';
 			}
 			
 		case 'G':
@@ -219,17 +273,27 @@ char bioseq_protein_dnatuple(char a, char b, char c) {
 					switch (c) {
 						case 'A': case 'G':
 							return 'E'; // Glutamic acid for GA[AG]
-						default: 
-							return 'D'; // Aspartic acid for GA[UC] 
+							
+						case 'C': case 'T': case 'U': 
+							return 'D'; // Aspartic acid for GA[UC]
+						
+						default:
+							return '?';
 					}
 				case 'G':
 					return 'G'; // Glycine for GGX
-			}						
+					
+				default:
+					return '?';
+			}
+		
+		default:
+			return '?';						
 	}
-	return '\0';
+	return '?';
 }
 
-void bioseq_reverse_string(char* str) {
+static void bioseq_reverse_string(char* str) {
     /* skip null */
     if (str == 0)
     {
@@ -261,7 +325,7 @@ void bioseq_reverse_string(char* str) {
     }
 }
 
-void bioseq_complement_string(char* str) {
+static void bioseq_complement_string(char* str) {
 	int i = 0;
 	while (str[i]) {
 		switch(str[i]) {
@@ -284,18 +348,18 @@ void bioseq_complement_string(char* str) {
 	
 }
 
-void bioseq_protein_terminate (char* str) {
+static void bioseq_protein_terminate (char* str) {
 	int i = 0;
-	while (str[i] != '\0') {
+	while (str[i++]) {
 		if (str[i] == 'X') {
 			str[i] = '\0';
+			break;
 		}
-		i++;
 	}
 	
 }
 
-void bioseq_capital_string (char* str) {
+static void bioseq_capital_string (char* str) {
 	int i = 0;
 	while (str[i]) {
 		str[i] = toupper(str[i]);
@@ -303,7 +367,7 @@ void bioseq_capital_string (char* str) {
 	}
 }
 
-int bioseq_search_string (char* str, char cmp[]) {
+static int bioseq_search_string (char* str, char cmp[]) {
 	char* out = strstr(str, cmp);
 	int loc = (int) (out - str);
 	
@@ -312,7 +376,7 @@ int bioseq_search_string (char* str, char cmp[]) {
 	else return -1;
 }
 
-char bioseq_protein_charge (char in) {
+static char bioseq_protein_charge (char in) {
 	switch (in) {
 		
 		// Positive electric charge
