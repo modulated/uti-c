@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include "bioseq.h"
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 100000
 #define START_CODON "ATG"
 
 void bioseq_reverse_string(char* str);
@@ -18,29 +18,29 @@ void bioseq_protein_terminate (char* str);
 bioseq bioseq_new(sequence_type type, char seq[]) {
 	
 	int len = strlen(seq);
-	char* string = malloc((len) * sizeof(char));
-	char* charge = malloc((len) * sizeof(char));
-	strcpy(string, seq);
+	char* sequence = malloc(len * sizeof(char));
+	char* charge = malloc(len * sizeof(char));
+	strcpy(sequence, seq);
 	
-	bioseq_capital_string(string);
+	bioseq_capital_string(sequence);
 	
 	bioseq new = {
 		type,
 		len,
-		string,
+		sequence,
 		charge
 	};
 	
 	return new;
 }
 
-void bioseq_delete(bioseq seq) {
+void bioseq_delete(bioseq* seq) {
 	
-	free(seq.sequence);
-	seq.sequence = NULL;
+	free(seq->sequence);
+	seq->sequence = NULL;
 	
-	free(seq.charge);
-	seq.charge = NULL;
+	free(seq->charge);
+	seq->charge = NULL;
 }
 
 bioseq bioseq_reverse(bioseq seq) {

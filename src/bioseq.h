@@ -18,7 +18,7 @@ typedef struct {
 
 bioseq bioseq_new(sequence_type type, char seq[]);
 
-void bioseq_delete(bioseq seq);
+void bioseq_delete(bioseq* seq);
 
 bioseq bioseq_reverse(bioseq seq);
 
