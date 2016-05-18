@@ -52,7 +52,7 @@ static char* test_reverse () {
 	
 	bioseq_destruct(&test_rev);
 	
-	puts("bioseq_reverse \t "KGRN"PASSED"RESET);
+	puts("bioseq_reverse \t\t "KGRN"PASSED"RESET);
 	return 0;
 }
 
@@ -65,7 +65,7 @@ static char* test_protein_terminate () {
 	
 	test_assert(KRED"ERROR: bioseq_protein_terminate does not return expected value"RESET, strcmp(test_terminate, pass_terminate) == 0);
 	
-	puts("bioseq_protein_terminate \t "KGRN"PASSED"RESET);
+	puts("bioseq_protein_terminate "KGRN"PASSED"RESET);
 	return 0;
 }
 
