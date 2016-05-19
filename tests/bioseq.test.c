@@ -12,7 +12,7 @@ static int run_tests();
 int main () {
     
     // plan_no_plan();
-    plan_tests(9);
+    plan_tests(11);
     
     run_tests();
     
