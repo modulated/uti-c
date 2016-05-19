@@ -30,3 +30,7 @@
 
 # Debug files
 *.dSYM/
+
+# dotfiles
+.vscode/
+.ycm_extra_conf.pyc
