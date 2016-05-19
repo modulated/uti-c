@@ -1,7 +1,5 @@
 #ifndef _BIOSEQ_H
-
 #define _BIOSEQ_H
-
 
 typedef struct {
 	unsigned length;
@@ -27,9 +25,13 @@ bioseq_protein bioseq_protein_construct(char seq[]);
 
 void bioseq_protein_destruct(bioseq_protein* seq);
 
-bioseq_dna bioseq_reverse(bioseq_dna seq);
+void bioseq_dna_sanitize(bioseq_dna seq);
 
-bioseq_dna bioseq_complement(bioseq_dna seq);
+void bioseq_protein_sanitize(bioseq_protein seq);
+
+bioseq_dna bioseq_dna_reverse(bioseq_dna seq);
+
+bioseq_dna bioseq_dna_complement(bioseq_dna seq);
 
 bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset);
 
