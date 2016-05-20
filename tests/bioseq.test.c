@@ -16,7 +16,7 @@ void run_tests();
 int main () {
     
     plan_no_plan();
-    // plan_tests(13);
+    // plan_tests(14);
     
     run_tests();
     
@@ -114,7 +114,19 @@ void test_dna_protein () {
 	bioseq_protein_destruct(&test_prot);
 }
 
-void run_tests() {
+void test_dna_split () {
+	char test_str[] = "superstyling";
+	char test_str2[6];
+	char test_str3[8];
+	char test_res[] = "super";
+	char test_res2[] = "styling";
+	
+	
+	ok(strcmp(test_res, test_str2) == 0, "%s == %s", test_res, test_str2);
+	ok(strcmp(test_res2, test_str3) == 0, "%s == %s", test_res2, test_str3);
+}
+
+void run_tests () {
 	
 	test_dna_construct();
 	test_dna_destruct();
@@ -125,5 +137,6 @@ void run_tests() {
 	test_dna_complement();
 	test_dna_reverse();
 	test_dna_protein();
+	test_dna_split();
 
 }

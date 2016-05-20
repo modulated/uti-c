@@ -1,5 +1,10 @@
-#ifndef _BIOSEQ_H
-#define _BIOSEQ_H
+#ifndef BIOSEQ_H
+#define BIOSEQ_H
+
+
+/***************
+* Public Structs
+****************/
 
 typedef struct {
 	unsigned length;
@@ -14,8 +19,13 @@ typedef struct {
 
 typedef struct {
 	unsigned length;
-	bioseq_protein* list[];
+	bioseq_protein* list[];	
 } bioseq_orf;
+
+
+/*****************
+* Public Functions
+******************/
 
 bioseq_dna bioseq_dna_construct(char seq[]);
 
@@ -36,5 +46,7 @@ bioseq_dna bioseq_dna_complement(bioseq_dna seq);
 bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset);
 
 void bioseq_protein_interactions(bioseq_protein seq);
+
+void bioseq_dna_split(bioseq_dna seq, int position, bioseq_dna* out1, bioseq_dna* out2);
 
 #endif

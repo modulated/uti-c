@@ -3,7 +3,7 @@
 ## General
 - Fix Makefile
 - Implement TAP tests for all modules
-
+- Restructure to libs
 
 ## Bioseq
 - ORF parsing

@@ -8,180 +8,11 @@
 #define START_CODON "ATG"
 #define NUCLEOTIDE_SANITIZE(x) (x == 'A' || x == 'C' || x == 'G' || x == 'T' || x == 'U')
 
-static void bioseq_string_reverse(char* str);
-static void bioseq_complement_string(char* str);
-static void bioseq_string_capital(char* str);
-static void bioseq_string_excise(char* str, int index);
-static char bioseq_protein_dnatuple(char a, char b, char c);
-static int bioseq_string_search (char* str, char cmp[]);
-static char bioseq_protein_charge (char in);
-static void bioseq_protein_terminate (char* str);
-static int bioseq_char_protein (char x);
-
-bioseq_dna bioseq_dna_construct(char seq[]) {
-	
-	
-	int len = strlen(seq);	
-	
-	bioseq_dna new = {
-		len,
-		strdup(seq)		
-	};
-	
-	bioseq_string_capital(new.sequence);	
-	bioseq_dna_sanitize(new);
-	new.length = strlen(new.sequence);
-		
-	return new;
-}
-
-void bioseq_dna_destruct(bioseq_dna* seq) {
-	// Free allocated heap and set pointers to NULL	
-	
-	free(seq->sequence);
-	seq->sequence = NULL;
-}
-
-bioseq_protein bioseq_protein_construct(char seq[]) {
-	
-	int len = strlen(seq);
-	char* charge = malloc(len * sizeof(char));
-	
-	bioseq_protein new = {
-		len,
-		strdup(seq),
-		charge
-	};
-	
-	bioseq_string_capital(new.sequence);	
-	bioseq_protein_sanitize(new);
-	new.length = strlen(seq);
-	
-	return new;
-}
-
-void bioseq_protein_destruct(bioseq_protein* seq) {
-	// Free allocated heap and set pointers to NULL	
-	
-	free(seq->sequence);
-	seq->sequence = NULL;
-	
-	free(seq->charge);
-	seq->charge = NULL;
-}
-
-bioseq_dna bioseq_dna_reverse(bioseq_dna seq) {
-	
-	int len = seq.length;
-	char string[len];
-	strcpy(string, seq.sequence);
-	
-	bioseq_string_reverse(string);
-	
-	return bioseq_dna_construct(string);
-}
-
-void bioseq_dna_sanitize(bioseq_dna seq) {
-	
-	char* str = seq.sequence;
-	int i = 0;
-	
-	while (str[i]) {
-		
-		if (!NUCLEOTIDE_SANITIZE(str[i])) {
-					
-			bioseq_string_excise(str, i);			
-		}
-		
-		else {			
-			i++;
-		}
-	}
-}
-
-void bioseq_protein_sanitize(bioseq_protein seq) {
-	
-	char* str = seq.sequence;
-	int i = 0;
-	
-	while (str[i] != '\0') {
-		
-		if (bioseq_char_protein(str[i]) == 0) {
-			
-			bioseq_string_excise(str, i);			
-		}
-		
-		else {			
-			i++;
-		}
-	}
-}
-
-bioseq_dna bioseq_dna_complement(bioseq_dna seq) {
-	
-	int len = seq.length;
-	char string[len];
-	strcpy(string, seq.sequence);
-	
-	bioseq_complement_string(string);
-	
-	return bioseq_dna_construct(string);
-	
-}
-
-bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
-	
-	int seqlength = dna.length - offset;
-	int rem = seqlength % 3;
-	int len = (seqlength - rem)/3;
-	char string[len+1];
-	
-	for (int i = 0; i < len; i++) {
-		
-		char a = dna.sequence[i * 3 + offset];
-		char b = dna.sequence[i * 3 + 1 + offset];
-		char c = dna.sequence[i * 3 + 2 + offset];
-		
-		string[i] = bioseq_protein_dnatuple(a, b, c);
-	}
-	
-	string[len] = '\0';
-	
-	return bioseq_protein_construct(string);
-}
-
-void bioseq_protein_interactions(bioseq_protein seq) {
-	
-	for (int i = 0; i < seq.length; i++) {
-		seq.charge[i] = bioseq_protein_charge(seq.sequence[i]);
-	}
-}
-
-bioseq_protein bioseq_translate(bioseq_dna seq) {
-	
-	int offset = bioseq_string_search(seq.sequence, START_CODON);
-	
-	bioseq_protein out;
-	if (offset >= 0) out = bioseq_dna_protein(seq, offset);
-
-	else {
-		out.sequence = "";
-		out.length = 0;
-	}
-	
-	bioseq_protein_terminate(out.sequence);
-	bioseq_protein_interactions(out);
-	
-	return out;
-}
-
-
-
 /*******************
-** PRIVATE Utility Functions
-*******************/
+** Private Functions
+********************/
 
-
+// Convert 3 char codon to single char protein code. (X = stop codon)
 static char bioseq_protein_dnatuple(char a, char b, char c) {
 	
 	switch (a) {
@@ -356,6 +187,7 @@ static char bioseq_protein_dnatuple(char a, char b, char c) {
 	return '?';
 }
 
+// Reverses given string. Modifies string (FIX).
 static void bioseq_string_reverse(char* str) {
     /* skip null */
     if (str == 0)
@@ -388,11 +220,18 @@ static void bioseq_string_reverse(char* str) {
     }
 }
 
-static void bioseq_string_excise(char* str, int i) {
+// Removes char at index in string. Modifies string (FIX).  
+static void bioseq_string_excise(char* str, int index) {
 	
 	while (str[i++]) {
 		str[i-1] = str[i];
 	} 
+}
+
+// Splits string at index and copies to two pointers.
+static void bioseq_string_split(char* input, int index, char* output1, char* output2) {
+	strncpy(output1, input, index);
+	strcpy(output2, &input[index]);	
 }
 
 static void bioseq_complement_string(char* str) {
@@ -437,7 +276,8 @@ static void bioseq_string_capital (char* str) {
 	}
 }
 
-static int bioseq_char_protein(char x) {
+// Returns 1 if char matches single letter protein code or 0 if not. 
+static int bioseq_protein_verifychar(char x) {
 	
 	switch(x) {
 		case 'A': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I': case 'L': case 'K': case 'M': case 'N': case 'Q': case 'P': case 'R': case 'S': case 'T': case 'V': case 'W': case 'Y': case 'X':
@@ -446,6 +286,7 @@ static int bioseq_char_protein(char x) {
 	return 0;
 }
 
+// Searches string for phrase and returns location in string, or -1 if not found 
 static int bioseq_string_search (char* str, char cmp[]) {
 	char* out = strstr(str, cmp);
 	int loc = (int) (out - str);
@@ -455,6 +296,8 @@ static int bioseq_string_search (char* str, char cmp[]) {
 	else return -1;
 }
 
+/* Returns protein charge for given single letter code.
++ = positive, - = negative, # = hydrophobic, * = hydrophilic */
 static char bioseq_protein_charge (char in) {
 	switch (in) {
 		
@@ -494,3 +337,177 @@ static char bioseq_protein_charge (char in) {
 			return '?';
 	}
 }
+
+
+/*******************
+** Public Functions
+********************/
+
+bioseq_dna bioseq_dna_construct(char seq[]) {
+	
+	
+	int len = strlen(seq);	
+	
+	bioseq_dna new = {
+		len,
+		strdup(seq)		
+	};
+	
+	bioseq_string_capital(new.sequence);	
+	bioseq_dna_sanitize(new);
+	new.length = strlen(new.sequence);
+		
+	return new;
+}
+
+void bioseq_dna_destruct(bioseq_dna* seq) {
+	// Free allocated heap and set pointers to NULL	
+	
+	free(seq->sequence);
+	seq->sequence = NULL;
+}
+
+bioseq_protein bioseq_protein_construct(char seq[]) {
+	
+	int len = strlen(seq);
+	char* charge = malloc(len * sizeof(char));
+	
+	bioseq_protein new = {
+		len,
+		strdup(seq),
+		charge
+	};
+	
+	bioseq_string_capital(new.sequence);	
+	bioseq_protein_sanitize(new);
+	new.length = strlen(seq);
+	
+	return new;
+}
+
+void bioseq_protein_destruct(bioseq_protein* seq) {
+	// Free allocated heap and set pointers to NULL	
+	
+	free(seq->sequence);
+	seq->sequence = NULL;
+	
+	free(seq->charge);
+	seq->charge = NULL;
+}
+
+bioseq_dna bioseq_dna_reverse(bioseq_dna seq) {
+	
+	int len = seq.length;
+	char string[len];
+	strcpy(string, seq.sequence);
+	
+	bioseq_string_reverse(string);
+	
+	return bioseq_dna_construct(string);
+}
+
+void bioseq_dna_sanitize(bioseq_dna seq) {
+	
+	char* str = seq.sequence;
+	int i = 0;
+	
+	while (str[i]) {
+		
+		if (!NUCLEOTIDE_SANITIZE(str[i])) {
+					
+			bioseq_string_excise(str, i);			
+		}
+		
+		else {			
+			i++;
+		}
+	}
+}
+
+void bioseq_protein_sanitize(bioseq_protein seq) {
+	
+	char* str = seq.sequence;
+	int i = 0;
+	
+	while (str[i] != '\0') {
+		
+		if (bioseq_protein_verifychar(str[i]) == 0) {
+			
+			bioseq_string_excise(str, i);			
+		}
+		
+		else {			
+			i++;
+		}
+	}
+}
+
+bioseq_dna bioseq_dna_complement(bioseq_dna seq) {
+	
+	int len = seq.length;
+	char string[len];
+	strcpy(string, seq.sequence);
+	
+	bioseq_complement_string(string);
+	
+	return bioseq_dna_construct(string);
+	
+}
+
+void bioseq_dna_split(bioseq_dna seq, int position, bioseq_dna* out1, bioseq_dna* out2) {
+	
+}
+
+bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
+	
+	int seqlength = dna.length - offset;
+	int rem = seqlength % 3;
+	int len = (seqlength - rem)/3;
+	char string[len+1];
+	
+	for (int i = 0; i < len; i++) {
+		
+		char a = dna.sequence[i * 3 + offset];
+		char b = dna.sequence[i * 3 + 1 + offset];
+		char c = dna.sequence[i * 3 + 2 + offset];
+		
+		string[i] = bioseq_protein_dnatuple(a, b, c);
+	}
+	
+	string[len] = '\0';
+	
+	return bioseq_protein_construct(string);
+}
+
+void bioseq_protein_interactions(bioseq_protein seq) {
+	
+	for (int i = 0; i < seq.length; i++) {
+		seq.charge[i] = bioseq_protein_charge(seq.sequence[i]);
+	}
+}
+
+bioseq_protein bioseq_translate(bioseq_dna seq) {
+	
+	int offset = bioseq_string_search(seq.sequence, START_CODON);
+	
+	bioseq_protein out;
+	if (offset >= 0) out = bioseq_dna_protein(seq, offset);
+
+	else {
+		out.sequence = "";
+		out.length = 0;
+	}
+	
+	bioseq_protein_terminate(out.sequence);
+	bioseq_protein_interactions(out);
+	
+	return out;
+}
+
+
+
+/*******************
+** PRIVATE Utility Functions
+*******************/
+
+
