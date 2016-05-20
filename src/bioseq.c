@@ -223,8 +223,8 @@ static void bioseq_string_reverse(char* str) {
 // Removes char at index in string. Modifies string (FIX).  
 static void bioseq_string_excise(char* str, int index) {
 	
-	while (str[i++]) {
-		str[i-1] = str[i];
+	while (str[index++]) {
+		str[index-1] = str[index];
 	} 
 }
 
@@ -454,8 +454,19 @@ bioseq_dna bioseq_dna_complement(bioseq_dna seq) {
 	
 }
 
-void bioseq_dna_split(bioseq_dna seq, int position, bioseq_dna* out1, bioseq_dna* out2) {
+void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* out2) {
 	
+	index = (index > -1) ? index : 0;
+	
+	char* str1 = malloc((index + 1) * sizeof(char));
+	char* str2 = malloc((seq.length - index + 1) * sizeof(char)); 
+	bioseq_string_split(seq.sequence, index, str1, str2);
+	
+	*out1 = bioseq_dna_construct(str1);
+	*out2 = bioseq_dna_construct(str2);
+	
+	free(str1);
+	free(str2);
 }
 
 bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
@@ -503,11 +514,3 @@ bioseq_protein bioseq_translate(bioseq_dna seq) {
 	
 	return out;
 }
-
-
-
-/*******************
-** PRIVATE Utility Functions
-*******************/
-
-
