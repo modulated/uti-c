@@ -512,7 +512,27 @@ void bioseq_protein_interactions(bioseq_protein seq) {
 	}
 }
 
-bioseq_protein bioseq_translate(bioseq_dna seq) {
+bioseq_protein bioseq_dna_translate(bioseq_dna seq, int offset) {
+	
+	bioseq_protein out;
+	out = bioseq_dna_protein(seq, offset);
+	
+	if (bioseq_string_search(out.sequence, "M")) {
+		bioseq_protein_terminate(out.sequence);
+	}
+	
+	else {
+		out.sequence = "";
+		out.length = 0;
+	}
+	
+	bioseq_protein_terminate(out.sequence);
+	bioseq_protein_interactions(out);
+	
+	return out;
+}
+
+bioseq_protein bioseq_dna_translatefromstartcodon(bioseq_dna seq) {
 	
 	int offset = bioseq_string_search(seq.sequence, START_CODON);
 	
@@ -528,4 +548,39 @@ bioseq_protein bioseq_translate(bioseq_dna seq) {
 	bioseq_protein_interactions(out);
 	
 	return out;
+}
+
+bioseq_frame bioseq_frame_construct(bioseq_dna seq) {
+	
+	bioseq_frame out;
+	
+	for (int i = 0; i < 3; i++) {
+		out.frames[i] = bioseq_dna_protein(seq, i);		
+	}
+	
+	seq = bioseq_dna_reverse(seq);
+	seq = bioseq_dna_complement(seq);
+	
+	for (int i = 0; i < 3; i++) {
+		out.frames[i+3] = bioseq_dna_protein(seq, i);
+	}		
+	
+	return out;
+}
+
+void bioseq_frame_destruct(bioseq_frame* frame) {
+	for (int i = 0; i < 6; i++) {
+		bioseq_protein_destruct(&frame->frames[i]);
+	}
+}
+
+int bioseq_frame_getopen(bioseq_frame frame) {
+	
+	int count = 0;
+	
+	for (int i = 0; i < 6; i++) {
+		if (frame.frames[i].length) i++;
+	}
+	
+	return count;
 }

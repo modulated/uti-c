@@ -18,9 +18,9 @@ typedef struct {
 } bioseq_protein;
 
 typedef struct {
-	unsigned length;
-	bioseq_protein* list[];	
-} bioseq_orf;
+	int viable_sequences;
+	bioseq_protein frames[6];
+} bioseq_frame;
 
 
 /*****************
@@ -45,10 +45,20 @@ bioseq_dna bioseq_dna_complement(bioseq_dna seq);
 
 bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset);
 
+bioseq_protein bioseq_dna_translate(bioseq_dna dna, int offset);
+
+bioseq_protein bioseq_dna_translatefromstartcodon(bioseq_dna dna);
+
 void bioseq_protein_interactions(bioseq_protein seq);
 
 void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* out2);
 
 void bioseq_protein_split(bioseq_protein seq, int index, bioseq_protein* out1, bioseq_protein* out2);
+
+bioseq_frame bioseq_frame_construct(bioseq_dna seq);
+
+void bioseq_frame_destruct(bioseq_frame* frame);
+
+int bioseq_frame_getopen(bioseq_frame frame);
 
 #endif

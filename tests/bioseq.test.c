@@ -10,6 +10,11 @@
 #define TEST_SEQ_COMP "TACTGTCGTCGTCGCTCGCTGAAGCTAT"
 #define TEST_SEQ_REV "ATAGCTTCAGCGAGCGACGACGACAGTA"
 #define TEST_SEQ_PROT "MTAAASDFD"
+#define TEST_SEQ_PROT_2 "XQQQRATSI"
+#define TEST_SEQ_PROT_3 "DSSSERLR"
+#define TEST_SEQ_PROT_4 "YRSRSLLLS"
+#define TEST_SEQ_PROT_5 "IEVARCCCH"
+#define TEST_SEQ_PROT_6 "SKSLAAAV"
 #define TEST_SEQ_PROT_SANITIZE " # M TB AAASDFD 1"
 
 void run_tests();
@@ -242,6 +247,46 @@ void test_protein_split () {
 	bioseq_protein_destruct(&res_seq2);
 }
 
+void test_frame_construct() {
+	
+	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
+	bioseq_frame test_frame = bioseq_frame_construct(test_seq);
+	
+	ok(strcmp(test_frame.frames[0].sequence,TEST_SEQ_PROT) == 0, "Frame 1 parsed correctly.");
+	ok(strcmp(test_frame.frames[1].sequence,TEST_SEQ_PROT_2) == 0, "Frame 2 parsed correctly.");
+	ok(strcmp(test_frame.frames[2].sequence,TEST_SEQ_PROT_3) == 0, "Frame 3 parsed correctly.");
+	ok(strcmp(test_frame.frames[3].sequence,TEST_SEQ_PROT_4) == 0, "Frame 4 parsed correctly.");
+	ok(strcmp(test_frame.frames[4].sequence,TEST_SEQ_PROT_5) == 0, "Frame 5 parsed correctly.");
+	ok(strcmp(test_frame.frames[5].sequence,TEST_SEQ_PROT_6) == 0, "Frame 6 parsed correctly.");
+	
+	bioseq_dna_destruct(&test_seq);
+	bioseq_frame_destruct(&test_frame);	
+}
+
+void test_frame_destruct() {
+	bioseq_dna seq = bioseq_dna_construct(TEST_SEQ);
+	bioseq_frame frame = bioseq_frame_construct(seq);
+	bioseq_dna_destruct(&seq);
+	bioseq_frame_destruct(&frame);
+	
+	int res = 1;
+	for (int i = 0; i < 6; i++) {
+		res = res && frame.frames[i].sequence == NULL && frame.frames[i].charge == NULL;
+	}
+	
+	ok1(res == 1);
+}
+
+void test_frame_getopen() {
+	bioseq_dna seq = bioseq_dna_construct(TEST_SEQ);
+	bioseq_frame frame = bioseq_frame_construct(seq);
+	
+	ok1(bioseq_frame_getopen(frame) == 1);
+	
+	bioseq_dna_destruct(&seq);
+	bioseq_frame_destruct(&frame);
+}
+
 void run_tests () {
 	
 	test_dna_construct();
@@ -255,4 +300,7 @@ void run_tests () {
 	test_dna_protein();
 	test_dna_split();
 	test_protein_split();
+	test_frame_construct();
+	test_frame_destruct();
+	test_frame_getopen();
 }
