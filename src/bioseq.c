@@ -469,6 +469,21 @@ void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* o
 	free(str2);
 }
 
+void bioseq_protein_split(bioseq_protein seq, int index, bioseq_protein* out1, bioseq_protein* out2) {
+	
+	index = (index > -1) ? index : 0;
+	
+	char* str1 = malloc((index + 1) * sizeof(char));
+	char* str2 = malloc((seq.length - index + 1) * sizeof(char)); 
+	bioseq_string_split(seq.sequence, index, str1, str2);
+	
+	*out1 = bioseq_protein_construct(str1);
+	*out2 = bioseq_protein_construct(str2);
+	
+	free(str1);
+	free(str2);	
+}
+
 bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
 	
 	int seqlength = dna.length - offset;

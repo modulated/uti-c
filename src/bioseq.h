@@ -47,6 +47,8 @@ bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset);
 
 void bioseq_protein_interactions(bioseq_protein seq);
 
-void bioseq_dna_split(bioseq_dna seq, int position, bioseq_dna* out1, bioseq_dna* out2);
+void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* out2);
+
+void bioseq_protein_split(bioseq_protein seq, int index, bioseq_protein* out1, bioseq_protein* out2);
 
 #endif

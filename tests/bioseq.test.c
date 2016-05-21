@@ -4,6 +4,7 @@
 
 #define E_COLI "ATGAAGAAATCAATATTATTTATTTTTCTTTCTGTATTGTCTTTTTCACCTTTCGCTCAGGATGCTAAACCAGTAGAGTCTTCAAAAGAAAAAATCACACTAGAATCAAAAAAATGTAACATTGCAAAAAAAAGTAATAAAAGTGGTCCTGAAAGCATGAATAGTAGCAATTACTGCTGTGAATTGTGTTGTAATCCTGCTTGTACCGGGTGCTATTAA"
 
+#define EMPTY_STRING ""
 #define TEST_SEQ "ATGACAGCAGCAGCGAGCGACTTCGATA"
 #define TEST_SEQ_SANITIZE " AT GACAGCAD GCAGCGAGCGACT1 TCGATA"
 #define TEST_SEQ_COMP "TACTGTCGTCGTCGCTCGCTGAAGCTAT"
@@ -116,7 +117,7 @@ void test_dna_protein () {
 
 void test_dna_split () {
 	
-	bioseq_dna test_seq = bioseq_dna_construct("ATGATG");
+	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
 	bioseq_dna res_seq1;
 	bioseq_dna res_seq2;
 
@@ -125,7 +126,7 @@ void test_dna_split () {
 	// Case 1 -- Even
 	int index = 2;
 	char res_str1[] = "AT";
-	char res_str2[] = "GATG";
+	char res_str2[] = "GACAGCAGCAGCGAGCGACTTCGATA";
 	
 	bioseq_dna_split(test_seq, index, &res_seq1, &res_seq2);
 	
@@ -135,8 +136,8 @@ void test_dna_split () {
 	
 	// Case 2 -- Odd
 	index = 5;
-	char res_str3[] = "ATGAT";
-	char res_str4[] = "G";
+	char res_str3[] = "ATGAC";
+	char res_str4[] = "AGCAGCAGCGAGCGACTTCGATA";
 	
 	bioseq_dna_split(test_seq, index, &res_seq1, &res_seq2);
 	
@@ -145,8 +146,8 @@ void test_dna_split () {
 
 	// Case 3 -- Zero
 	index = 0;
-	char res_str5[] = "";
-	char res_str6[] = "ATGATG";
+	char res_str5[] = EMPTY_STRING;
+	char res_str6[] = TEST_SEQ;
 	
 	bioseq_dna_split(test_seq, index, &res_seq1, &res_seq2);
 	
@@ -154,9 +155,9 @@ void test_dna_split () {
 	ok(strcmp(res_str6, res_seq2.sequence) == 0, "%s == %s", res_str6, res_seq2.sequence);
 
 	// Case 2 -- Overflow
-	index = 9;
-	char res_str7[] = "ATGATG";
-	char res_str8[] = "";
+	index = 41;
+	char res_str7[] = TEST_SEQ;
+	char res_str8[] = EMPTY_STRING;
 	
 	bioseq_dna_split(test_seq, index, &res_seq1, &res_seq2);
 	
@@ -165,8 +166,8 @@ void test_dna_split () {
 
 	// Case 2 -- Negative
 	index = -3;
-	char res_str9[] = "ATGATG";
-	char res_str10[] = "";
+	char res_str9[] = EMPTY_STRING;
+	char res_str10[] = TEST_SEQ;
 	
 	bioseq_dna_split(test_seq, index, &res_seq1, &res_seq2);
 	
@@ -176,6 +177,69 @@ void test_dna_split () {
 	bioseq_dna_destruct(&test_seq);
 	bioseq_dna_destruct(&res_seq1);
 	bioseq_dna_destruct(&res_seq2);
+}
+
+void test_protein_split () {
+	
+	bioseq_protein test_seq = bioseq_protein_construct(TEST_SEQ_PROT);
+	bioseq_protein res_seq1;
+	bioseq_protein res_seq2;
+
+
+	// Case 1 -- Even
+	int index = 2;
+	char res_str1[] = "MT";
+	char res_str2[] = "AAASDFD";
+	
+	bioseq_protein_split(test_seq, index, &res_seq1, &res_seq2);
+	
+	ok(strcmp(res_str1, res_seq1.sequence) == 0, "%s == %s", res_str1, res_seq1.sequence);
+	ok(strcmp(res_str2, res_seq2.sequence) == 0, "%s == %s", res_str2, res_seq2.sequence);
+
+	
+	// Case 2 -- Odd
+	index = 5;
+	char res_str3[] = "MTAAA";
+	char res_str4[] = "SDFD";
+	
+	bioseq_protein_split(test_seq, index, &res_seq1, &res_seq2);
+	
+	ok(strcmp(res_str3, res_seq1.sequence) == 0, "%s == %s", res_str3, res_seq1.sequence);
+	ok(strcmp(res_str4, res_seq2.sequence) == 0, "%s == %s", res_str4, res_seq2.sequence);
+
+	// Case 3 -- Zero
+	index = 0;
+	char res_str5[] = EMPTY_STRING;
+	char res_str6[] = TEST_SEQ_PROT;
+	
+	bioseq_protein_split(test_seq, index, &res_seq1, &res_seq2);
+	
+	ok(strcmp(res_str5, res_seq1.sequence) == 0, "%s == %s", res_str5, res_seq1.sequence);
+	ok(strcmp(res_str6, res_seq2.sequence) == 0, "%s == %s", res_str6, res_seq2.sequence);
+
+	// Case 2 -- Overflow
+	index = 9;
+	char res_str7[] = TEST_SEQ_PROT;
+	char res_str8[] = EMPTY_STRING;
+	
+	bioseq_protein_split(test_seq, index, &res_seq1, &res_seq2);
+	
+	ok(strcmp(res_str7, res_seq1.sequence) == 0, "%s == %s", res_str7, res_seq1.sequence);
+	ok(strcmp(res_str8, res_seq2.sequence) == 0, "%s == %s", res_str8, res_seq2.sequence);
+
+	// Case 2 -- Negative
+	index = -3;
+	char res_str9[] = EMPTY_STRING;
+	char res_str10[] = TEST_SEQ_PROT;
+	
+	bioseq_protein_split(test_seq, index, &res_seq1, &res_seq2);
+	
+	ok(strcmp(res_str9, res_seq1.sequence) == 0, "%s == %s", res_str9, res_seq1.sequence);
+	ok(strcmp(res_str10, res_seq2.sequence) == 0, "%s == %s", res_str10, res_seq2.sequence);	
+
+	bioseq_protein_destruct(&test_seq);
+	bioseq_protein_destruct(&res_seq1);
+	bioseq_protein_destruct(&res_seq2);
 }
 
 void run_tests () {
@@ -190,4 +254,5 @@ void run_tests () {
 	test_dna_reverse();
 	test_dna_protein();
 	test_dna_split();
+	test_protein_split();
 }

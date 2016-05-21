@@ -12,11 +12,9 @@
 - Sequence similarity
 - Migrate string functions to seperate module
 - RNA?
-- Restriction nucleases
-- cleave function
 
 ## Random
-- Functions for returning numbers, bytes etc.
+- Random number tests
 
 ## Statistics
 - Number array (struct)
