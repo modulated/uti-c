@@ -6,23 +6,48 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int random_int() {
-
-	unsigned char rint = 0;
+void* random_bytes(int length) {
+		
+	void* out = malloc(length);
+	 
 	FILE* file;
-
 	file = fopen("/dev/urandom","r");
+	
 	if(file==NULL) {
 		printf("Error opening file. Program terminating\n");
 		exit(1);
 	}
 
-	//Read and parse
-
-	fread(&rint, sizeof(rint), 1, file);
+	fread(out, length, 1, file);
 	fclose(file);
 
-	return rint;
+	return out;
 }
 
+int random_int() {
+	void* ptr = random_bytes(sizeof(int));
+	int out = *(int*)ptr;
+	free(ptr);	
+	return out;
+}
 
+char random_char() {
+	void* ptr = random_bytes(sizeof(char));
+	char out = *(char*)ptr;
+	free(ptr);	
+	return out;
+}
+
+char random_long() {
+	void* ptr = random_bytes(sizeof(long));
+	long out = *(long*)ptr;
+	free(ptr);	
+	return out;
+}
+
+char random_llong() {
+	void* ptr = random_bytes(sizeof(long long));
+	long long out = *(long long*)ptr;
+	free(ptr);	
+	return out;
+}
