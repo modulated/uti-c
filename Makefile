@@ -16,7 +16,7 @@ bio: $(SRCDIR)/bioseq.c
 	rm bioseq.o
 	
 test: $(TESTDIR)/*.test.c
-	$(CC) $(CFLAGS) $(TESTDIR)/*.test.c -o test.out -L${pwd}/$(LIBDIR) -lbio
+	$(CC) $(CFLAGS) $(TESTDIR)/*.test.c -o test.out -L${pwd}/$(LIBDIR) -lbio -ltap
 
 install: $(LIBDIR)/*.a
 	install $(LIBDIR)/*.a /usr/local/lib
