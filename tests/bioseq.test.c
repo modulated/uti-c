@@ -24,7 +24,7 @@ int main () {
     plan_no_plan();
     // plan_tests(14);
     
-    run_tests();
+    run_tests();	
     
     return 0;
 }
