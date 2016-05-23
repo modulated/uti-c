@@ -27,14 +27,14 @@ void stats_numbers_destruct(stats_numbers* nums) {
 }
 
 float stats_numbers_mean(stats_numbers nums) {
-	float total = 0;
+	int total = 0;
 	int i;
 	
-	for (i = 1; i < nums.length; i++) {
-		total += nums.array[i];
+	for (i = 0; i < nums.length; i++) {
+		total = total + nums.array[i];
 	}
 	
-	return total/(float)nums.length;	
+	return (float)total/(float)nums.length;	
 }
 
 float stats_numbers_variance(stats_numbers nums, float mean) {

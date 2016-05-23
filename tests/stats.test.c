@@ -1,6 +1,7 @@
 #include "../src/stats.h"
 #include <tap.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define TEST_SET 2, 4, 3, 2
 
@@ -34,7 +35,9 @@ void test_mean() {
 	
 	stats_numbers test_set = stats_numbers_construct(4, TEST_SET);
 	float x = stats_numbers_mean(test_set);
-	ok(x == 2.75, "%f == %f", x, 2.75);
+	x = roundf(x*100)/100;
+	
+	ok(x == 2.75, "%.2f== %.2f", x, 2.75);
 	
 	stats_numbers_destruct(&test_set);	
 }
@@ -43,7 +46,9 @@ void test_numbers_variance() {
 	
 	stats_numbers test_set = stats_numbers_construct(4, TEST_SET);
 	float x = stats_numbers_variance(test_set, 2.75);
-	ok(x == 0.91667, "%f == %f", x, 0.6875);
+	x = roundf(x*10000)/10000;
+	
+	ok(x == 0.6875f, "%.4f == %.4f", x, 0.6875f);
 	
 	stats_numbers_destruct(&test_set);	
 }
@@ -51,8 +56,10 @@ void test_numbers_variance() {
 void test_numbers_sd() {
 	
 	stats_numbers test_set = stats_numbers_construct(4, TEST_SET);
-	float x = stats_numbers_sd(test_set, 2.75); 
-	ok(x == 0.95743, "%f == %f", x, 0.829156);
+	float x = stats_numbers_sd(test_set, 2.75);
+	x = roundf(x*10000)/10000;
+	 
+	ok(x == 0.8292f, "%.4f == %.4f", x, 0.8292f);
 	
 	stats_numbers_destruct(&test_set);	
 }
