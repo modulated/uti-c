@@ -12,6 +12,8 @@ int main() {
     plan_tests(4);
 
     test_run();
+    
+    return exit_status();
 }
 
 void test_random_int() {

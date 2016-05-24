@@ -281,7 +281,7 @@ void test_frame_getopen() {
 	bioseq_dna seq = bioseq_dna_construct(TEST_SEQ);
 	bioseq_frame frame = bioseq_frame_construct(seq);
 	
-	ok1(bioseq_frame_getopen(frame) == 1);
+	ok1(bioseq_frame_getopen(frame) == 6);
 	
 	bioseq_dna_destruct(&seq);
 	bioseq_frame_destruct(&frame);

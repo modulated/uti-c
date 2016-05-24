@@ -579,7 +579,8 @@ int bioseq_frame_getopen(bioseq_frame frame) {
 	int count = 0;
 	
 	for (int i = 0; i < 6; i++) {
-		if (frame.frames[i].length) i++;
+		if (frame.frames[i].length == 0) i++;
+		else count++;
 	}
 	
 	return count;
