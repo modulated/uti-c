@@ -1,8 +1,6 @@
-```
-┬ ┬┌┬┐┬   ┌─┐
-│ │ │ │───│  
-└─┘ ┴ ┴   └─┘
-```
+# uti-c
+
+[![Build Status](https://travis-ci.org/modulated/uti-c.svg?branch=master)](https://travis-ci.org/modulated/uti-c)
 
 `uti-c` is a collection of utility functions and programs written in C. This is mostly an exercise for me to better learn the language features and experiment with random programs.
 
