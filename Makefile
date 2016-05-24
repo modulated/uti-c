@@ -1,7 +1,7 @@
 CC=clang
 CFLAGS=-Wall -Werror
 COMPILELIBS=-lm
-TESTLIBS=-Llib/ -ltap
+TESTLIBS=$(LIBDIR)/libtap.dylib
 
 LIBDIR=lib
 BINDIR=bin
