@@ -10,6 +10,8 @@ stats_numbers stats_numbers_construct(int length, ...);
 
 void stats_numbers_destruct(stats_numbers* nums);
 
+stats_numbers stats_numbers_sort(stats_numbers nums);
+
 float stats_numbers_mean(stats_numbers nums);
 
 float stats_numbers_variance(stats_numbers nums, float mean);

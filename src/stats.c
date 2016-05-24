@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 stats_numbers stats_numbers_construct(int length, ...) {
 	
@@ -24,6 +25,36 @@ stats_numbers stats_numbers_construct(int length, ...) {
 void stats_numbers_destruct(stats_numbers* nums) {
 	free(nums->array);
 	nums->array = NULL;
+}
+
+void stats_numbers_print(stats_numbers nums) {
+	for (int i = 0; i < nums.length-1; i++) {
+		printf("%d, ", nums.array[i]);
+	}
+	printf("%d.\n", nums.array[nums.length-1]);
+}
+
+void stats_int_swap(int* a, int* b) {
+	
+	int x = *a;
+	*a = *b;
+	*b = x;
+}
+
+stats_numbers stats_numbers_sort(stats_numbers nums) {
+	
+	
+	for (int i = 0; i < nums.length; i++) {		
+		
+		if (nums.array[i] > nums.array[i+1]) {
+			stats_int_swap(&nums.array[i], &nums.array[i+1]);
+			i = 0;
+		}
+	}
+	
+	stats_numbers_print(nums);
+	
+	return nums;
 }
 
 float stats_numbers_mean(stats_numbers nums) {
