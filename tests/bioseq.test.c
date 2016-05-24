@@ -1,4 +1,4 @@
-#include "../lib/tap.h"
+#include "tap.h"
 #include <string.h>
 #include "../src/bioseq.h"
 

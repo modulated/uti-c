@@ -1,8 +1,4 @@
-/*
-** Need to implement tests of randomness.
-*/
-
-#include "../lib/tap.h"
+#include "tap.h"
 #include <limits.h>
 #include "../src/random.h"
 

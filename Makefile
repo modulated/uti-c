@@ -1,7 +1,7 @@
 CC=clang
 CFLAGS=-Wall -Werror
 COMPILELIBS=-lm
-TESTLIBS=$(LIBDIR)/libtap.dylib
+TESTFILES=$(TESTDIR)/tap.c
 
 LIBDIR=lib
 BINDIR=bin
@@ -25,15 +25,15 @@ test:
 # 	rm bioseq.o
 	
 bio: $(TESTDIR)/bioseq.test.c $(SRCDIR)/bioseq.c
-	$(CC) $(CFLAGS) $(SRCDIR)/bioseq.c $(TESTDIR)/bioseq.test.c -o $(BINDIR)/bio $(TESTLIBS)
+	$(CC) $(CFLAGS) $(SRCDIR)/bioseq.c $(TESTDIR)/bioseq.test.c -o $(BINDIR)/bio $(TESTFILES)
 	$(BINDIR)/bio | faucet
 	
 random: $(TESTDIR)/random.test.c $(SRCDIR)/random.c
-	$(CC) $(CFLAGS) $(SRCDIR)/random.c $(TESTDIR)/random.test.c -o $(BINDIR)/random $(TESTLIBS)
+	$(CC) $(CFLAGS) $(SRCDIR)/random.c $(TESTDIR)/random.test.c -o $(BINDIR)/random $(TESTFILES)
 	$(BINDIR)/random | faucet
 
 stats: $(TESTDIR)/stats.test.c $(SRCDIR)/stats.c
-	$(CC) $(CFLAGS) $(SRCDIR)/stats.c $(TESTDIR)/stats.test.c -o $(BINDIR)/stats $(TESTLIBS)
+	$(CC) $(CFLAGS) $(SRCDIR)/stats.c $(TESTDIR)/stats.test.c -o $(BINDIR)/stats $(TESTFILES)
 	$(BINDIR)/stats | faucet
 
 install: $(LIBDIR)/*.a

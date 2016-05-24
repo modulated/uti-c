@@ -1,5 +1,5 @@
+#include "tap.h"
 #include "../src/stats.h"
-#include "../lib/tap.h"
 #include <stdlib.h>
 #include <math.h>
 
