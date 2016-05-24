@@ -1,7 +1,7 @@
 CC=clang
 CFLAGS=-Wall -Werror
 COMPILELIBS=-lm
-TESTLIBS=-ltap
+TESTLIBS=-Llib/ -ltap
 
 LIBDIR=lib
 SRCDIR=src
@@ -9,9 +9,9 @@ TESTDIR=tests
 
 
 all: $(SRCDIR)/*.c
-	-make bio;
-	-make random;
-	-make stats;
+	make bio;
+	make random;
+	make stats;
 	
 
 lib: $(SRCDIR)/bioseq.c

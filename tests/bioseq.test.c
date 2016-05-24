@@ -1,4 +1,4 @@
-#include <tap.h>
+#include "../lib/tap.h"
 #include <string.h>
 #include "../src/bioseq.h"
 
@@ -26,7 +26,7 @@ int main () {
     
     run_tests();	
     
-    return 0;
+    return exit_status();
 }
 
 

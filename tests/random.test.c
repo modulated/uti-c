@@ -2,7 +2,7 @@
 ** Need to implement tests of randomness.
 */
 
-#include <tap.h>
+#include "../lib/tap.h"
 #include <limits.h>
 #include "../src/random.h"
 
