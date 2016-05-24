@@ -48,7 +48,7 @@ stats_numbers stats_numbers_sort(stats_numbers nums) {
 		
 		if (nums.array[i] > nums.array[i+1]) {
 			stats_int_swap(&nums.array[i], &nums.array[i+1]);
-			i = 0;
+			i -= 2;
 		}
 	}
 	
