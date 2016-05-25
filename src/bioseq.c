@@ -456,7 +456,8 @@ bioseq_dna bioseq_dna_complement(bioseq_dna seq) {
 
 void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* out2) {
 	
-	index = (index > -1) ? index : 0;
+	if (index < 0) index = 0;
+	if (index > seq.length-1) index = seq.length-1;
 	
 	char* str1 = malloc((index + 1) * sizeof(char));
 	char* str2 = malloc((seq.length - index + 1) * sizeof(char)); 
@@ -471,7 +472,8 @@ void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* o
 
 void bioseq_protein_split(bioseq_protein seq, int index, bioseq_protein* out1, bioseq_protein* out2) {
 	
-	index = (index > -1) ? index : 0;
+	if (index < 0) index = 0;
+	if (index > seq.length-1) index = seq.length-1;
 	
 	char* str1 = malloc((index + 1) * sizeof(char));
 	char* str2 = malloc((seq.length - index + 1) * sizeof(char)); 
