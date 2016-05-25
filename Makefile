@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-Wall -Werror
+CFLAGS=-Wall -Werror -D_GNU_SOURCE
 COMPILELIBS=-lm
 TESTFILES=$(TESTDIR)/tap.c
 
@@ -26,15 +26,15 @@ test:
 	
 bio: $(TESTDIR)/bioseq.test.c $(SRCDIR)/bioseq.c
 	$(CC) $(CFLAGS) $(SRCDIR)/bioseq.c $(TESTDIR)/bioseq.test.c -o $(BINDIR)/bio $(TESTFILES)
-	$(BINDIR)/bio | faucet
+	$(BINDIR)/bio
 	
 random: $(TESTDIR)/random.test.c $(SRCDIR)/random.c
 	$(CC) $(CFLAGS) $(SRCDIR)/random.c $(TESTDIR)/random.test.c -o $(BINDIR)/random $(TESTFILES)
-	$(BINDIR)/random | faucet
+	$(BINDIR)/random
 
 stats: $(TESTDIR)/stats.test.c $(SRCDIR)/stats.c
 	$(CC) $(CFLAGS) $(SRCDIR)/stats.c $(TESTDIR)/stats.test.c -o $(BINDIR)/stats $(TESTFILES)
-	$(BINDIR)/stats | faucet
+	$(BINDIR)/stats
 
 install: $(LIBDIR)/*.a
 	install $(LIBDIR)/*.a /usr/local/lib
