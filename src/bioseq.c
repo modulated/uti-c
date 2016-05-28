@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "bioseq.h"
+#define _GNU_SOURCE
 
 #define BUFFER_SIZE 1024
 #define START_CODON "ATG"

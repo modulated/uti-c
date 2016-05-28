@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-Wall -Werror
+CFLAGS=-Wall -Werror -pedantic -std=c99
 COMPILELIBS=-lm
 TESTFILES=$(TESTDIR)/tap.c
 
@@ -11,6 +11,9 @@ TESTDIR=tests
 
 all: $(SRCDIR)/*.c
 	make test
+
+seqc: $(SRCDIR)/seqc.c
+	$(CC) $(CFLAGS) -o bin/seqc src/seqc.c
 
 test:
 	mkdir -p ./bin
