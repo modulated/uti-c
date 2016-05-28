@@ -1,6 +1,7 @@
 #include "tap.h"
 #include <string.h>
 #include "../src/bioseq.h"
+#include <stdio.h>
 
 #define E_COLI "ATGAAGAAATCAATATTATTTATTTTTCTTTCTGTATTGTCTTTTTCACCTTTCGCTCAGGATGCTAAACCAGTAGAGTCTTCAAAAGAAAAAATCACACTAGAATCAAAAAAATGTAACATTGCAAAAAAAAGTAATAAAAGTGGTCCTGAAAGCATGAATAGTAGCAATTACTGCTGTGAATTGTGTTGTAATCCTGCTTGTACCGGGTGCTATTAA"
 
@@ -100,21 +101,24 @@ void test_dna_reverse () {
 void test_dna_protein () {
 	
 	// Case 1 -- Start codon
+	int test_int = 0;
 	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);	
 	bioseq_protein test_prot = bioseq_dna_protein(test_seq, 0);	
 	
-	ok1(strcmp(test_prot.sequence, TEST_SEQ_PROT) == 0);
+	test_int = test_int || !(strcmp(test_prot.sequence, TEST_SEQ_PROT) == 0);
 	
 	// Case 2 -- Start and Stop
 	test_seq = bioseq_dna_construct("AUGGCGAGGGAGUUAUGGUGA");
 	test_prot = bioseq_dna_protein(test_seq, 0);
 	
-	ok1(strcmp(test_prot.sequence, "MARELWX") == 0);
+	test_int = test_int || !(strcmp(test_prot.sequence, "MARELWX") == 0);
 	
 	// Case 3 -- Misaligned , uneven
 	test_prot = bioseq_dna_protein(test_seq, 1);
 	
-	ok1(strcmp(test_prot.sequence, "WRGSYG") == 0);
+	test_int = test_int || !(strcmp(test_prot.sequence, "WRGSYG") == 0);
+	
+	ok(test_int == 0, "dna_protein returns expected values.");
 	
 	bioseq_dna_destruct(&test_seq);
 	bioseq_protein_destruct(&test_prot);
@@ -252,12 +256,16 @@ void test_frame_construct() {
 	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
 	bioseq_frame test_frame = bioseq_frame_construct(test_seq);
 	
-	ok(strcmp(test_frame.frames[0].sequence,TEST_SEQ_PROT) == 0, "Frame 1 parsed correctly.");
-	ok(strcmp(test_frame.frames[1].sequence,TEST_SEQ_PROT_2) == 0, "Frame 2 parsed correctly.");
-	ok(strcmp(test_frame.frames[2].sequence,TEST_SEQ_PROT_3) == 0, "Frame 3 parsed correctly.");
-	ok(strcmp(test_frame.frames[3].sequence,TEST_SEQ_PROT_4) == 0, "Frame 4 parsed correctly.");
-	ok(strcmp(test_frame.frames[4].sequence,TEST_SEQ_PROT_5) == 0, "Frame 5 parsed correctly.");
-	ok(strcmp(test_frame.frames[5].sequence,TEST_SEQ_PROT_6) == 0, "Frame 6 parsed correctly.");
+	int output = 0;
+	printf("Frame[0]: %s\n", test_frame.frames[0].sequence);
+	strcmp(test_frame.frames[0].sequence,TEST_SEQ_PROT) || output;
+	strcmp(test_frame.frames[1].sequence,TEST_SEQ_PROT_2) || output;
+	strcmp(test_frame.frames[2].sequence,TEST_SEQ_PROT_3) || output;
+	strcmp(test_frame.frames[3].sequence,TEST_SEQ_PROT_4) || output;
+	strcmp(test_frame.frames[4].sequence,TEST_SEQ_PROT_5) || output;
+	strcmp(test_frame.frames[5].sequence,TEST_SEQ_PROT_6) || output;
+	
+	ok(output == 0, "frame_construct: Returning all appropriate sequences.");
 	
 	bioseq_dna_destruct(&test_seq);
 	bioseq_frame_destruct(&test_frame);	
@@ -274,7 +282,7 @@ void test_frame_destruct() {
 		res = res && frame.frames[i].sequence == NULL && frame.frames[i].charge == NULL;
 	}
 	
-	ok1(res == 1);
+	ok(res == 1, "frame_destruct NULLs pointers.");
 }
 
 void test_frame_getopen() {

@@ -442,6 +442,7 @@ void bioseq_protein_sanitize(bioseq_protein seq) {
 	}
 }
 
+// Returns complement sequence.
 bioseq_dna bioseq_dna_complement(bioseq_dna seq) {
 	
 	int len = seq.length;
@@ -454,10 +455,10 @@ bioseq_dna bioseq_dna_complement(bioseq_dna seq) {
 	
 }
 
+// Splits seq into out1 and out2 at given index. Need to preallocate out structs.
 void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* out2) {
 	
 	if (index < 0) index = 0;
-	if (index > seq.length) index = seq.length;
 	
 	char* str1 = malloc((index + 1) * sizeof(char));
 	char* str2 = malloc((seq.length - index + 1) * sizeof(char)); 
@@ -473,7 +474,6 @@ void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* o
 void bioseq_protein_split(bioseq_protein seq, int index, bioseq_protein* out1, bioseq_protein* out2) {
 	
 	if (index < 0) index = 0;
-	if (index > seq.length) index = seq.length;
 	
 	char* str1 = malloc((index + 1) * sizeof(char));
 	char* str2 = malloc((seq.length - index + 1) * sizeof(char)); 
@@ -534,7 +534,7 @@ bioseq_protein bioseq_dna_translate(bioseq_dna seq, int offset) {
 	return out;
 }
 
-bioseq_protein bioseq_dna_translatefromstartcodon(bioseq_dna seq) {
+bioseq_protein bioseq_dna_translate_s2s(bioseq_dna seq) {
 	
 	int offset = bioseq_string_search(seq.sequence, START_CODON);
 	
@@ -572,7 +572,7 @@ bioseq_frame bioseq_frame_construct(bioseq_dna seq) {
 
 void bioseq_frame_destruct(bioseq_frame* frame) {
 	for (int i = 0; i < 6; i++) {
-		bioseq_protein_destruct(&frame->frames[i]);
+		bioseq_protein_destruct(&(frame->frames[i]));
 	}
 }
 
