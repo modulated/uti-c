@@ -1,25 +1,39 @@
 # Bioseq Module
-Parses and analyses biological sequences such as DNA and protein  strands.
+Parses and analyses biological sequences such as DNA and protein.
 
-## Data
+## Data Structures
 
-### `bioseq`
-Struct containing the sequence, length and type of sequence.
+### `bioseq_dna`
+Struct containing the sequence and length of DNA.
 
-###  `bioseq_sequence_type`
-Either `SEQUENCE_NONE`, `SEQUENCE_RNA`, `SEQUENCE_DNA` or `SEQUENCE_PROTEIN`
+### `bioseq_protein`
+Struct containing the sequence and length of protein.
+
+### `bioseq_frame`
+Struct containing six `bioseq_protein` structs for all reading frames. 
 
 ## Functions
 
-### `bioseq bioseq_new(sequence_type type, char seq[])`
+### `bioseq bioseq_dna_construct(char seq[])`
+Create a DNA sequence struct from string.
 
-### `void bioseq_delete(bioseq seq)`
+### `bioseq bioseq_protein_construct(char seq[])`
+Create a protein sequence struct from string.
 
-### `bioseq bioseq_reverse(bioseq seq)`
+### `void bioseq_dna_destruct(bioseq seq)`
+Cleanup DNA struct after use.
 
-### `bioseq bioseq_complement(bioseq seq)`
+### `void bioseq_protein_destruct(bioseq seq)`
+Cleanup protein struct after use.
 
-### `bioseq bioseq_dna_protein(bioseq dna, int offset)`
+### `bioseq_dna bioseq_dna_reverse(bioseq seq)`
+Returns reverse sequence of DNA.
+
+### `bioseq_dna bioseq_dna_complement(bioseq seq)`
+Returns complement sequence of DNA.
+
+### `bioseq_protein bioseq_dna_protein(bioseq dna, int offset)`
+Convert DNA sequence to protein sequence, starting at `offset`.
 
 ### `void bioseq_protein_interactions(bioseq seq)`
 
