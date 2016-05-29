@@ -15,6 +15,7 @@
 #define OUTFILE_F 1<<3
 #define STDINPUT_F 1
 
+int flags;
 char* outfile = NULL;
 unsigned buffer_size = 0; 
 
@@ -73,13 +74,11 @@ int parseargs(int argc, char** argv) {
 
 int main(int argc, char** argv) {
     
-	int flags;
-	
     if (argc > 1) {
 		flags = parseargs(argc, argv);
-		printf("Option: %d\n",flags);
-	}
-	
+		if ((flags & OUTFILE_F) == 0) 
+		printf("Option: %d\n",flags & OUTFILE_F);
+	}	
     else print_help();
     
     return 0;
