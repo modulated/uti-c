@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-Wall -Werror -pedantic -std=c99
+CFLAGS=-Wall -Werror -pedantic -std=gnu99 -D_GNU_SOURCE
 COMPILELIBS=-lm
 TESTFILES=$(TESTDIR)/tap.c
 

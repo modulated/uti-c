@@ -4,8 +4,6 @@
 #include <ctype.h>
 #include "bioseq.h"
 
-#define _POSIX_C_SOURCE 200809L
-
 #define BUFFER_SIZE 1024
 #define START_CODON "ATG"
 #define NUCLEOTIDE_SANITIZE(x) (x == 'A' || x == 'C' || x == 'G' || x == 'T' || x == 'U')
