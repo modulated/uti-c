@@ -7,6 +7,7 @@
 
 ## Bioseq
 - ORF parsing
+- Find start codon function
 - Shine-Dalgarno consensus
 - Kozak consensus
 - Sequence similarity
@@ -17,9 +18,8 @@
 - Random number tests
 
 ## Statistics
-- Number array (struct)
-- Mean, median, mode (function)
-- SD, variance (function)
+- Number array (list?)
+- median, mode (function)
 - Normal distributions (struct)
 - Binomial distribution (struct)
 - Sigmoidal function
