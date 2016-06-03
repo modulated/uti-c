@@ -442,6 +442,10 @@ char bioseq_protein_dnatuple(char a, char b, char c) {
 	return '?';
 }
 
+int bioseq_protein_startcodon(bioseq_protein seq) {
+	return bioseq_string_search(seq.sequence, "M");
+}
+
 bioseq_dna bioseq_dna_complement(bioseq_dna seq) {
 	
 	int len = seq.length;
@@ -519,7 +523,7 @@ bioseq_protein bioseq_dna_translate(bioseq_dna seq, int offset) {
 	bioseq_protein out;
 	out = bioseq_dna_protein(seq, offset);
 	
-	if (bioseq_string_search(out.sequence, "M")) {
+	if (bioseq_protein_startcodon(out)) {
 		bioseq_protein_terminate(out.sequence);
 	}
 	
