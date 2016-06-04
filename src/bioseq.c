@@ -6,186 +6,10 @@
 
 #define BUFFER_SIZE 1024
 #define START_CODON "ATG"
-#define NUCLEOTIDE_SANITIZE(x) (x == 'A' || x == 'C' || x == 'G' || x == 'T' || x == 'U')
 
 /*******************
 ** Private Functions
 ********************/
-
-// Convert 3 char codon to single char protein code. (X = stop codon)
-static char bioseq_protein_dnatuple(char a, char b, char c) {
-	
-	switch (a) {
-		
-		case 'U': case 'T':
-		
-			switch (b) {
-				
-				case 'U': case'T':
-					switch (c) {
-						case 'U': case 'T': case 'C':
-							return 'F';  // Phenylalanine for UU[UC]
-						
-						case 'A': case 'G':
-							return 'L'; // Leucine for UU[AG]
-							
-						default:
-							return '?';
-					}
-					
-				case 'C':
-					if (NUCLEOTIDE_SANITIZE(c)) {					
-						return 'S'; // Serine for UCX
-					}
-					
-					else {
-						return '?';
-					}
-					
-				case 'A':
-					switch (c) {
-						case 'A': case 'G':
-							return 'X'; // Stop codon
-						
-						case 'T': case 'U': case 'C': 
-							return 'Y'; // Tyrosine for UA[UC]
-						
-						default:
-							return '?'; 
-					}
-				
-				case 'G':
-					switch (c) {
-						case 'U': case 'T': case 'C':
-							return 'C'; // Cysteine for UG[UC]
-						case 'A':
-							return 'X';
-						case 'G':
-							return 'W'; // Tryptophan for UGG
-							
-						default:
-							return '?';
-							
-					}
-					
-				default:
-					return '?';					
-			}
-			
-		case 'C':
-		
-			switch (b) {
-				
-				case 'U': case'T':
-					return 'L'; // Leucine for CUX
-					
-				case 'C':
-					return 'P'; // Proline for CCX
-					
-				case 'A':
-					switch (c) {
-						case 'A': case 'G':
-							return 'Q'; // Glutamine for CA[AG]
-						
-						case 'U': case 'T': case 'C': 
-							return 'H'; // Tyrosine for UA[UC]
-						
-						default:
-							return '?';
-					}
-				case 'G':
-					return 'R'; // Arginine for CGX
-					
-				default:
-					return '?';
-			}
-
-		case 'A':
-		
-			switch (b) {
-				
-				case 'U': case'T':
-					if (c == 'G') {
-						return 'M'; // Methionine for AUG ** Start Codon
-					}
-					
-					else if (c == 'A' || c == 'C' || c == 'T' || c == 'U') {						
-						return 'I'; // Isoluceine for AU[UCA]
-					}
-					
-					else {
-						return '?';
-					}
-					
-				case 'C':
-					if (NUCLEOTIDE_SANITIZE(b)) {
-						return 'T'; // Threonine for ACX
-					}
-					
-					else {
-						return '?';
-					}
-					
-				case 'A':
-					switch (c) {
-						case 'A': case 'G':
-							return 'K'; // Lysine for AA[AG]
-							
-						case 'T': case 'U': case 'C': 
-							return 'N'; // Asparagine for AA[UC]
-							
-						default:
-							return '?';
-					}
-				case 'G':
-					switch (c) {
-						case 'A': case 'G':
-							return 'R'; // Arginine for AG[AG]
-							
-						case 'C': case 'T': case 'U':
-							return 'S'; // Serine for AG[UC]
-							
-						default:
-							return '?';
-					}
-				
-				default:
-					return '?';
-			}
-			
-		case 'G':
-		
-			switch (b) {
-				
-				case 'U': case'T':
-					return 'V'; // Valine for GUX
-					
-				case 'C':
-					return 'A'; // Alanine for GCX
-					
-				case 'A':
-					switch (c) {
-						case 'A': case 'G':
-							return 'E'; // Glutamic acid for GA[AG]
-							
-						case 'C': case 'T': case 'U': 
-							return 'D'; // Aspartic acid for GA[UC]
-						
-						default:
-							return '?';
-					}
-				case 'G':
-					return 'G'; // Glycine for GGX
-					
-				default:
-					return '?';
-			}
-		
-		default:
-			return '?';						
-	}
-	return '?';
-}
 
 // Reverses given string. Modifies string (FIX).
 static void bioseq_string_reverse(char* str) {
@@ -442,7 +266,184 @@ void bioseq_protein_sanitize(bioseq_protein seq) {
 	}
 }
 
-// Returns complement sequence.
+// Convert 3 char codon to single char protein code. (X = stop codon)
+char bioseq_codon_protein(char a, char b, char c) {
+
+	a = toupper(a);
+	b = toupper(b);
+	c = toupper(c);
+	
+	if (!NUCLEOTIDE_SANITIZE(a) || !NUCLEOTIDE_SANITIZE(b) || !NUCLEOTIDE_SANITIZE(c)) return '?';
+	
+	switch (a) {
+		
+		case 'U': case 'T':
+		
+			switch (b) {
+				
+				case 'U': case'T':
+					switch (c) {
+						case 'U': case 'T': case 'C':
+							return 'F';  // Phenylalanine for UU[UC]
+						
+						case 'A': case 'G':
+							return 'L'; // Leucine for UU[AG]
+							
+						default:
+							return '?';
+					}
+					
+				case 'C':				
+					return 'S'; // Serine for UCX					
+					
+				case 'A':
+					switch (c) {
+						case 'A': case 'G':
+							return 'X'; // Stop codon
+						
+						case 'T': case 'U': case 'C': 
+							return 'Y'; // Tyrosine for UA[UC]
+						
+						default:
+							return '?'; 
+					}
+				
+				case 'G':
+					switch (c) {
+						case 'U': case 'T': case 'C':
+							return 'C'; // Cysteine for UG[UC]
+						case 'A':
+							return 'X';
+						case 'G':
+							return 'W'; // Tryptophan for UGG
+							
+						default:
+							return '?';
+							
+					}
+					
+				default:
+					return '?';					
+			}
+			
+		case 'C':
+		
+			switch (b) {
+				
+				case 'U': case'T':
+					return 'L'; // Leucine for CUX
+					
+				case 'C':
+					return 'P'; // Proline for CCX
+					
+				case 'A':
+					switch (c) {
+						case 'A': case 'G':
+							return 'Q'; // Glutamine for CA[AG]
+						
+						case 'U': case 'T': case 'C': 
+							return 'H'; // Tyrosine for UA[UC]
+						
+						default:
+							return '?';
+					}
+				case 'G':
+					return 'R'; // Arginine for CGX
+					
+				default:
+					return '?';
+			}
+
+		case 'A':
+		
+			switch (b) {
+				
+				case 'U': case'T':
+					if (c == 'G') {
+						return 'M'; // Methionine for AUG ** Start Codon
+					}
+					
+					else if (c == 'A' || c == 'C' || c == 'T' || c == 'U') {						
+						return 'I'; // Isoluceine for AU[UCA]
+					}
+					
+					else {
+						return '?';
+					}
+					
+				case 'C':
+					if (NUCLEOTIDE_SANITIZE(b)) {
+						return 'T'; // Threonine for ACX
+					}
+					
+					else {
+						return '?';
+					}
+					
+				case 'A':
+					switch (c) {
+						case 'A': case 'G':
+							return 'K'; // Lysine for AA[AG]
+							
+						case 'T': case 'U': case 'C': 
+							return 'N'; // Asparagine for AA[UC]
+							
+						default:
+							return '?';
+					}
+				case 'G':
+					switch (c) {
+						case 'A': case 'G':
+							return 'R'; // Arginine for AG[AG]
+							
+						case 'C': case 'T': case 'U':
+							return 'S'; // Serine for AG[UC]
+							
+						default:
+							return '?';
+					}
+				
+				default:
+					return '?';
+			}
+			
+		case 'G':
+		
+			switch (b) {
+				
+				case 'U': case'T':
+					return 'V'; // Valine for GUX					
+					
+				case 'C':
+					return 'A'; // Alanine for GCX					
+					
+				case 'A':
+					switch (c) {
+						case 'A': case 'G':
+							return 'E'; // Glutamic acid for GA[AG]
+							
+						case 'C': case 'T': case 'U': 
+							return 'D'; // Aspartic acid for GA[UC]
+
+					}
+				case 'G':
+					if (NUCLEOTIDE_SANITIZE(c)) return 'G'; // Glycine for GGX
+					else return '?';
+					
+				default:
+					return '?';
+			}
+		
+		default:
+			return '?';						
+	}
+	return '?';
+}
+
+int bioseq_protein_startcodon(bioseq_protein seq) {
+	return bioseq_string_search(seq.sequence, "M");
+}
+
 bioseq_dna bioseq_dna_complement(bioseq_dna seq) {
 	
 	int len = seq.length;
@@ -459,6 +460,7 @@ bioseq_dna bioseq_dna_complement(bioseq_dna seq) {
 void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* out2) {
 	
 	if (index < 0) index = 0;
+	if (index > seq.length) index = seq.length;
 	
 	char* str1 = malloc((index + 1) * sizeof(char));
 	char* str2 = malloc((seq.length - index + 1) * sizeof(char)); 
@@ -474,11 +476,12 @@ void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* o
 void bioseq_protein_split(bioseq_protein seq, int index, bioseq_protein* out1, bioseq_protein* out2) {
 	
 	if (index < 0) index = 0;
-	
+	if (index > seq.length) index = seq.length;
+		
 	char* str1 = malloc((index + 1) * sizeof(char));
 	char* str2 = malloc((seq.length - index + 1) * sizeof(char)); 
-	bioseq_string_split(seq.sequence, index, str1, str2);
-	
+	bioseq_string_split(seq.sequence, index, str1, str2);    
+
 	*out1 = bioseq_protein_construct(str1);
 	*out2 = bioseq_protein_construct(str2);
 	
@@ -499,7 +502,7 @@ bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
 		char b = dna.sequence[i * 3 + 1 + offset];
 		char c = dna.sequence[i * 3 + 2 + offset];
 		
-		string[i] = bioseq_protein_dnatuple(a, b, c);
+		string[i] = bioseq_codon_protein(a, b, c);
 	}
 	
 	string[len] = '\0';
@@ -519,7 +522,7 @@ bioseq_protein bioseq_dna_translate(bioseq_dna seq, int offset) {
 	bioseq_protein out;
 	out = bioseq_dna_protein(seq, offset);
 	
-	if (bioseq_string_search(out.sequence, "M")) {
+	if (bioseq_protein_startcodon(out)) {
 		bioseq_protein_terminate(out.sequence);
 	}
 	

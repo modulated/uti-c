@@ -204,9 +204,11 @@ void test_protein_split () {
 	
 	ok(strcmp(res_str1, res_seq1.sequence) == 0, "%s == %s", res_str1, res_seq1.sequence);
 	ok(strcmp(res_str2, res_seq2.sequence) == 0, "%s == %s", res_str2, res_seq2.sequence);
-
 	
-	// Case 2 -- Odd
+    bioseq_protein_destruct(&res_seq1);
+    bioseq_protein_destruct(&res_seq2);
+
+    // Case 2 -- Odd
 	index = 5;
 	char res_str3[] = "MTAAA";
 	char res_str4[] = "SDFD";
@@ -215,6 +217,9 @@ void test_protein_split () {
 	
 	ok(strcmp(res_str3, res_seq1.sequence) == 0, "%s == %s", res_str3, res_seq1.sequence);
 	ok(strcmp(res_str4, res_seq2.sequence) == 0, "%s == %s", res_str4, res_seq2.sequence);
+
+    bioseq_protein_destruct(&res_seq1);
+    bioseq_protein_destruct(&res_seq2);
 
 	// Case 3 -- Zero
 	index = 0;
@@ -226,7 +231,10 @@ void test_protein_split () {
 	ok(strcmp(res_str5, res_seq1.sequence) == 0, "%s == %s", res_str5, res_seq1.sequence);
 	ok(strcmp(res_str6, res_seq2.sequence) == 0, "%s == %s", res_str6, res_seq2.sequence);
 
-	// Case 2 -- Overflow
+    bioseq_protein_destruct(&res_seq1);
+    bioseq_protein_destruct(&res_seq2);
+
+	// Case 4 -- Overflow
 	index = 9;
 	char res_str7[] = TEST_SEQ_PROT;
 	char res_str8[] = EMPTY_STRING;
@@ -235,8 +243,11 @@ void test_protein_split () {
 	
 	ok(strcmp(res_str7, res_seq1.sequence) == 0, "%s == %s", res_str7, res_seq1.sequence);
 	ok(strcmp(res_str8, res_seq2.sequence) == 0, "%s == %s", res_str8, res_seq2.sequence);
+    
+    bioseq_protein_destruct(&res_seq1);
+    bioseq_protein_destruct(&res_seq2);
 
-	// Case 2 -- Negative
+	// Case 5 -- Negative
 	index = -3;
 	char res_str9[] = EMPTY_STRING;
 	char res_str10[] = TEST_SEQ_PROT;

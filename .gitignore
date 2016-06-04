@@ -34,3 +34,4 @@
 # dotfiles
 .vscode/
 .ycm_extra_conf.pyc
+bin/

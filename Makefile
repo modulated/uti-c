@@ -12,6 +12,9 @@ TESTDIR=tests
 all: $(SRCDIR)/*.c
 	make test
 
+seqc: $(SRCDIR)/seqc.c $(SRCDIR)/bioseq.c
+	$(CC) $(CFLAGS) -o seqc src/seqc.c src/bioseq.c
+
 test:
 	mkdir -p ./bin
 	make bio

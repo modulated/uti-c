@@ -27,6 +27,8 @@ typedef struct {
 * Public Functions
 ******************/
 
+#define NUCLEOTIDE_SANITIZE(x) (x == 'A' || x == 'C' || x == 'G' || x == 'T' || x == 'U')
+
 bioseq_dna bioseq_dna_construct(char seq[]);
 
 void bioseq_dna_destruct(bioseq_dna* seq);
@@ -60,5 +62,7 @@ bioseq_frame bioseq_frame_construct(bioseq_dna seq);
 void bioseq_frame_destruct(bioseq_frame* frame);
 
 int bioseq_frame_getopen(bioseq_frame frame);
+
+char bioseq_codon_protein(char a, char b, char c);
 
 #endif
