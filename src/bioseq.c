@@ -553,6 +553,29 @@ bioseq_protein bioseq_dna_translate_s2s(bioseq_dna seq) {
 	return out;
 }
 
+void bioseq_stats_stream(bioseq_stats* stats, char in) {
+	
+	switch (in) {
+		case 'A': stats->a_count++; break;
+		case 'C': stats->c_count++; break;
+		case 'G': stats->g_count++; break;
+		case 'T': stats->t_count++; break;
+		default: printf("Error char: %c", in); exit(1);
+	}
+	
+	stats->total_count++;
+}
+
+void bioseq_stats_calculate(bioseq_stats* stats) {
+	
+	stats->a_percent = (float) stats->a_count / (float) stats->total_count * 100;
+	stats->c_percent = (float) stats->c_count / (float) stats->total_count * 100;
+	stats->g_percent = (float) stats->g_count / (float) stats->total_count * 100;
+	stats->t_percent = (float) stats->t_count / (float) stats->total_count * 100;
+	
+	stats->purine_percent = (float) (stats->a_count + stats->g_count) / (float) stats->total_count * 100;
+}
+
 bioseq_frame bioseq_frame_construct(bioseq_dna seq) {
 	
 	bioseq_frame out;

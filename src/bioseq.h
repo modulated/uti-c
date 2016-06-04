@@ -3,7 +3,7 @@
 
 
 /***************
-* Public Structs
+** Public Structs
 ****************/
 
 typedef struct {
@@ -22,6 +22,18 @@ typedef struct {
 	bioseq_protein frames[6];
 } bioseq_frame;
 
+typedef struct {
+	long unsigned a_count;
+	long unsigned c_count;
+	long unsigned g_count;
+	long unsigned t_count;
+	long long unsigned total_count;
+	float purine_percent;
+	float a_percent;
+	float c_percent;
+	float g_percent;
+	float t_percent;
+} bioseq_stats;
 
 /*****************
 * Public Functions
@@ -64,5 +76,9 @@ void bioseq_frame_destruct(bioseq_frame* frame);
 int bioseq_frame_getopen(bioseq_frame frame);
 
 char bioseq_codon_protein(char a, char b, char c);
+
+void bioseq_stats_stream(bioseq_stats* stats, char in);
+
+void bioseq_stats_calculate(bioseq_stats* stats);
 
 #endif
