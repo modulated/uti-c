@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include "bioseq.h"
 #include <getopt.h>
+#include <errno.h>
 #include <string.h>
+#include <ctype.h>
 
 // Version
-#define VERSION "0.0.4"
+#define VERSION "0.1.2"
 
 // Flag defines
 #define RNA_F 0x1<<6
@@ -44,46 +46,64 @@ void print_version(void) {
 * File Handling Functions
 */
 
+void open_infile() {
+    infilepointer = fopen(infilestring, "r");	
+	
+	if (infilepointer == NULL) {
+		puts("Error: cannot access input file.");
+		printf("%s\n",strerror(errno));
+		exit(errno);
+	}
+}
+
+void open_outfile() {
+    outfilepointer = fopen(outfilestring, "w");
+	
+	if (outfilepointer == NULL) {
+		puts("Error: cannot access output file.");
+		printf("%s\n",strerror(errno));
+		exit(errno);
+	}
+}
+
+void close_infile() {	
+	fclose(infilepointer);
+}
+
+void close_outfile() {	
+	fclose(outfilepointer);
+}
+
 char read_stdin() {
     char in = getc(stdin);
     if (in == EOF) {
         return '\0';
     }
-    if (NUCLEOTIDE_SANITIZE(in)) return in;
-	else return read_stdin();
-}
-
-void open_infile() {
-    infilepointer = fopen(infilestring, "r");
-	flockfile(infilepointer);
-}
-
-void open_outfile() {
-    outfilepointer = fopen(outfilestring, "w");
-	flockfile(outfilepointer);
-}
-
-void close_infile() {
-	funlockfile(infilepointer);
-	fclose(infilepointer);
-}
-
-void close_outfile() {
-	funlockfile(outfilepointer);
-	fclose(outfilepointer);
+	
+    if (NUCLEOTIDE_SANITIZE(toupper(in))) return in;
+	else {		
+		return read_stdin();
+	}		
 }
 
 char read_infile() {
-    char in = getc_unlocked(infilepointer);
+    char in = fgetc(infilepointer);
     if (in == EOF) {
         return '\0';
     }
-	if (NUCLEOTIDE_SANITIZE(in)) return in;
-	else return read_stdin();
+	
+	if (NUCLEOTIDE_SANITIZE(toupper(in))) return in;
+	else {
+		return read_infile();
+	}
 }
 
 void write_outfile(char out) {
-	putc_unlocked(out, outfilepointer);
+	if (putc(out, outfilepointer) == EOF)
+	{
+		puts("Error: cannot write to file.");
+		exit(1);
+	}
 }
 
 /*
@@ -101,10 +121,13 @@ void stdin_stdout_loop() {
 		
 		char out = bioseq_codon_protein(in[0], in[1], in[2]);
 		
-		putc(out, stdout);
+		if(putchar(out) == EOF) {
+			puts("Error: cannot write to stdout.");			
+			exit(1);
+		}
 		if (out == '?' || out == '\0') cont = 0;
 	}
-	puts("");
+	putchar('\n');
 }
 
 void filein_stdout_loop() {
@@ -119,7 +142,7 @@ void filein_stdout_loop() {
 		
 		char out = bioseq_codon_protein(in[0], in[1], in[2]);
 		
-		putc(out, stdout);
+		fputc(out, stdout);
 		if (out == '?' || out == '\0') cont = 0;
 	}
 	puts("");
