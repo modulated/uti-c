@@ -97,8 +97,7 @@ void stdin_stdout_loop() {
 	while (cont == 1) {
 		in[0] = read_stdin();
 		in[1] = read_stdin();
-		in[2] = read_stdin();
-		printf("in: %c %c %c\n", in[0], in[1], in[2]);
+		in[2] = read_stdin();		
 		
 		char out = bioseq_codon_protein(in[0], in[1], in[2]);
 		
