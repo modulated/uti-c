@@ -8,7 +8,7 @@
 #include "color.h"
 
 // Version
-#define VERSION "0.1.2"
+#define VERSION "0.1.4"
 
 // Flag defines
 #define ELECTRO_F 0x1<<6
@@ -24,7 +24,7 @@ static FILE* infilepointer = NULL;
 static FILE* outfilepointer = NULL;
 static char* infilestring = NULL;
 static char* outfilestring = NULL;
-bioseq_stats stats = {0};
+static bioseq_stats stats = {0};
 
 void print_help(void) {
     puts(        
@@ -66,6 +66,8 @@ void open_infile() {
 		printf("%s\n",strerror(errno));
 		exit(errno);
 	}
+	
+	flockfile(infilepointer);
 }
 
 void open_outfile() {
@@ -76,18 +78,22 @@ void open_outfile() {
 		printf("%s\n",strerror(errno));
 		exit(errno);
 	}
+	
+	flockfile(outfilepointer);
 }
 
 void close_infile() {	
 	fclose(infilepointer);
+	funlockfile(infilepointer);
 }
 
 void close_outfile() {	
 	fclose(outfilepointer);
+	funlockfile(outfilepointer);
 }
 
 char read_stdin() {
-    char in = getc(stdin);
+    char in = getchar();
     if (in == EOF) {
         return '\0';
     }
@@ -104,7 +110,7 @@ char read_stdin() {
 }
 
 char read_infile() {
-    char in = fgetc(infilepointer);
+    char in = getc_unlocked(infilepointer);
     if (in == EOF) {
         return '\0';
     }
@@ -121,7 +127,7 @@ char read_infile() {
 }
 
 void write_outfile(char out) {
-	if (putc(out, outfilepointer) == EOF)
+	if (putc_unlocked(out, outfilepointer) == EOF)
 	{
 		puts("Error: cannot write to file.");
 		exit(1);
