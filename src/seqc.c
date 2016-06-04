@@ -16,8 +16,9 @@
 #define STDINPUT_F 1
 
 int flags;
-char* outfile = NULL;
-unsigned buffer_size = 0; 
+FILE* filep = NULL;
+char* filestr;
+unsigned buffer_size = 1000; 
 
 void print_help(void) {
     puts(        
@@ -36,13 +37,24 @@ void print_version(void) {
      );
 }
 
-void read_stdin() {
+char read_stdin() {
     char in;
     while ((in = getc(stdin)) != EOF) {
-        putchar(in);
+        return in;
     }
+    return '\0';
 }
 
+char read_infile(char* infiles) {
+    
+    FILE* infilep = NULL;
+    infilep = fopen(infiles, "r");
+    char in;
+    while ((in = getc(infilep)) != EOF) {
+       return in;
+    }
+    return '\0'; 
+}
 int parseargs(int argc, char** argv) {
 	int option = 0;
 	char arg;
@@ -54,7 +66,7 @@ int parseargs(int argc, char** argv) {
 				buffer_size = atoi(optarg);
 			
 			case 'o': 
-				outfile = strdup(optarg);
+				filestr = strdup(optarg);
 				option = option | OUTFILE_F; 
 				break;
 				
@@ -81,5 +93,8 @@ int main(int argc, char** argv) {
 	}	
     else print_help();
     
+    if (flags & OUTFILE_F) puts("save to file\n");
+    if (flags & STDINPUT_F) puts("Reading from stdin:\n");
+
     return 0;
 }

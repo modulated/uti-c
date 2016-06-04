@@ -482,7 +482,8 @@ void bioseq_protein_split(bioseq_protein seq, int index, bioseq_protein* out1, b
 	char* str1 = malloc((index + 1) * sizeof(char));
 	char* str2 = malloc((seq.length - index + 1) * sizeof(char)); 
 	bioseq_string_split(seq.sequence, index, str1, str2);
-	
+    printf("S1: %s \tS2: %s\n",str1,str2);
+
 	*out1 = bioseq_protein_construct(str1);
 	*out2 = bioseq_protein_construct(str2);
 	
