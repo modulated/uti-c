@@ -6,7 +6,6 @@
 
 #define BUFFER_SIZE 1024
 #define START_CODON "ATG"
-#define NUCLEOTIDE_SANITIZE(x) (x == 'A' || x == 'C' || x == 'G' || x == 'T' || x == 'U')
 
 /*******************
 ** Private Functions
@@ -268,7 +267,13 @@ void bioseq_protein_sanitize(bioseq_protein seq) {
 }
 
 // Convert 3 char codon to single char protein code. (X = stop codon)
-char bioseq_protein_dnatuple(char a, char b, char c) {
+char bioseq_codon_protein(char a, char b, char c) {
+
+	a = toupper(a);
+	b = toupper(b);
+	c = toupper(c);
+	
+	if (!NUCLEOTIDE_SANITIZE(a) || !NUCLEOTIDE_SANITIZE(b) || !NUCLEOTIDE_SANITIZE(c)) return '?';
 	
 	switch (a) {
 		
@@ -288,14 +293,8 @@ char bioseq_protein_dnatuple(char a, char b, char c) {
 							return '?';
 					}
 					
-				case 'C':
-					if (NUCLEOTIDE_SANITIZE(c)) {					
-						return 'S'; // Serine for UCX
-					}
-					
-					else {
-						return '?';
-					}
+				case 'C':				
+					return 'S'; // Serine for UCX					
 					
 				case 'A':
 					switch (c) {
@@ -413,10 +412,10 @@ char bioseq_protein_dnatuple(char a, char b, char c) {
 			switch (b) {
 				
 				case 'U': case'T':
-					return 'V'; // Valine for GUX
+					return 'V'; // Valine for GUX					
 					
 				case 'C':
-					return 'A'; // Alanine for GCX
+					return 'A'; // Alanine for GCX					
 					
 				case 'A':
 					switch (c) {
@@ -425,12 +424,11 @@ char bioseq_protein_dnatuple(char a, char b, char c) {
 							
 						case 'C': case 'T': case 'U': 
 							return 'D'; // Aspartic acid for GA[UC]
-						
-						default:
-							return '?';
+
 					}
 				case 'G':
-					return 'G'; // Glycine for GGX
+					if (NUCLEOTIDE_SANITIZE(c)) return 'G'; // Glycine for GGX
+					else return '?';
 					
 				default:
 					return '?';
@@ -504,7 +502,7 @@ bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
 		char b = dna.sequence[i * 3 + 1 + offset];
 		char c = dna.sequence[i * 3 + 2 + offset];
 		
-		string[i] = bioseq_protein_dnatuple(a, b, c);
+		string[i] = bioseq_codon_protein(a, b, c);
 	}
 	
 	string[len] = '\0';
