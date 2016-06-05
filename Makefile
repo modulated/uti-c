@@ -6,7 +6,7 @@ TESTFILES=$(TESTDIR)/tap.c
 LIBDIR=lib
 BINDIR=bin
 SRCDIR=src
-TESTDIR=tests
+TESTDIR=test
 
 
 all: $(SRCDIR)/*.c

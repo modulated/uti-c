@@ -1,6 +1,9 @@
 #ifndef BIOSEQ_H
 #define BIOSEQ_H
 
+#define BUFFER_SIZE 1024
+#define START_CODON "ATG"
+#define END_CODON "TAG"
 
 /***************
 ** Public Structs
@@ -75,7 +78,7 @@ void bioseq_frame_destruct(bioseq_frame* frame);
 
 int bioseq_frame_getopen(bioseq_frame frame);
 
-char bioseq_codon_protein(char a, char b, char c);
+char bioseq_dna_codon_protein(char a, char b, char c);
 
 void bioseq_stats_stream(bioseq_stats* stats, char in);
 
