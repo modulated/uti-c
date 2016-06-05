@@ -80,6 +80,8 @@ int bioseq_frame_getopen(bioseq_frame frame);
 
 char bioseq_dna_codon_protein(char a, char b, char c);
 
+int bioseq_string_similarity(char* a, char* b);
+
 void bioseq_stats_stream(bioseq_stats* stats, char in);
 
 void bioseq_stats_calculate(bioseq_stats* stats);

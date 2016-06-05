@@ -306,6 +306,16 @@ void test_frame_getopen() {
 	bioseq_frame_destruct(&frame);
 }
 
+void test_string_similarity() {
+	
+	
+	// Case 1 - no frameshift
+	char test_s1[] = "ABCDEFG";
+	char test_s2[] = "ACBDEFG";
+	
+	ok1(bioseq_string_similarity(test_s1, test_s2) == 2); 
+}
+
 void run_tests () {
 	
 	test_dna_construct();
@@ -322,4 +332,5 @@ void run_tests () {
 	test_frame_construct();
 	test_frame_destruct();
 	test_frame_getopen();
+	test_string_similarity();
 }

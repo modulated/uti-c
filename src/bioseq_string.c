@@ -95,3 +95,23 @@ static void bioseq_string_dna_complement(char* str) {
 		i++;
 	}	
 }
+
+
+int bioseq_string_similarity(char* a, char* b) {
+	
+	int sim = 0;
+	int length_a = strlen(a);
+	int length_b = strlen(b);
+	
+	for (int i = 0; i < length_a; i++) {
+		
+		if (a[i] == b[i]) continue;
+		else sim++;
+		
+		for (int j = 0; j < length_b; j++) {
+			
+		}
+	}
+	
+	return sim;
+}
