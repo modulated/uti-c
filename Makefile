@@ -9,7 +9,7 @@ SRCDIR=src
 TESTDIR=test
 
 
-all: $(SRCDIR)/*.c
+all:
 	make test
 
 seqc: $(SRCDIR)/seqc.c $(SRCDIR)/bioseq*.c

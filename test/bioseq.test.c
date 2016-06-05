@@ -269,12 +269,12 @@ void test_frame_construct() {
 	
 	int output = 0;
 	printf("Frame[0]: %s\n", test_frame.frames[0].sequence);
-	strcmp(test_frame.frames[0].sequence,TEST_SEQ_PROT) || output;
-	strcmp(test_frame.frames[1].sequence,TEST_SEQ_PROT_2) || output;
-	strcmp(test_frame.frames[2].sequence,TEST_SEQ_PROT_3) || output;
-	strcmp(test_frame.frames[3].sequence,TEST_SEQ_PROT_4) || output;
-	strcmp(test_frame.frames[4].sequence,TEST_SEQ_PROT_5) || output;
-	strcmp(test_frame.frames[5].sequence,TEST_SEQ_PROT_6) || output;
+	 output = output || strcmp(test_frame.frames[0].sequence,TEST_SEQ_PROT);
+	 output = output || strcmp(test_frame.frames[1].sequence,TEST_SEQ_PROT_2);
+	 output = output || strcmp(test_frame.frames[2].sequence,TEST_SEQ_PROT_3);
+	 output = output || strcmp(test_frame.frames[3].sequence,TEST_SEQ_PROT_4);
+	 output = output || strcmp(test_frame.frames[4].sequence,TEST_SEQ_PROT_5);
+	 output = output || strcmp(test_frame.frames[5].sequence,TEST_SEQ_PROT_6);
 	
 	ok(output == 0, "frame_construct: Returning all appropriate sequences.");
 	
