@@ -147,7 +147,7 @@ void stdin_stdout_loop() {
 		in[1] = read_stdin();
 		in[2] = read_stdin();		
 		
-		char out = bioseq_codon_protein(in[0], in[1], in[2]);
+		char out = bioseq_dna_codon_protein(in[0], in[1], in[2]);
 		
 		if(putchar(out) == EOF) {
 			puts("Error: cannot write to stdout.");			
@@ -168,7 +168,7 @@ void filein_stdout_loop() {
 		in[1] = read_infile();
 		in[2] = read_infile();		
 		
-		char out = bioseq_codon_protein(in[0], in[1], in[2]);
+		char out = bioseq_dna_codon_protein(in[0], in[1], in[2]);
 		
 		fputc(out, stdout);
 		if (out == '?' || out == '\0') cont = 0;
@@ -189,7 +189,7 @@ void filein_fileout_loop() {
 		in[1] = read_infile();
 		in[2] = read_infile();		
 		
-		char out = bioseq_codon_protein(in[0], in[1], in[2]);
+		char out = bioseq_dna_codon_protein(in[0], in[1], in[2]);
 		
 		write_outfile(out);
 		if (out == '?' || out == '\0') cont = 0;
@@ -210,7 +210,7 @@ void stdin_fileout_loop() {
 		in[1] = read_stdin();
 		in[2] = read_stdin();		
 		
-		char out = bioseq_codon_protein(in[0], in[1], in[2]);
+		char out = bioseq_dna_codon_protein(in[0], in[1], in[2]);
 		
 		write_outfile(out);
 		if (out == '?' || out == '\0') cont = 0;
