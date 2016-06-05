@@ -49,9 +49,9 @@ void print_stats(void) {
 	int spacer_float = 16;
 	
 	puts(KBLU"Statistical Analysis of DNA:"RESET);
-	puts(KYEL"\t\t\tA\t\t C\t\t  G\t\t   T\t   Total(AG%)"RESET);
+	puts(KYEL"\t\t\tA\t\t C\t\t  G\t\t   T\t   Total(GC%)"RESET);
 	printf("Count:   %*lu %*lu %*lu %*lu %*llu\n", spacer_int, stats.a_count, spacer_int, stats.c_count, spacer_int, stats.g_count, spacer_int, stats.t_count, spacer_int, stats.total_count);
-	printf("Percent: %*.2f %*.2f %*.2f %*.2f %*.2f\n", spacer_float, stats.a_percent, spacer_float, stats.c_percent, spacer_float, stats.g_percent, spacer_float, stats.t_percent, spacer_float, stats.purine_percent);
+	printf("Percent: %*.2f %*.2f %*.2f %*.2f %*.2f\n", spacer_float, stats.a_percent, spacer_float, stats.c_percent, spacer_float, stats.g_percent, spacer_float, stats.t_percent, spacer_float, stats.gc_percent);
 }
 
 /*

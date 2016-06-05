@@ -573,7 +573,7 @@ void bioseq_stats_calculate(bioseq_stats* stats) {
 	stats->g_percent = (float) stats->g_count / (float) stats->total_count * 100;
 	stats->t_percent = (float) stats->t_count / (float) stats->total_count * 100;
 	
-	stats->purine_percent = (float) (stats->a_count + stats->g_count) / (float) stats->total_count * 100;
+	stats->gc_percent = (float) (stats->c_count + stats->g_count) / (float) stats->total_count * 100;
 }
 
 bioseq_frame bioseq_frame_construct(bioseq_dna seq) {

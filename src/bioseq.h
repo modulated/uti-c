@@ -28,7 +28,7 @@ typedef struct {
 	long unsigned g_count;
 	long unsigned t_count;
 	long long unsigned total_count;
-	float purine_percent;
+	float gc_percent;
 	float a_percent;
 	float c_percent;
 	float g_percent;
