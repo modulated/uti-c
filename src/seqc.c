@@ -13,7 +13,7 @@
 // Flag defines
 #define ELECTRO_F 0x1<<6
 #define RNA_F 0x1<<5
-#define OTHER_F 0x1<<4
+#define READ_F 0x1<<4
 #define STATS_F 0x1<<3
 #define OUTFILE_F 0x1<<2
 #define PROTEIN_F 0x1
@@ -178,6 +178,41 @@ void filein_stdout_loop() {
 	close_infile();
 }
 
+void filein_stats_loop() {
+	char in[3] = {'\0','\0','\0'};
+	int cont = 1;
+	open_infile();
+	
+	while (cont == 1) {
+		in[0] = read_infile();
+		in[1] = read_infile();
+		in[2] = read_infile();		
+		
+		char out = bioseq_dna_codon_protein(in[0], in[1], in[2]);
+
+		if (out == '?' || out == '\0') cont = 0;
+	}
+	puts("");
+	
+	close_infile();
+}
+
+void stdin_stats_loop() {
+	char in[3] = {'\0','\0','\0'};
+	int cont = 1;
+	
+	while (cont == 1) {
+		in[0] = read_stdin();
+		in[1] = read_stdin();
+		in[2] = read_stdin();		
+		
+		char out = bioseq_dna_codon_protein(in[0], in[1], in[2]);
+
+		if (out == '?' || out == '\0') cont = 0;
+	}
+	puts("");
+}
+
 void filein_fileout_loop() {
 	char in[3] = {'\0','\0','\0'};
 	int cont = 1;
@@ -225,9 +260,17 @@ void seq_protein() {
 	if (infilestring != NULL && outfilestring == NULL) filein_stdout_loop();
 	if (infilestring != NULL && outfilestring != NULL) filein_fileout_loop();
 	if (infilestring == NULL && outfilestring != NULL) stdin_fileout_loop();
+	
+	flags = flags | READ_F;
 }
 
 void seq_stats() {
+		
+		if (!(flags & READ_F)) {
+			if (infilestring == NULL) stdin_stats_loop();
+			else filein_stats_loop();
+		}
+		
 		bioseq_stats_calculate(&stats);
 		print_stats();	
 }
