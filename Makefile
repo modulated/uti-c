@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-Wall -Werror -D_GNU_SOURCE
+CFLAGS=-Wall -Werror -D_GNU_SOURCE -g -O0
 COMPILELIBS=-lm
 TESTLIB=$(TESTDIR)/tap.c
 
@@ -10,17 +10,23 @@ TESTDIR=test
 
 
 all:
+	make build
 	make test
 
-seqc: $(SRCDIR)/seqc.c $(SRCDIR)/bioseq*.c
+seqc:
 	$(CC) $(CFLAGS) -o seqc src/seqc.c src/bioseq.c
 
-test: $(SRCDIR)/* $(TESTDIR)/*
+build:
 	mkdir -p ./bin
 	make bio
 	make random
 	make stats
 	
+	
+test:
+	$(BINDIR)/bio
+	$(BINDIR)/random
+	$(BINDIR)/stats
 
 # lib: $(SRCDIR)/bioseq.c
 # 	$(CC) $(CFLAGS) -c $(SRCDIR)/bioseq.c -o bioseq.o
@@ -29,15 +35,15 @@ test: $(SRCDIR)/* $(TESTDIR)/*
 	
 bio: $(TESTDIR)/bioseq.test.c $(SRCDIR)/bioseq*.c
 	$(CC) $(CFLAGS) $(SRCDIR)/bioseq.c $(TESTDIR)/bioseq.test.c -o $(BINDIR)/bio $(TESTLIB)
-	$(BINDIR)/bio
+	
 	
 random: $(TESTDIR)/random.test.c $(SRCDIR)/random.c
 	$(CC) $(CFLAGS) $(SRCDIR)/random.c $(TESTDIR)/random.test.c -o $(BINDIR)/random $(TESTLIB)
-	$(BINDIR)/random
+	
 
 stats: $(TESTDIR)/stats.test.c $(SRCDIR)/stats.c
 	$(CC) $(CFLAGS) $(SRCDIR)/stats.c $(TESTDIR)/stats.test.c -o $(BINDIR)/stats $(TESTLIB)
-	$(BINDIR)/stats
+	
 
 install: $(LIBDIR)/*.a
 	install $(LIBDIR)/*.a /usr/local/lib
