@@ -1,6 +1,5 @@
 CC=clang
-CFLAGS=-Wall -Werror -D_GNU_SOURCE -g -O0
-COMPILELIBS=-lm
+CFLAGS=-Wall -Werror -lm -D_GNU_SOURCE -g -O0
 TESTLIB=$(TESTDIR)/tap.c
 
 LIBDIR=lib
@@ -10,20 +9,16 @@ TESTDIR=test
 
 
 all:
-	make build
 	make test
 
 seqc:
 	$(CC) $(CFLAGS) -o seqc src/seqc.c src/bioseq.c
-
-build:
+	
+test:
 	mkdir -p ./bin
 	make bio
 	make random
-	make stats
-	
-	
-test:
+	make stats	
 	$(BINDIR)/bio
 	$(BINDIR)/random
 	$(BINDIR)/stats
