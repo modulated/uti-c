@@ -44,7 +44,9 @@ void stats_int_swap(int* a, int* b) {
 stats_numbers stats_numbers_sort(stats_numbers nums) {
 	
 	
-	for (int i = 0; i < nums.length; i++) {		
+	for (int i = 0; i < nums.length-1; i++) {		
+		
+		if (i < 0) i = 0;
 		
 		if (nums.array[i] > nums.array[i+1]) {
 			stats_int_swap(&nums.array[i], &nums.array[i+1]);

@@ -40,7 +40,7 @@ void test_numbers_sort() {
 	int expected_4 = test_set.array[3];
 	stats_numbers_print(test_set);
 	
-	ok(expected_4 == 4 && expected_3 == 3, "stats_numbers_sort: Returns expected value") || diag("Expecting: %d", 4) || diag("Actual: %d", expected_4);
+	ok(expected_4 == 4 && expected_3 == 3, "stats_numbers_sort: Returns expected value") || diag("Expecting: %d and %d", 3, 4) || diag("Actual: %d and %d", expected_3, expected_4);
 	
 	stats_numbers_destruct(&test_set);		
 }
