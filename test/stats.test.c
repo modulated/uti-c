@@ -42,7 +42,15 @@ void test_numbers_sort() {
 	
 	ok(expected_4 == 4 && expected_3 == 3, "stats_numbers_sort: Returns expected value") || diag("Expecting: %d and %d", 3, 4) || diag("Actual: %d and %d", expected_3, expected_4);
 	
-	stats_numbers_destruct(&test_set);		
+	stats_numbers_destruct(&test_set);
+	
+	// Test 2 - longer
+	
+	stats_numbers test2 = stats_numbers_construct(12, 21, 60, 73, 75, 19, 34, 54, 36, 30, 49, 69, 12);
+	test2 = stats_numbers_sort(test2);
+	
+	if (!ok(test2.array[0] == 12 && test2.array[11] == 75, "stats_numbers_sort: Returns expected value")) stats_numbers_print(test2);
+	stats_numbers_destruct(&test2);
 }
 
 void test_numbers_mean() {

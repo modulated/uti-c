@@ -12,7 +12,7 @@ all:
 	make test
 
 seqc:
-	$(CC) $(CFLAGS) -o seqc src/seqc.c src/bioseq.c
+	$(CC) $(CFLAGS) -o bin/seqc src/seqc.c src/bioseq.c
 	
 test:
 	mkdir -p ./bin
