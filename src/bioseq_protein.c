@@ -48,9 +48,10 @@ int bioseq_protein_startcodon(bioseq_protein seq) {
 void bioseq_protein_split(bioseq_protein seq, int index, bioseq_protein* out1, bioseq_protein* out2) {
 	
 	if (index < 0) index = 0;	
+	if (index > seq.length) index = seq.length;
 		
-	char* str1 = malloc((index + 1) * sizeof(char));
-	char* str2 = malloc((seq.length - index + 1) * sizeof(char)); 
+	char* str1 = calloc((index + 1), sizeof(char));
+	char* str2 = calloc((seq.length - index + 1), sizeof(char)); 
 	bioseq_string_split(seq.sequence, index, str1, str2);    
 
 	*out1 = bioseq_protein_construct(str1);

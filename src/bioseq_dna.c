@@ -85,10 +85,11 @@ bioseq_dna bioseq_dna_complement(bioseq_dna seq) {
 // Splits seq into out1 and out2 at given index. Need to preallocate out structs.
 void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* out2) {
 	
-	if (index < 0) index = 0;	
+	if (index < 0) index = 0;
+	if (index > seq.length) index = seq.length;
 	
-	char* str1 = malloc((index + 1) * sizeof(char));
-	char* str2 = malloc((seq.length - index + 1) * sizeof(char)); 
+	char* str1 = calloc((index + 1), sizeof(char));
+	char* str2 = calloc((seq.length - index + 1), sizeof(char)); 
 	bioseq_string_split(seq.sequence, index, str1, str2);
 	
 	*out1 = bioseq_dna_construct(str1);

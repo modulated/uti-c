@@ -43,12 +43,17 @@ bioseq_frame bioseq_frame_construct(bioseq_dna seq) {
 		out.frames[i] = bioseq_dna_protein(seq, i);		
 	}
 	
-	seq = bioseq_dna_reverse(seq);
-	seq = bioseq_dna_complement(seq);
+	bioseq_dna rev = bioseq_dna_reverse(seq);
+	bioseq_dna revcomp = bioseq_dna_complement(rev);
+	
+
 	
 	for (int i = 0; i < 3; i++) {
-		out.frames[i+3] = bioseq_dna_protein(seq, i);
+		out.frames[i+3] = bioseq_dna_protein(revcomp, i);
 	}		
+	
+	bioseq_dna_destruct(&rev);	
+	bioseq_dna_destruct(&revcomp);
 	
 	return out;
 }
