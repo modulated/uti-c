@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-Wall -Werror -lm -pedantic -D_GNU_SOURCE -g -O0
+CFLAGS=-Wall -Werror -lm -D_GNU_SOURCE
 TESTLIB=$(TESTDIR)/tap.c
 
 LIBDIR=lib

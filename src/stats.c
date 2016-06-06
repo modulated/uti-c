@@ -125,8 +125,6 @@ stats_numbers stats_numbers_random(int length, int min, int max) {
 		array[i] = (int)divisor;				
 	}
 	
-	out = stats_numbers_construct_array(length, array);
-	stats_numbers_print(out);
-	printf("mean: %f\n", stats_numbers_mean(out));
+	out = stats_numbers_construct_array(length, array);	
 	return out;
 }
