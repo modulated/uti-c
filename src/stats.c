@@ -3,8 +3,12 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
+#include "random.h"
 
-stats_numbers stats_numbers_construct(int length, ...) {
+#define ARRAY_TO_ARGS(x, y) for(int i = 0; i < x; i++) {y[x]}
+
+stats_numbers stats_numbers_construct_varargs(int length, ...) {
 	
 	va_list ap;
 	va_start(ap, length);
@@ -18,6 +22,20 @@ stats_numbers stats_numbers_construct(int length, ...) {
 	}
 	
 	va_end(ap);
+	
+	return nums;
+}
+
+stats_numbers stats_numbers_construct_array(int length, int array[]) {
+
+	
+	stats_numbers nums;
+	nums.length = length;	
+	nums.array = malloc(length * sizeof(int));
+	
+	for (int i = 0; i < length; i++) {
+		nums.array[i] = array[i];		
+	}
 	
 	return nums;
 }
@@ -86,4 +104,29 @@ float stats_numbers_variance(stats_numbers nums) {
 float stats_numbers_sd(stats_numbers nums) {
 		
 	return sqrt(stats_numbers_variance(nums));
+}
+
+
+stats_numbers stats_numbers_random(int length, int min, int max) {
+	
+	stats_numbers out;
+	int array[length];
+	
+	for (int i = 0; i < length; i++) {
+		
+		int val = random_int();
+		
+		long int_range = (long)INT_MAX - (long)INT_MIN;
+		long new_range = max - min;
+		
+		long intermediate = ((long)val - (long)INT_MIN) * new_range;		
+		long divisor = (intermediate / int_range) + min;
+				
+		array[i] = (int)divisor;				
+	}
+	
+	out = stats_numbers_construct_array(length, array);
+	stats_numbers_print(out);
+	printf("mean: %f\n", stats_numbers_mean(out));
+	return out;
 }

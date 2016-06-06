@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-Wall -Werror -lm -D_GNU_SOURCE -g -O0
+CFLAGS=-Wall -Werror -lm -pedantic -D_GNU_SOURCE -g -O0
 TESTLIB=$(TESTDIR)/tap.c
 
 LIBDIR=lib
@@ -37,7 +37,7 @@ random: $(TESTDIR)/random.test.c $(SRCDIR)/random.c
 	
 
 stats: $(TESTDIR)/stats.test.c $(SRCDIR)/stats.c
-	$(CC) $(CFLAGS) $(SRCDIR)/stats.c $(TESTDIR)/stats.test.c -o $(BINDIR)/stats $(TESTLIB)
+	$(CC) $(CFLAGS) $(SRCDIR)/stats.c $(SRCDIR)/random.c $(TESTDIR)/stats.test.c -o $(BINDIR)/stats $(TESTLIB)
 	
 
 install: $(LIBDIR)/*.a
