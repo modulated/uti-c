@@ -14,9 +14,11 @@ stats_numbers stats_numbers_sort(stats_numbers nums);
 
 float stats_numbers_mean(stats_numbers nums);
 
-float stats_numbers_variance(stats_numbers nums, float mean);
+float stats_numbers_variance(stats_numbers nums);
 
-float stats_numbers_sd(stats_numbers nums, float mean);
+float stats_numbers_sd(stats_numbers nums);
+
+void stats_numbers_print(stats_numbers nums);
 
 
 #endif

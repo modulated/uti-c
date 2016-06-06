@@ -50,9 +50,7 @@ stats_numbers stats_numbers_sort(stats_numbers nums) {
 			stats_int_swap(&nums.array[i], &nums.array[i+1]);
 			i -= 2;
 		}
-	}
-	
-	stats_numbers_print(nums);
+	}	
 	
 	return nums;
 }
@@ -68,8 +66,9 @@ float stats_numbers_mean(stats_numbers nums) {
 	return (float)total/(float)nums.length;	
 }
 
-float stats_numbers_variance(stats_numbers nums, float mean) {
-		
+float stats_numbers_variance(stats_numbers nums) {
+	
+	float mean = stats_numbers_mean(nums);
 	float total = 0.0;
 	
 	for (int i = 0; i < nums.length; i++) {
@@ -82,7 +81,7 @@ float stats_numbers_variance(stats_numbers nums, float mean) {
 	return total/(float)nums.length;
 }
 
-float stats_numbers_sd(stats_numbers nums, float mean) {
-
-	return sqrt(stats_numbers_variance(nums, mean));
+float stats_numbers_sd(stats_numbers nums) {
+		
+	return sqrt(stats_numbers_variance(nums));
 }
