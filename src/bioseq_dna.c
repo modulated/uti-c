@@ -10,19 +10,24 @@
 
 bioseq_dna bioseq_dna_construct(char seq[]) {
 	
-	
-	int len = strlen(seq);	
-	
-	bioseq_dna new = {
-		len,
-		strdup(seq)		
-	};
-	
-	bioseq_string_capitalize(new.sequence);	
-	bioseq_dna_sanitize(new);
-	new.length = strlen(new.sequence);
+	if (seq != NULL) {
+
+		int len = strlen(seq);	
 		
-	return new;
+		bioseq_dna new = {
+			len,
+			strdup(seq)		
+		};
+		
+		bioseq_string_capitalize(new.sequence);	
+		bioseq_dna_sanitize(new);
+		new.length = strlen(new.sequence);
+			
+		return new;
+	}
+	else {
+		return bioseq_dna_construct("");
+	}
 }
 
 
@@ -102,6 +107,10 @@ void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* o
 
 
 bioseq_dna bioseq_dna_join (bioseq_dna start, bioseq_dna end) {
+	
+	if (end.sequence == NULL && start.sequence == NULL) return bioseq_dna_construct("");
+	if (end.sequence == NULL) return bioseq_dna_construct(start.sequence);
+	if (start.sequence == NULL) return bioseq_dna_construct(end.sequence);
 	
 	bioseq_dna out;
 	char* string_cat = malloc((start.length + end.length + 1) * sizeof(char));

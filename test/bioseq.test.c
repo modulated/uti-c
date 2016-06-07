@@ -24,10 +24,30 @@ void run_tests();
 
 
 void test_dna_construct () {
+
+	// Case 1 - normal use
 	bioseq_dna test_seq = bioseq_dna_construct(E_COLI);
 	
 	ok(strcmp(test_seq.sequence, E_COLI) == 0, "DNA constructor returns correct sequence.");
     ok(test_seq.length == strlen(E_COLI), "DNA constructor returns correct length.");
+		
+	bioseq_dna_destruct(&test_seq);
+
+
+	// Case 2 - empty string
+	test_seq = bioseq_dna_construct("");
+	
+	ok(strcmp(test_seq.sequence, "") == 0, "DNA constructor returns correct sequence.");
+    ok(test_seq.length == 0, "DNA constructor returns correct length.");
+		
+	bioseq_dna_destruct(&test_seq);
+
+
+	// Case 2 - NULL string
+	test_seq = bioseq_dna_construct(NULL);
+	
+	ok(strcmp(test_seq.sequence, "") == 0, "DNA constructor returns correct sequence.");
+    ok(test_seq.length == 0, "DNA constructor returns correct length.");
 		
 	bioseq_dna_destruct(&test_seq);
 } 
@@ -46,6 +66,23 @@ void test_protein_construct () {
 	ok(strcmp(test_seq.sequence, TEST_SEQ_PROT) == 0, "Protein constructor sets correct sequence.");
     ok(test_seq.length == strlen(TEST_SEQ_PROT), "Protein constructor sets correct length.");
 	
+	bioseq_protein_destruct(&test_seq);
+
+	// Case 2 - empty string
+	test_seq = bioseq_protein_construct("");
+	
+	ok(strcmp(test_seq.sequence, "") == 0, "Protein constructor returns correct sequence.");
+    ok(test_seq.length == 0, "Protein constructor returns correct length.");
+		
+	bioseq_protein_destruct(&test_seq);
+
+
+	// Case 2 - NULL string
+	test_seq = bioseq_protein_construct(NULL);
+	
+	ok(strcmp(test_seq.sequence, "") == 0, "Protein constructor returns correct sequence.");
+    ok(test_seq.length == 0, "Protein constructor returns correct length.");
+		
 	bioseq_protein_destruct(&test_seq);
 } 
 
@@ -129,7 +166,7 @@ void test_dna_protein () {
 }
 
 void test_dna_join () {
-	
+	// Case 1 - normal values
 	bioseq_dna test_seq = bioseq_dna_construct("ATGCTA");
 	bioseq_dna test_seq2 = bioseq_dna_construct("GCATA");
 	char res_string[] = "ATGCTAGCATA";
@@ -137,6 +174,34 @@ void test_dna_join () {
 	bioseq_dna res_seq = bioseq_dna_join(test_seq, test_seq2);
 	
 	ok(strcmp(res_seq.sequence, res_string) == 0, "dna_join returns appropriate sequence");
+	
+	bioseq_dna_destruct(&test_seq);
+	bioseq_dna_destruct(&test_seq2);
+	bioseq_dna_destruct(&res_seq);
+
+	// Case 2 - null values
+
+	test_seq = bioseq_dna_construct(NULL);
+	test_seq2 = bioseq_dna_construct(NULL);
+	char res_string2[] = "";
+		
+	res_seq = bioseq_dna_join(test_seq, test_seq2);
+	
+	ok(strcmp(res_seq.sequence, res_string2) == 0, "dna_join returns appropriate sequence");
+	
+	bioseq_dna_destruct(&test_seq);
+	bioseq_dna_destruct(&test_seq2);
+	bioseq_dna_destruct(&res_seq);
+
+	// Case 3 - single null value
+
+	test_seq = bioseq_dna_construct(NULL);
+	test_seq2 = bioseq_dna_construct("AGATAG");
+	char res_string3[] = "AGATAG";
+		
+	res_seq = bioseq_dna_join(test_seq, test_seq2);
+	
+	ok(strcmp(res_seq.sequence, res_string3) == 0, "dna_join returns appropriate sequence");
 	
 	bioseq_dna_destruct(&test_seq);
 	bioseq_dna_destruct(&test_seq2);
@@ -156,6 +221,34 @@ void test_protein_join () {
 	bioseq_protein_destruct(&test_seq);
 	bioseq_protein_destruct(&test_seq2);
 	bioseq_protein_destruct(&res_seq);
+
+
+	// Case 2 - both NULL
+	test_seq = bioseq_protein_construct(NULL);
+	test_seq2 = bioseq_protein_construct(NULL);
+	char res_string2[] = "";
+		
+	res_seq = bioseq_protein_join(test_seq, test_seq2);
+	
+	ok(strcmp(res_seq.sequence, res_string2) == 0, "protein_join returns appropriate sequence");
+	
+	bioseq_protein_destruct(&test_seq);
+	bioseq_protein_destruct(&test_seq2);
+	bioseq_protein_destruct(&res_seq);	
+
+
+	// Case 2 - One NULL
+	test_seq = bioseq_protein_construct(NULL);
+	test_seq2 = bioseq_protein_construct("TEFCLGHR");
+	char res_string3[] = "TEFCLGHR";
+		
+	res_seq = bioseq_protein_join(test_seq, test_seq2);
+	
+	ok(strcmp(res_seq.sequence, res_string3) == 0, "protein_join returns appropriate sequence");
+	
+	bioseq_protein_destruct(&test_seq);
+	bioseq_protein_destruct(&test_seq2);
+	bioseq_protein_destruct(&res_seq);	
 }
 
 

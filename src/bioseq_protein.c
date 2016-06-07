@@ -9,20 +9,26 @@
 
 bioseq_protein bioseq_protein_construct(char seq[]) {
 	
-	int len = strlen(seq);
-	char* charge = malloc(len * sizeof(char));
-	
-	bioseq_protein new = {
-		len,
-		strdup(seq),
-		charge
-	};
-	
-	bioseq_string_capitalize(new.sequence);	
-	bioseq_protein_sanitize(new);
-	new.length = strlen(seq);
-	
-	return new;
+	if (seq != NULL) {
+		int len = strlen(seq);
+		char* charge = malloc(len * sizeof(char));
+		
+		bioseq_protein new = {
+			len,
+			strdup(seq),
+			charge
+		};
+		
+		bioseq_string_capitalize(new.sequence);	
+		bioseq_protein_sanitize(new);
+		new.length = strlen(seq);
+		
+		return new;
+	}
+
+	else {
+		return bioseq_protein_construct("");
+	}
 }
 
 
@@ -65,6 +71,10 @@ void bioseq_protein_split(bioseq_protein seq, int index, bioseq_protein* out1, b
 
 bioseq_protein bioseq_protein_join (bioseq_protein start, bioseq_protein end) {
 	
+	if (end.sequence == NULL && start.sequence == NULL) return bioseq_protein_construct("");
+	if (end.sequence == NULL) return bioseq_protein_construct(start.sequence);
+	if (start.sequence == NULL) return bioseq_protein_construct(end.sequence);
+
 	bioseq_protein out;
 	char* string_cat = malloc((start.length + end.length + 1) * sizeof(char));
 	strcpy(string_cat, start.sequence);
