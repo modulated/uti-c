@@ -128,6 +128,37 @@ void test_dna_protein () {
 	bioseq_protein_destruct(&test_prot);
 }
 
+void test_dna_join () {
+	
+	bioseq_dna test_seq = bioseq_dna_construct("ATGCTA");
+	bioseq_dna test_seq2 = bioseq_dna_construct("GCATA");
+	char res_string[] = "ATGCTAGCATA";
+		
+	bioseq_dna res_seq = bioseq_dna_join(test_seq, test_seq2);
+	
+	ok(strcmp(res_seq.sequence, res_string) == 0, "dna_join returns appropriate sequence");
+	
+	bioseq_dna_destruct(&test_seq);
+	bioseq_dna_destruct(&test_seq2);
+	bioseq_dna_destruct(&res_seq);
+}
+
+void test_protein_join () {
+	
+	bioseq_protein test_seq = bioseq_protein_construct("TEFCLGFHRSEAWR");
+	bioseq_protein test_seq2 = bioseq_protein_construct("RGTRCAAACTA");
+	char res_string[] = "TEFCLGFHRSEAWRRGTRCAAACTA";
+		
+	bioseq_protein res_seq = bioseq_protein_join(test_seq, test_seq2);
+	
+	ok(strcmp(res_seq.sequence, res_string) == 0, "protein_join returns appropriate sequence");
+	
+	bioseq_protein_destruct(&test_seq);
+	bioseq_protein_destruct(&test_seq2);
+	bioseq_protein_destruct(&res_seq);
+}
+
+
 void test_dna_split () {
 	
 	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
@@ -342,10 +373,13 @@ void run_tests () {
 	test_dna_protein();
 	test_dna_split();
 	test_protein_split();
+	test_dna_join();
+	test_protein_join();
 	test_frame_construct();
 	test_frame_destruct();
 	test_frame_getopen();
 	test_string_similarity();
+	
 }
 
 int main () {

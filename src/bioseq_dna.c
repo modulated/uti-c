@@ -101,6 +101,20 @@ void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* o
 
 
 
+bioseq_dna bioseq_dna_join (bioseq_dna start, bioseq_dna end) {
+	
+	bioseq_dna out;
+	char* string_cat = malloc((start.length + end.length + 1) * sizeof(char));
+	strcpy(string_cat, start.sequence);
+	strcat(string_cat, end.sequence);
+	out = bioseq_dna_construct(string_cat);
+	
+	free(string_cat);
+	return out;
+}
+
+
+
 bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
 	
 	int seqlength = dna.length - offset;

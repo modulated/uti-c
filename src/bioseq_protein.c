@@ -63,6 +63,20 @@ void bioseq_protein_split(bioseq_protein seq, int index, bioseq_protein* out1, b
 
 
 
+bioseq_protein bioseq_protein_join (bioseq_protein start, bioseq_protein end) {
+	
+	bioseq_protein out;
+	char* string_cat = malloc((start.length + end.length + 1) * sizeof(char));
+	strcpy(string_cat, start.sequence);
+	strcat(string_cat, end.sequence);
+	out = bioseq_protein_construct(string_cat);
+	
+	free(string_cat);
+	return out;
+}
+
+
+
 void bioseq_protein_interactions(bioseq_protein seq) {
 	
 	for (int i = 0; i < seq.length; i++) {
