@@ -3,6 +3,7 @@
 */
 #include "bioseq.h"
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
 
 // Reverses given string. Modifies string (FIX).
@@ -45,6 +46,18 @@ static void bioseq_string_excise(char* str, int index) {
 	while (str[index++]) {
 		str[index-1] = str[index];
 	} 
+}
+
+
+// Adds char at index in string. Modifies string (FIX).  
+static char* bioseq_string_insert(char* str, int index, char ins) {
+	char* new = malloc(strlen(str)+2 * sizeof(char));
+
+	strcpy(new, str);
+	new[index] = ins;
+	strcpy(&new[index+1], &str[index]);
+
+	return new;
 }
 
 

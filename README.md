@@ -11,12 +11,12 @@
 - [BioSeq](./docs/bioseq.md)
 - [Prime](./docs/prime.md)
 - [Color](./docs/color.md)
-- [Crypto](./docs/crypto.md)
-- JSON (in progress)
 - Stats (in progress)
+- Crypto (in progress)
+- JSON (in progress)
 - Histogram (in progress)
 
 
-| Written by Modulated 2016.
+>> Written by Modulated 2016.
 
 

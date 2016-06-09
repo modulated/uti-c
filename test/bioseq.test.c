@@ -325,6 +325,45 @@ void test_dna_split () {
 	bioseq_dna_destruct(&res_seq2);
 }
 
+void test_dna_substitution () {
+
+	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
+	char res_string[] = "ATGATAGCAGCAGCGAGCGACTTCGATA";
+		
+	bioseq_dna res_seq = bioseq_dna_substitution(test_seq, 4, 'T');
+	
+	ok(strcmp(res_seq.sequence, res_string) == 0, "dna_substitution returns appropriate sequence");
+	
+	bioseq_dna_destruct(&test_seq);
+	bioseq_dna_destruct(&res_seq);
+}
+
+void test_dna_deletion () {
+
+	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
+	char res_string[] = "ATGAAGCAGCAGCGAGCGACTTCGATA";
+		
+	bioseq_dna res_seq = bioseq_dna_deletion(test_seq, 4);
+	
+	ok(strcmp(res_seq.sequence, res_string) == 0, "dna_delete returns appropriate sequence");
+	
+	bioseq_dna_destruct(&test_seq);
+	bioseq_dna_destruct(&res_seq);
+}
+
+void test_dna_insertion () {
+
+	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
+	char res_string[] = "ATGATCAGCAGCAGCGAGCGACTTCGATA";
+		
+	bioseq_dna res_seq = bioseq_dna_insertion(test_seq, 4, 'T');
+	
+	if (!ok(strcmp(res_seq.sequence, res_string) == 0, "dna_insertion returns appropriate sequence")) diag("Expected: %s, actual: %s", res_string, res_seq.sequence);
+	
+	bioseq_dna_destruct(&test_seq);
+	bioseq_dna_destruct(&res_seq);
+}
+
 void test_protein_split () {
 	
 	bioseq_protein test_seq = bioseq_protein_construct(TEST_SEQ_PROT);
@@ -465,8 +504,11 @@ void run_tests () {
 	test_dna_reverse();
 	test_dna_protein();
 	test_dna_split();
-	test_protein_split();
 	test_dna_join();
+	test_dna_substitution();
+	test_dna_insertion();
+	test_dna_deletion();
+	test_protein_split();
 	test_protein_join();
 	test_frame_construct();
 	test_frame_destruct();

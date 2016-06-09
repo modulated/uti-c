@@ -72,6 +72,12 @@ void bioseq_dna_split (bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* 
 
 bioseq_dna bioseq_dna_join (bioseq_dna start, bioseq_dna end);
 
+bioseq_dna bioseq_dna_substitution(bioseq_dna seq, int index, char sub);
+
+bioseq_dna bioseq_dna_deletion(bioseq_dna seq, int index);
+
+bioseq_dna bioseq_dna_insertion(bioseq_dna seq, int index, char sub);
+
 void bioseq_protein_split (bioseq_protein seq, int index, bioseq_protein* out1, bioseq_protein* out2);
 
 bioseq_protein bioseq_protein_join (bioseq_protein start, bioseq_protein end);

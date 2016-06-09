@@ -124,6 +124,44 @@ bioseq_dna bioseq_dna_join (bioseq_dna start, bioseq_dna end) {
 
 
 
+bioseq_dna bioseq_dna_substitution(bioseq_dna seq, int index, char sub) {
+	
+	bioseq_dna out;
+	char string[seq.length+1];
+	strcpy(string,seq.sequence);
+	string[index] = sub;
+
+	out = bioseq_dna_construct(string);
+
+	return out;
+}
+
+bioseq_dna bioseq_dna_deletion(bioseq_dna seq, int index) {
+	
+	bioseq_dna out;
+	char string[seq.length+1];
+	strcpy(string,seq.sequence);
+	bioseq_string_excise(string, index);
+
+	out = bioseq_dna_construct(string);
+
+	return out;	
+}
+
+bioseq_dna bioseq_dna_insertion(bioseq_dna seq, int index, char sub) {
+		
+	bioseq_dna out;
+		
+	char* string = bioseq_string_insert(seq.sequence, index, sub);
+
+	out = bioseq_dna_construct(string);
+
+	free(string);
+	return out;
+}
+
+
+
 bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
 	
 	int seqlength = dna.length - offset;
