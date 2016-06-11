@@ -53,11 +53,23 @@ static void bioseq_string_excise(char* str, int index) {
 static char* bioseq_string_insert(char* str, int index, char ins) {
 	char* new = malloc(strlen(str)+2 * sizeof(char));
 
-	strcpy(new, str);
+	strncpy(new, str, index);
 	new[index] = ins;
 	strcpy(&new[index+1], &str[index]);
 
 	return new;
+}
+
+
+// Returns new string with added string at index
+static char* bioseq_string_insert_chunk(char* str, int index, char* ins) {
+    char* new = malloc((strlen(str) + strlen(ins) + 1) * sizeof(char));
+
+    strncpy(new, str, index);
+    strcpy(&new[index], ins);
+    strcpy(&new[index + strlen(ins)], &str[index]);
+
+    return new;
 }
 
 

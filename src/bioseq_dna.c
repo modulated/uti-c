@@ -161,6 +161,18 @@ bioseq_dna bioseq_dna_insertion(bioseq_dna seq, int index, char sub) {
 }
 
 
+bioseq_dna bioseq_dna_insertion_block(bioseq_dna seq, int index, char* sub) {
+
+    bioseq_dna out;
+
+    char* string = bioseq_string_insert_chunk(seq.sequence, index, sub);
+
+    out = bioseq_dna_construct(string);
+
+    free(string);
+    return out;
+}
+
 
 bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
 	

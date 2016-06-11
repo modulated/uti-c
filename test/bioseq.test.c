@@ -364,6 +364,19 @@ void test_dna_insertion () {
 	bioseq_dna_destruct(&res_seq);
 }
 
+void test_dna_insertion_block () {
+
+    bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
+    char res_string[] = "ATGACCATAGCAGCAGCGAGCGACTTCGATA";
+
+    bioseq_dna res_seq = bioseq_dna_insertion_block(test_seq, 5, "CAT");
+    
+    if (!ok(strcmp(res_seq.sequence, res_string) == 0, "dna_insertion_block returns appropriate sequence")) diag("Expected:; %s, actual: %s", res_string, res_seq.sequence);
+
+    bioseq_dna_destruct(&test_seq);
+    bioseq_dna_destruct(&res_seq);
+}
+
 void test_protein_split () {
 	
 	bioseq_protein test_seq = bioseq_protein_construct(TEST_SEQ_PROT);
@@ -508,7 +521,8 @@ void run_tests () {
 	test_dna_substitution();
 	test_dna_insertion();
 	test_dna_deletion();
-	test_protein_split();
+    test_dna_insertion_block();
+    test_protein_split();
 	test_protein_join();
 	test_frame_construct();
 	test_frame_destruct();
