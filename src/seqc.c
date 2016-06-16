@@ -24,7 +24,7 @@ static FILE* infilepointer = NULL;
 static FILE* outfilepointer = NULL;
 static char* infilestring = NULL;
 static char* outfilestring = NULL;
-static bioseq_stats stats = {0};
+static bioseq_stats stats;
 
 void print_help(void) {
     puts(        

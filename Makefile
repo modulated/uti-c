@@ -1,47 +1,53 @@
 CC=clang
-CFLAGS=-Wall -Werror -lm -D_GNU_SOURCE
-TESTLIB=$(TESTDIR)/tap.c
+CFLAGS=-g -Wall -Wextra -pedantic -Isrc -D_GNU_SOURCE
+LIBS=-ldl -lm
+PREFIX?=/usr/local
 
-LIBDIR=lib
-BINDIR=bin
-SRCDIR=src
-TESTDIR=test
+SOURCES=$(wildcard src/**/*.c src/*.c)
+OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
+TEST_LIB=tests/tap.c
+TEST_SRC=$(wildcard tests/*.test.c)
+TESTS=$(patsubst %.c,%,$(TEST_SRC))
 
-all:
-	make test
+TARGET=build/libuti.a
 
-seqc:
-	$(CC) $(CFLAGS) -o bin/seqc src/seqc.c src/bioseq.c
-	
-test:
-	mkdir -p ./bin
-	make bio
-	make random
-	make stats	
-	$(BINDIR)/bio
-	$(BINDIR)/random
-	$(BINDIR)/stats
+# The Target Build
+all: $(TARGET) tests
 
-# lib: $(SRCDIR)/bioseq.c
-# 	$(CC) $(CFLAGS) -c $(SRCDIR)/bioseq.c -o bioseq.o
-# 	libtool bioseq.o -o $(LIBDIR)/libbio.a
-# 	rm bioseq.o
-	
-bio: $(TESTDIR)/bioseq.test.c $(SRCDIR)/bioseq*.c
-	$(CC) $(CFLAGS) $(SRCDIR)/bioseq.c $(TESTDIR)/bioseq.test.c -o $(BINDIR)/bio $(TESTLIB)
-	
-	
-random: $(TESTDIR)/random.test.c $(SRCDIR)/random.c
-	$(CC) $(CFLAGS) $(SRCDIR)/random.c $(TESTDIR)/random.test.c -o $(BINDIR)/random $(TESTLIB)
-	
+prod: CFLAGS=-O2 -Wall -Isrc -Wall -Wextra
+prod: all
 
-stats: $(TESTDIR)/stats.test.c $(SRCDIR)/stats.c
-	$(CC) $(CFLAGS) $(SRCDIR)/stats.c $(SRCDIR)/random.c $(TESTDIR)/stats.test.c -o $(BINDIR)/stats $(TESTLIB)
-	
+$(TARGET): build $(OBJECTS)
+	ar rcs $@ $(OBJECTS)
+	ranlib $@	
 
-install: $(LIBDIR)/*.a
-	install $(LIBDIR)/*.a /usr/local/lib
-	
+build:
+	@mkdir -p build
+	@mkdir -p bin
+
+# The Unit Tests
+.PHONY: tests
+tests: CFLAGS += $(TARGET) $(TEST_LIB)
+tests: $(TESTS)	
+	sh ./tests/runall.sh
+
+valgrind:
+	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
+
+# The Cleaner
 clean:
-	rm -rf ./bin/*
+	rm -rf build $(OBJECTS) $(TESTS)
+	rm -f tests/tests.log
+	find . -name "*.gc*" -exec rm {} \;
+	rm -rf `find . -name "*.dSYM" -print`
+
+# The Install
+install: all	
+	install $(TARGET) $(PREFIX)/lib/
+
+# The Checker
+BADFUNCS='[^_.>a-zA-Z0-9](str(n?cpy|n?cat|xfrm|n?dup|str|pbrk|tok|_)|stpn?cpy|a?sn?printf|byte_)'
+check:
+	@echo Files with potentially dangerous functions.
+	@egrep $(BADFUNCS) $(SOURCES) || true

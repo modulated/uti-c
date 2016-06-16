@@ -3,7 +3,7 @@
 
 struct node {
     struct node* next;
-    int data;
+    void* data;
 };
 
 struct list {
@@ -19,7 +19,7 @@ struct list list_create() {
 	return rlist;
 }
 
-int list_append(struct list* list, int data) {
+int list_append(struct list* list, void* data) {
 	struct node new;
 	new.data = data;
 	new.next = NULL;
@@ -31,7 +31,7 @@ int list_append(struct list* list, int data) {
 
 }
 
-int list_prepend(struct list* list, int data) {
+int list_prepend(struct list* list, void* data) {
 	struct node new;
 	new.data = data;
 	new.next = list->first;
@@ -41,13 +41,13 @@ int list_prepend(struct list* list, int data) {
 	return 0;
 }
 
-struct node list_iterate(struct list* list) {
-	return struct node;
-}	
+// struct node list_iterate(struct list* list) {
+// 	return struct node;
+// }	
 
-struct node list_find(struct list* list, int data) {
-	struct node rnode;
+// struct node list_find(struct list* list, void* data) {
+// 	struct node rnode;
 	
 	
-	return rnode;
-}
+// 	return rnode;
+// }

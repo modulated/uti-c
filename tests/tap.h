@@ -40,7 +40,7 @@
 int plan_tests(unsigned int tests);
 
 #if (!defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L) && !defined(__GNUC__)
-# error "Needs gcc or C99 compiler for variadic macros."
+#error "Needs gcc or C99 compiler for variadic macros."
 #else
 
 /**
