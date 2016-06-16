@@ -7,7 +7,7 @@
 #include <ctype.h>
 
 // Reverses given string. Modifies string (FIX).
-static void bioseq_string_reverse(char* str) {
+void bioseq_string_reverse(char* str) {
     /* skip null */
     if (str == 0)
     {
@@ -41,7 +41,7 @@ static void bioseq_string_reverse(char* str) {
 
 
 // Removes char at index in string. Modifies string (FIX).  
-static void bioseq_string_excise(char* str, int index) {
+void bioseq_string_excise(char* str, int index) {
 	
 	while (str[index++]) {
 		str[index-1] = str[index];
@@ -50,7 +50,7 @@ static void bioseq_string_excise(char* str, int index) {
 
 
 // Adds char at index in string. Modifies string (FIX).  
-static char* bioseq_string_insert(char* str, int index, char ins) {
+char* bioseq_string_insert(char* str, int index, char ins) {
 	char* new = malloc(strlen(str)+2 * sizeof(char));
 
 	strncpy(new, str, index);
@@ -62,7 +62,7 @@ static char* bioseq_string_insert(char* str, int index, char ins) {
 
 
 // Returns new string with added string at index
-static char* bioseq_string_insert_chunk(char* str, int index, char* ins) {
+char* bioseq_string_insert_chunk(char* str, int index, char* ins) {
     char* new = malloc((strlen(str) + strlen(ins) + 1) * sizeof(char));
 
     strncpy(new, str, index);
@@ -74,13 +74,13 @@ static char* bioseq_string_insert_chunk(char* str, int index, char* ins) {
 
 
 // Splits string at index and copies to two pointers.
-static void bioseq_string_split(char* input, int index, char* output1, char* output2) {
+void bioseq_string_split(char* input, int index, char* output1, char* output2) {
 	strncpy(output1, input, index);
 	strcpy(output2, &input[index]);	
 }
 
 
-static void bioseq_string_capitalize (char* str) {
+void bioseq_string_capitalize (char* str) {
 	int i = 0;
 	while (str[i]) {
 		str[i] = toupper(str[i]);
@@ -90,7 +90,7 @@ static void bioseq_string_capitalize (char* str) {
 
 
 // Searches string for phrase and returns location in string, or -1 if not found 
-static int bioseq_string_search (char* str, char cmp[]) {
+int bioseq_string_search (char* str, char cmp[]) {
 	char* out = strstr(str, cmp);
 	int loc = (int) (out - str);
 	
@@ -99,7 +99,7 @@ static int bioseq_string_search (char* str, char cmp[]) {
 	else return -1;
 }
 
-static void bioseq_string_dna_complement(char* str) {
+void bioseq_string_dna_complement(char* str) {
 	int i = 0;
 	while (str[i]) {
 		switch(str[i]) {

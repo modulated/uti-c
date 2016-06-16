@@ -3,7 +3,6 @@
 #include <string.h>
 #include "color.h"
 
-char static test[] = "{\"test\": 1, \"fuck\": true}";
 
 enum JSON_ELEMENT_TYPE {
 	JSON_NUMBER,
@@ -65,16 +64,8 @@ json_element json_create_element (enum JSON_ELEMENT_TYPE type, union JSON_DATA d
 	return element;
 }
 
-json_object json_parse (char* json) {
-	json_object out;
+// json_object json_parse (char* json) {
+// 	json_object out {10,  };
 	
-	return out; 
-};
-
-
-int main() {
-	puts("JSON test");
-	printf("JSON: %s", test);
-	puts("");
-}
-
+// 	return out;
+// }

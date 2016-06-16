@@ -3,7 +3,6 @@
 */
 
 #include "bioseq.h"
-#include "bioseq_private.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -51,9 +50,8 @@ int bioseq_protein_startcodon(bioseq_protein seq) {
 
 
 
-void bioseq_protein_split(bioseq_protein seq, int index, bioseq_protein* out1, bioseq_protein* out2) {
+void bioseq_protein_split(bioseq_protein seq, unsigned int index, bioseq_protein* out1, bioseq_protein* out2) {
 	
-	if (index < 0) index = 0;	
 	if (index > seq.length) index = seq.length;
 		
 	char* str1 = calloc((index + 1), sizeof(char));
@@ -89,7 +87,7 @@ bioseq_protein bioseq_protein_join (bioseq_protein start, bioseq_protein end) {
 
 void bioseq_protein_interactions(bioseq_protein seq) {
 	
-	for (int i = 0; i < seq.length; i++) {
+	for (unsigned int i = 0; i < seq.length; i++) {
 		seq.charge[i] = bioseq_protein_charge(seq.sequence[i]);
 	}
 }
@@ -117,7 +115,7 @@ void bioseq_protein_sanitize(bioseq_protein seq) {
 
 /* Returns protein charge for given single letter code.
 + = positive, - = negative, # = hydrophobic, * = hydrophilic */
-static char bioseq_protein_charge (char in) {
+char bioseq_protein_charge (char in) {
 	switch (in) {
 		
 		// Positive electric charge
@@ -159,7 +157,7 @@ static char bioseq_protein_charge (char in) {
 
 
 // Returns 1 if char matches single letter protein code or 0 if not. 
-static int bioseq_protein_verifychar(char x) {
+int bioseq_protein_verifychar(char x) {
 	
 	switch(x) {
 		case 'A': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I': case 'L': case 'K': case 'M': case 'N': case 'Q': case 'P': case 'R': case 'S': case 'T': case 'V': case 'W': case 'Y': case 'X':
@@ -170,7 +168,7 @@ static int bioseq_protein_verifychar(char x) {
 
 
 
-static void bioseq_protein_terminate (char* str) {
+void bioseq_protein_terminate (char* str) {
 	int i = 0;
 	while (str[i++]) {
 		if (str[i] == 'X') {

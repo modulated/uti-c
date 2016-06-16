@@ -3,7 +3,6 @@
 */
 
 #include "bioseq.h"
-#include "bioseq_private.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -88,9 +87,8 @@ bioseq_dna bioseq_dna_complement(bioseq_dna seq) {
 
 
 // Splits seq into out1 and out2 at given index. Need to preallocate out structs.
-void bioseq_dna_split(bioseq_dna seq, int index, bioseq_dna* out1, bioseq_dna* out2) {
+void bioseq_dna_split(bioseq_dna seq, unsigned int index, bioseq_dna* out1, bioseq_dna* out2) {
 	
-	if (index < 0) index = 0;
 	if (index > seq.length) index = seq.length;
 	
 	char* str1 = calloc((index + 1), sizeof(char));
@@ -124,7 +122,7 @@ bioseq_dna bioseq_dna_join (bioseq_dna start, bioseq_dna end) {
 
 
 
-bioseq_dna bioseq_dna_substitution(bioseq_dna seq, int index, char sub) {
+bioseq_dna bioseq_dna_substitution(bioseq_dna seq, unsigned int index, char sub) {
 	
 	bioseq_dna out;
 	char string[seq.length+1];
@@ -136,7 +134,7 @@ bioseq_dna bioseq_dna_substitution(bioseq_dna seq, int index, char sub) {
 	return out;
 }
 
-bioseq_dna bioseq_dna_deletion(bioseq_dna seq, int index) {
+bioseq_dna bioseq_dna_deletion(bioseq_dna seq, unsigned int index) {
 	
 	bioseq_dna out;
 	char string[seq.length+1];
@@ -148,7 +146,7 @@ bioseq_dna bioseq_dna_deletion(bioseq_dna seq, int index) {
 	return out;	
 }
 
-bioseq_dna bioseq_dna_insertion(bioseq_dna seq, int index, char sub) {
+bioseq_dna bioseq_dna_insertion(bioseq_dna seq, unsigned int index, char sub) {
 		
 	bioseq_dna out;
 		
@@ -161,7 +159,7 @@ bioseq_dna bioseq_dna_insertion(bioseq_dna seq, int index, char sub) {
 }
 
 
-bioseq_dna bioseq_dna_insertion_block(bioseq_dna seq, int index, char* sub) {
+bioseq_dna bioseq_dna_insertion_block(bioseq_dna seq, unsigned int index, char* sub) {
 
     bioseq_dna out;
 
@@ -174,7 +172,7 @@ bioseq_dna bioseq_dna_insertion_block(bioseq_dna seq, int index, char* sub) {
 }
 
 
-bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
+bioseq_protein bioseq_dna_protein(bioseq_dna dna, unsigned int offset) {
 	
 	int seqlength = dna.length - offset;
 	int rem = seqlength % 3;
@@ -197,7 +195,7 @@ bioseq_protein bioseq_dna_protein(bioseq_dna dna, int offset) {
 
 
 
-bioseq_protein bioseq_dna_translate(bioseq_dna seq, int offset) {
+bioseq_protein bioseq_dna_translate(bioseq_dna seq, unsigned int offset) {
 	
 	bioseq_protein out;
 	out = bioseq_dna_protein(seq, offset);

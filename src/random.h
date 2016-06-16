@@ -1,5 +1,5 @@
-#ifndef RANDOM_H
-#define RANDOM_H
+#ifndef _RANDOM_H
+#define _RANDOM_H
 
 // Returns pointer to arbitrary number of bytes. Need to free().
 void* random_bytes(int length);

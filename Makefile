@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-g -Wall -Wextra -pedantic -Isrc -D_GNU_SOURCE
+CFLAGS=-g -Wall -pedantic -Werror -Wno-unused-function -Isrc -D_GNU_SOURCE
 LIBS=-ldl -lm
 PREFIX?=/usr/local
 

@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 		
 	MAXINTSQR = (unsigned long)sqrt(MAXINT);
 
-	if (MAXINT > (int)MAXINT) {printf("Overflow!");}
+	if (MAXINT > (unsigned long)(int)MAXINT) {printf("Number too large!");}
 	
 	// inititalise array of size MAXINT+1.
 	struct bitarray ba = bitarray_create((int)MAXINT+1);

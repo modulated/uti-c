@@ -48,8 +48,8 @@ void print_stats(void) {
 	int spacer_int = 16;
 	int spacer_float = 16;
 	
-	puts(KBLU"Statistical Analysis of DNA:"RESET);
-	puts(KYEL"\t\t\tA\t\t C\t\t  G\t\t   T\t   Total(GC%)"RESET);
+	puts(COL_BLU"Statistical Analysis of DNA:"COL_RST);
+	puts(COL_YEL"\t\t\tA\t\t C\t\t  G\t\t   T\t   Total(GC%)"COL_RST);
 	printf("Count:   %*lu %*lu %*lu %*lu %*llu\n", spacer_int, stats.a_count, spacer_int, stats.c_count, spacer_int, stats.g_count, spacer_int, stats.t_count, spacer_int, stats.total_count);
 	printf("Percent: %*.2f %*.2f %*.2f %*.2f %*.2f\n", spacer_float, stats.a_percent, spacer_float, stats.c_percent, spacer_float, stats.g_percent, spacer_float, stats.t_percent, spacer_float, stats.gc_percent);
 }

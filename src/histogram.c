@@ -3,20 +3,7 @@
 #include <math.h>
 #include "histogram.h"
 
-#define RANGE 16
-
-int main (int argc, char* argv[]) {
-	
-	chart(argc,argv);
-	
-	float meancalc = mean(argc, argv);
-	printf("Mean of %d values: %.2f\n",argc-1,meancalc);
-	
-	float sdcalc = sd(meancalc, argc, argv);
-	printf("Standard deviation of %d values: %.2f\n",argc-1,sdcalc);
-	
-	return 0;
-}
+#define RANGE 16 // TODO: autogen
 
 void print(int low, int high,int val, int total) {
 	printf("%3d - %3d: ",low,high);
@@ -60,37 +47,4 @@ void chart(int argc, char* argv[]) {
 		print(i*16, (i+1)*16-1 ,in , argc-1);
 	}
 	printf("\n");
-
 }
-
-float mean(int argc, char* argv[]) {
-	float total = 0;
-	int i;
-	
-	for (i = 1; i < argc; i++) {
-		total += atoi(argv[i]);
-	}
-	return total/(float)(argc-1);
-	
-}
-
-float sd(float mean, int argc, char* argv[]) {
-	float total = 0.0;
-	int i;
-	
-	for (i = 1; i < argc; i++) {
-		// (val - mean)^2
-		float deviations = (atoi(argv[i]) - mean);
-		deviations = deviations * deviations;
-		total = total + deviations;
-		
-	}
-	
-	total = total/(float)(argc-1);
-	
-	float sd = sqrt(total);
-	
-	return sd;
-}
-
-

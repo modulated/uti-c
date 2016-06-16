@@ -9,7 +9,7 @@ char const HEX[] = "0123456789abcdef";
 
 doublechar asciitohex(char in) {
 	byte hexa = (unsigned char)in >> 4;
-	byte hexb = (unsigned char)in & 0b00001111;
+	byte hexb = (unsigned char)in & 0x0F;
 		 
 	
 	doublechar out;
