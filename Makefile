@@ -3,7 +3,7 @@ CFLAGS=-g -Wall -pedantic -Werror -Wno-unused-function -Isrc -D_GNU_SOURCE
 LIBS=-ldl -lm
 PREFIX?=/usr/local
 
-SOURCES=$(wildcard src/**/*.c src/*.c)
+SOURCES=$(wildcard src/libuti/*.c)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
 TEST_LIB=tests/tap.c
