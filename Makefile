@@ -1,6 +1,6 @@
 CC=clang
 CFLAGS=-g -Wall -pedantic -Werror -Wno-unused-function -Isrc -D_GNU_SOURCE
-LDLIBS=-lm -ldmp $(TARGET)
+LDLIBS=-lm $(TARGET) -ldmp
 PREFIX?=/usr/local
 
 SOURCES=$(wildcard src/libuti/*.c)
