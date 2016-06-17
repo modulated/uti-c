@@ -1,6 +1,6 @@
 CC=clang
 CFLAGS=-g -Wall -pedantic -Werror -Wno-unused-function -Isrc -D_GNU_SOURCE
-LDLIBS=-lm
+LDLIBS=-lm $(TARGET)
 PREFIX?=/usr/local
 
 SOURCES=$(wildcard src/libuti/*.c)
@@ -27,7 +27,7 @@ build:
 
 # The Unit Tests
 .PHONY: tests
-tests: LDLIBS +=$(TEST_LIB) $(TARGET)
+tests: LDLIBS +=$(TEST_LIB)
 tests: $(TESTS)
 	sh ./tests/runall.sh
 

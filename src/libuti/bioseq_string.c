@@ -8,35 +8,35 @@
 
 // Reverses given string. Modifies string (FIX).
 void bioseq_string_reverse(char* str) {
-    /* skip null */
-    if (str == 0)
-    {
-    	return;
-    }
+	/* skip null */
+	if (str == 0)
+	{
+		return;
+	}
 
-    /* skip empty string */
-    if (*str == 0)
-    {
-    	return;
-    }
+	/* skip empty string */
+	if (*str == 0)
+	{
+		return;
+	}
 
-    /* get range */
-    char *start = str;
-    char *end = start + strlen(str) - 1; /* -1 for \0 */
-    char temp;
+	/* get range */
+	char *start = str;
+	char *end = start + strlen(str) - 1; /* -1 for \0 */
+	char temp;
 
-    /* reverse */
-    while (end > start)
-    {
-    	/* swap */
-    	temp = *start;
-    	*start = *end;
-    	*end = temp;
+	/* reverse */
+	while (end > start)
+	{
+		/* swap */
+		temp = *start;
+		*start = *end;
+		*end = temp;
 
-    	/* move */
-    	++start;
-    	--end;
-    }
+		/* move */
+		++start;
+		--end;
+	}
 }
 
 
@@ -63,13 +63,13 @@ char* bioseq_string_insert(char* str, int index, char ins) {
 
 // Returns new string with added string at index
 char* bioseq_string_insert_chunk(char* str, int index, char* ins) {
-    char* new = malloc((strlen(str) + strlen(ins) + 1) * sizeof(char));
+	char* new = malloc((strlen(str) + strlen(ins) + 1) * sizeof(char));
 
-    strncpy(new, str, index);
-    strcpy(&new[index], ins);
-    strcpy(&new[index + strlen(ins)], &str[index]);
+	strncpy(new, str, index);
+	strcpy(&new[index], ins);
+	strcpy(&new[index + strlen(ins)], &str[index]);
 
-    return new;
+	return new;
 }
 
 

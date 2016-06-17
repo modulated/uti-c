@@ -29,7 +29,7 @@ void test_dna_construct () {
 	bioseq_dna test_seq = bioseq_dna_construct(E_COLI);
 	
 	ok(strcmp(test_seq.sequence, E_COLI) == 0, "DNA constructor returns correct sequence.");
-    ok(test_seq.length == strlen(E_COLI), "DNA constructor returns correct length.");
+	ok(test_seq.length == strlen(E_COLI), "DNA constructor returns correct length.");
 		
 	bioseq_dna_destruct(&test_seq);
 
@@ -38,7 +38,7 @@ void test_dna_construct () {
 	test_seq = bioseq_dna_construct("");
 	
 	ok(strcmp(test_seq.sequence, "") == 0, "DNA constructor returns correct sequence.");
-    ok(test_seq.length == 0, "DNA constructor returns correct length.");
+	ok(test_seq.length == 0, "DNA constructor returns correct length.");
 		
 	bioseq_dna_destruct(&test_seq);
 
@@ -47,7 +47,7 @@ void test_dna_construct () {
 	test_seq = bioseq_dna_construct(NULL);
 	
 	ok(strcmp(test_seq.sequence, "") == 0, "DNA constructor returns correct sequence.");
-    ok(test_seq.length == 0, "DNA constructor returns correct length.");
+	ok(test_seq.length == 0, "DNA constructor returns correct length.");
 		
 	bioseq_dna_destruct(&test_seq);
 } 
@@ -64,7 +64,7 @@ void test_protein_construct () {
 	bioseq_protein test_seq = bioseq_protein_construct(TEST_SEQ_PROT);
 	
 	ok(strcmp(test_seq.sequence, TEST_SEQ_PROT) == 0, "Protein constructor sets correct sequence.");
-    ok(test_seq.length == strlen(TEST_SEQ_PROT), "Protein constructor sets correct length.");
+	ok(test_seq.length == strlen(TEST_SEQ_PROT), "Protein constructor sets correct length.");
 	
 	bioseq_protein_destruct(&test_seq);
 
@@ -72,7 +72,7 @@ void test_protein_construct () {
 	test_seq = bioseq_protein_construct("");
 	
 	ok(strcmp(test_seq.sequence, "") == 0, "Protein constructor returns correct sequence.");
-    ok(test_seq.length == 0, "Protein constructor returns correct length.");
+	ok(test_seq.length == 0, "Protein constructor returns correct length.");
 		
 	bioseq_protein_destruct(&test_seq);
 
@@ -81,7 +81,7 @@ void test_protein_construct () {
 	test_seq = bioseq_protein_construct(NULL);
 	
 	ok(strcmp(test_seq.sequence, "") == 0, "Protein constructor returns correct sequence.");
-    ok(test_seq.length == 0, "Protein constructor returns correct length.");
+	ok(test_seq.length == 0, "Protein constructor returns correct length.");
 		
 	bioseq_protein_destruct(&test_seq);
 } 
@@ -96,7 +96,7 @@ void test_protein_destruct () {
 void test_dna_sanitize () {
 	
 	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ_SANITIZE);
-	ok(strcmp(test_seq.sequence, TEST_SEQ) == 0, "DNA input sanitized correctly.");
+	ok(strcmp(test_seq.sequence, TEST_SEQ) == 0, "dna_sanitize correctly cleaning.");
 	
 	bioseq_dna_destruct(&test_seq);			
 }
@@ -104,7 +104,7 @@ void test_dna_sanitize () {
 void test_protein_sanitize () {
 	
 	bioseq_protein test_seq = bioseq_protein_construct(TEST_SEQ_PROT_SANITIZE);
-	ok(strcmp(test_seq.sequence, TEST_SEQ_PROT) == 0, "Protein input sanitized correctly. Result: %s", test_seq.sequence);
+	ok(strcmp(test_seq.sequence, TEST_SEQ_PROT) == 0, "protein_sanitize correctly cleaning.");
 	
 	bioseq_protein_destruct(&test_seq);			
 }
@@ -114,7 +114,7 @@ void test_dna_complement () {
 	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
 	bioseq_dna test_comp = bioseq_dna_complement(test_seq);
 	
-	ok1(strcmp(test_comp.sequence, TEST_SEQ_COMP) == 0);
+	ok(strcmp(test_comp.sequence, TEST_SEQ_COMP) == 0, "dna_complement returns correct value");
 	
 	bioseq_dna_destruct(&test_comp);
 	bioseq_dna_destruct(&test_seq);	
@@ -125,7 +125,7 @@ void test_dna_reverse () {
 	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
 	bioseq_dna test_rev = bioseq_dna_reverse(test_seq);
 	
-	ok1(strcmp(test_rev.sequence, TEST_SEQ_REV) == 0);
+	ok(strcmp(test_rev.sequence, TEST_SEQ_REV) == 0, "dna_reverse returns correct value");
 	
 	bioseq_dna_destruct(&test_rev);
 	bioseq_dna_destruct(&test_seq);
@@ -308,21 +308,8 @@ void test_dna_split () {
 	ok(strcmp(res_str8, res_seq2.sequence) == 0, "%s == %s", res_str8, res_seq2.sequence);
 
 	bioseq_dna_destruct(&res_seq1);
-	bioseq_dna_destruct(&res_seq2);	
-
-	// Case 5 -- Negative
-	index = -3;
-	char res_str9[] = EMPTY_STRING;
-	char res_str10[] = TEST_SEQ;
-	
-	bioseq_dna_split(test_seq, index, &res_seq1, &res_seq2);
-	
-	ok(strcmp(res_str9, res_seq1.sequence) == 0, "%s == %s", res_str9, res_seq1.sequence);
-	ok(strcmp(res_str10, res_seq2.sequence) == 0, "%s == %s", res_str10, res_seq2.sequence);	
-
-	bioseq_dna_destruct(&test_seq);
-	bioseq_dna_destruct(&res_seq1);
 	bioseq_dna_destruct(&res_seq2);
+	bioseq_dna_destruct(&test_seq);
 }
 
 void test_dna_substitution () {
@@ -366,15 +353,15 @@ void test_dna_insertion () {
 
 void test_dna_insertion_block () {
 
-    bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
-    char res_string[] = "ATGACCATAGCAGCAGCGAGCGACTTCGATA";
+	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
+	char res_string[] = "ATGACCATAGCAGCAGCGAGCGACTTCGATA";
 
-    bioseq_dna res_seq = bioseq_dna_insertion_block(test_seq, 5, "CAT");
-    
-    if (!ok(strcmp(res_seq.sequence, res_string) == 0, "dna_insertion_block returns appropriate sequence")) diag("Expected:; %s, actual: %s", res_string, res_seq.sequence);
+	bioseq_dna res_seq = bioseq_dna_insertion_block(test_seq, 5, "CAT");
+	
+	if (!ok(strcmp(res_seq.sequence, res_string) == 0, "dna_insertion_block returns appropriate sequence")) diag("Expected:; %s, actual: %s", res_string, res_seq.sequence);
 
-    bioseq_dna_destruct(&test_seq);
-    bioseq_dna_destruct(&res_seq);
+	bioseq_dna_destruct(&test_seq);
+	bioseq_dna_destruct(&res_seq);
 }
 
 void test_protein_split () {
@@ -394,10 +381,10 @@ void test_protein_split () {
 	ok(strcmp(res_str1, res_seq1.sequence) == 0, "%s == %s", res_str1, res_seq1.sequence);
 	ok(strcmp(res_str2, res_seq2.sequence) == 0, "%s == %s", res_str2, res_seq2.sequence);
 	
-    bioseq_protein_destruct(&res_seq1);
-    bioseq_protein_destruct(&res_seq2);
+	bioseq_protein_destruct(&res_seq1);
+	bioseq_protein_destruct(&res_seq2);
 
-    // Case 2 -- Odd
+	// Case 2 -- Odd
 	index = 5;
 	char res_str3[] = "MTAAA";
 	char res_str4[] = "SDFD";
@@ -407,8 +394,8 @@ void test_protein_split () {
 	ok(strcmp(res_str3, res_seq1.sequence) == 0, "%s == %s", res_str3, res_seq1.sequence);
 	ok(strcmp(res_str4, res_seq2.sequence) == 0, "%s == %s", res_str4, res_seq2.sequence);
 
-    bioseq_protein_destruct(&res_seq1);
-    bioseq_protein_destruct(&res_seq2);
+	bioseq_protein_destruct(&res_seq1);
+	bioseq_protein_destruct(&res_seq2);
 
 	// Case 3 -- Zero
 	index = 0;
@@ -420,8 +407,8 @@ void test_protein_split () {
 	ok(strcmp(res_str5, res_seq1.sequence) == 0, "%s == %s", res_str5, res_seq1.sequence);
 	ok(strcmp(res_str6, res_seq2.sequence) == 0, "%s == %s", res_str6, res_seq2.sequence);
 
-    bioseq_protein_destruct(&res_seq1);
-    bioseq_protein_destruct(&res_seq2);
+	bioseq_protein_destruct(&res_seq1);
+	bioseq_protein_destruct(&res_seq2);
 
 	// Case 4 -- Overflow
 	index = 9;
@@ -432,23 +419,10 @@ void test_protein_split () {
 	
 	ok(strcmp(res_str7, res_seq1.sequence) == 0, "%s == %s", res_str7, res_seq1.sequence);
 	ok(strcmp(res_str8, res_seq2.sequence) == 0, "%s == %s", res_str8, res_seq2.sequence);
-    
-    bioseq_protein_destruct(&res_seq1);
-    bioseq_protein_destruct(&res_seq2);
 
-	// Case 5 -- Negative
-	index = -3;
-	char res_str9[] = EMPTY_STRING;
-	char res_str10[] = TEST_SEQ_PROT;
-	
-	bioseq_protein_split(test_seq, index, &res_seq1, &res_seq2);
-	
-	ok(strcmp(res_str9, res_seq1.sequence) == 0, "%s == %s", res_str9, res_seq1.sequence);
-	ok(strcmp(res_str10, res_seq2.sequence) == 0, "%s == %s", res_str10, res_seq2.sequence);	
-
-	bioseq_protein_destruct(&test_seq);
 	bioseq_protein_destruct(&res_seq1);
 	bioseq_protein_destruct(&res_seq2);
+	bioseq_protein_destruct(&test_seq);
 }
 
 void test_frame_construct() {
@@ -521,8 +495,8 @@ void run_tests () {
 	test_dna_substitution();
 	test_dna_insertion();
 	test_dna_deletion();
-    test_dna_insertion_block();
-    test_protein_split();
+	test_dna_insertion_block();
+	test_protein_split();
 	test_protein_join();
 	test_frame_construct();
 	test_frame_destruct();
@@ -532,12 +506,12 @@ void run_tests () {
 }
 
 int main () {
-    
-    plan_no_plan();
-    // plan_tests(14);
-    
-    run_tests();	
+	
+	plan_no_plan();
+	// plan_tests(14);
+	
+	run_tests();	
 	
 	
-    return exit_status();
+	return exit_status();
 }
