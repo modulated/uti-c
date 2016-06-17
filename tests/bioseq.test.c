@@ -18,18 +18,16 @@
 #define TEST_SEQ_PROT_6 "SKSLAAAV"
 #define TEST_SEQ_PROT_SANITIZE " # M TB AAASDFD 1"
 
-void run_tests();
-
-
-
+void run_tests (void);
 
 void test_dna_construct () {
+	int test_int = 0;
 
 	// Case 1 - normal use
 	bioseq_dna test_seq = bioseq_dna_construct(E_COLI);
 	
-	ok(strcmp(test_seq.sequence, E_COLI) == 0, "DNA constructor returns correct sequence.");
-	ok(test_seq.length == strlen(E_COLI), "DNA constructor returns correct length.");
+	test_int |= !(strcmp(test_seq.sequence, E_COLI) == 0);
+	test_int |= !(test_seq.length == strlen(E_COLI));
 		
 	bioseq_dna_destruct(&test_seq);
 
@@ -37,8 +35,8 @@ void test_dna_construct () {
 	// Case 2 - empty string
 	test_seq = bioseq_dna_construct("");
 	
-	ok(strcmp(test_seq.sequence, "") == 0, "DNA constructor returns correct sequence.");
-	ok(test_seq.length == 0, "DNA constructor returns correct length.");
+	test_int |= !(strcmp(test_seq.sequence, "") == 0);
+	test_int |= !(test_seq.length == 0);
 		
 	bioseq_dna_destruct(&test_seq);
 
@@ -46,33 +44,38 @@ void test_dna_construct () {
 	// Case 2 - NULL string
 	test_seq = bioseq_dna_construct(NULL);
 	
-	ok(strcmp(test_seq.sequence, "") == 0, "DNA constructor returns correct sequence.");
-	ok(test_seq.length == 0, "DNA constructor returns correct length.");
+	test_int |= !(strcmp(test_seq.sequence, "") == 0);
+	test_int |= !(test_seq.length == 0);
 		
 	bioseq_dna_destruct(&test_seq);
+
+	ok(test_int == 0, "dna_construct returns appropriate values.");
 } 
 
 void test_dna_destruct () {
 	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
 	bioseq_dna_destruct(&test_seq);
 	
-	ok(!test_seq.sequence, "DNA destructor pointers NULL.");
+	ok(!test_seq.sequence, "dna_destruct returns NULL.");
 		
 }
 
 void test_protein_construct () {
+
+	int test_int = 0;
+
 	bioseq_protein test_seq = bioseq_protein_construct(TEST_SEQ_PROT);
 	
-	ok(strcmp(test_seq.sequence, TEST_SEQ_PROT) == 0, "Protein constructor sets correct sequence.");
-	ok(test_seq.length == strlen(TEST_SEQ_PROT), "Protein constructor sets correct length.");
+	test_int |= !(strcmp(test_seq.sequence, TEST_SEQ_PROT) == 0);
+	test_int |= !(test_seq.length == strlen(TEST_SEQ_PROT));
 	
 	bioseq_protein_destruct(&test_seq);
 
 	// Case 2 - empty string
 	test_seq = bioseq_protein_construct("");
 	
-	ok(strcmp(test_seq.sequence, "") == 0, "Protein constructor returns correct sequence.");
-	ok(test_seq.length == 0, "Protein constructor returns correct length.");
+	test_int |= !(strcmp(test_seq.sequence, "") == 0);
+	test_int |= !(test_seq.length == 0);
 		
 	bioseq_protein_destruct(&test_seq);
 
@@ -80,10 +83,12 @@ void test_protein_construct () {
 	// Case 2 - NULL string
 	test_seq = bioseq_protein_construct(NULL);
 	
-	ok(strcmp(test_seq.sequence, "") == 0, "Protein constructor returns correct sequence.");
-	ok(test_seq.length == 0, "Protein constructor returns correct length.");
+	test_int |= !(strcmp(test_seq.sequence, "") == 0);
+	test_int |= !(test_seq.length == 0);
 		
 	bioseq_protein_destruct(&test_seq);
+	
+	ok(test_int == 0, "protein_construct returns expected values.");
 } 
 
 void test_protein_destruct () {
@@ -134,12 +139,13 @@ void test_dna_reverse () {
 
 void test_dna_protein () {
 	
-	// Case 1 -- Start codon
 	int test_int = 0;
+
+	// Case 1 -- Start codon
 	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);	
 	bioseq_protein test_prot = bioseq_dna_protein(test_seq, 0);	
 	
-	test_int = test_int || !(strcmp(test_prot.sequence, TEST_SEQ_PROT) == 0);
+	test_int |= !(strcmp(test_prot.sequence, TEST_SEQ_PROT) == 0);
 	
 	bioseq_dna_destruct(&test_seq);
 	bioseq_protein_destruct(&test_prot);
@@ -148,7 +154,7 @@ void test_dna_protein () {
 	test_seq = bioseq_dna_construct("AUGGCGAGGGAGUUAUGGUGA");
 	test_prot = bioseq_dna_protein(test_seq, 0);
 	
-	test_int = test_int || !(strcmp(test_prot.sequence, "MARELWX") == 0);
+	test_int |= !(strcmp(test_prot.sequence, "MARELWX") == 0);
 
 	bioseq_dna_destruct(&test_seq);
 	bioseq_protein_destruct(&test_prot);
@@ -157,15 +163,18 @@ void test_dna_protein () {
 	test_seq = bioseq_dna_construct("AUGGCGAGGGAGUUAUGGUGA");
 	test_prot = bioseq_dna_protein(test_seq, 1);
 	
-	test_int = test_int || !(strcmp(test_prot.sequence, "WRGSYG") == 0);
-	
-	ok(test_int == 0, "dna_protein returns expected values.");
-	
+	test_int |= !(strcmp(test_prot.sequence, "WRGSYG") == 0);
+		
 	bioseq_dna_destruct(&test_seq);
 	bioseq_protein_destruct(&test_prot);
+	
+	ok(test_int == 0, "dna_protein returns expected values.");
 }
 
 void test_dna_join () {
+	
+	int test_int = 0;
+
 	// Case 1 - normal values
 	bioseq_dna test_seq = bioseq_dna_construct("ATGCTA");
 	bioseq_dna test_seq2 = bioseq_dna_construct("GCATA");
@@ -173,7 +182,7 @@ void test_dna_join () {
 		
 	bioseq_dna res_seq = bioseq_dna_join(test_seq, test_seq2);
 	
-	ok(strcmp(res_seq.sequence, res_string) == 0, "dna_join returns appropriate sequence");
+	test_int |= !(strcmp(res_seq.sequence, res_string) == 0);
 	
 	bioseq_dna_destruct(&test_seq);
 	bioseq_dna_destruct(&test_seq2);
@@ -187,7 +196,7 @@ void test_dna_join () {
 		
 	res_seq = bioseq_dna_join(test_seq, test_seq2);
 	
-	ok(strcmp(res_seq.sequence, res_string2) == 0, "dna_join returns appropriate sequence");
+	test_int |= (strcmp(res_seq.sequence, res_string2) == 0);
 	
 	bioseq_dna_destruct(&test_seq);
 	bioseq_dna_destruct(&test_seq2);
@@ -201,22 +210,26 @@ void test_dna_join () {
 		
 	res_seq = bioseq_dna_join(test_seq, test_seq2);
 	
-	ok(strcmp(res_seq.sequence, res_string3) == 0, "dna_join returns appropriate sequence");
+	test_int |= (strcmp(res_seq.sequence, res_string3) == 0);
 	
 	bioseq_dna_destruct(&test_seq);
 	bioseq_dna_destruct(&test_seq2);
 	bioseq_dna_destruct(&res_seq);
+
+	ok(test_int != 0, "dna_join returns expected values."); 
 }
 
 void test_protein_join () {
 	
+	int test_int = 0;
+
 	bioseq_protein test_seq = bioseq_protein_construct("TEFCLGFHRSEAWR");
 	bioseq_protein test_seq2 = bioseq_protein_construct("RGTRCAAACTA");
 	char res_string[] = "TEFCLGFHRSEAWRRGTRCAAACTA";
 		
 	bioseq_protein res_seq = bioseq_protein_join(test_seq, test_seq2);
 	
-	ok(strcmp(res_seq.sequence, res_string) == 0, "protein_join returns appropriate sequence");
+	test_int |= !(strcmp(res_seq.sequence, res_string) == 0);
 	
 	bioseq_protein_destruct(&test_seq);
 	bioseq_protein_destruct(&test_seq2);
@@ -230,7 +243,7 @@ void test_protein_join () {
 		
 	res_seq = bioseq_protein_join(test_seq, test_seq2);
 	
-	ok(strcmp(res_seq.sequence, res_string2) == 0, "protein_join returns appropriate sequence");
+	test_int |= !(strcmp(res_seq.sequence, res_string2) == 0);
 	
 	bioseq_protein_destruct(&test_seq);
 	bioseq_protein_destruct(&test_seq2);
@@ -244,16 +257,20 @@ void test_protein_join () {
 		
 	res_seq = bioseq_protein_join(test_seq, test_seq2);
 	
-	ok(strcmp(res_seq.sequence, res_string3) == 0, "protein_join returns appropriate sequence");
+	test_int |= !(strcmp(res_seq.sequence, res_string3) == 0);
 	
 	bioseq_protein_destruct(&test_seq);
 	bioseq_protein_destruct(&test_seq2);
-	bioseq_protein_destruct(&res_seq);	
+	bioseq_protein_destruct(&res_seq);
+
+	ok(test_int == 0, "protein_join returns expected values.");
 }
 
 
 void test_dna_split () {
 	
+	int test_int = 0;
+
 	bioseq_dna test_seq = bioseq_dna_construct(TEST_SEQ);
 	bioseq_dna res_seq1;
 	bioseq_dna res_seq2;
@@ -265,8 +282,8 @@ void test_dna_split () {
 	
 	bioseq_dna_split(test_seq, index, &res_seq1, &res_seq2);
 	
-	ok(strcmp(res_str1, res_seq1.sequence) == 0, "%s == %s", res_str1, res_seq1.sequence);
-	ok(strcmp(res_str2, res_seq2.sequence) == 0, "%s == %s", res_str2, res_seq2.sequence);
+	test_int |= !(strcmp(res_str1, res_seq1.sequence) == 0);
+	test_int |= !(strcmp(res_str2, res_seq2.sequence) == 0);
 	
 	bioseq_dna_destruct(&res_seq1);
 	bioseq_dna_destruct(&res_seq2);
@@ -278,8 +295,8 @@ void test_dna_split () {
 	
 	bioseq_dna_split(test_seq, index, &res_seq1, &res_seq2);
 	
-	ok(strcmp(res_str3, res_seq1.sequence) == 0, "%s == %s", res_str3, res_seq1.sequence);
-	ok(strcmp(res_str4, res_seq2.sequence) == 0, "%s == %s", res_str4, res_seq2.sequence);
+	test_int |= !(strcmp(res_str3, res_seq1.sequence) == 0);
+	test_int |= !(strcmp(res_str4, res_seq2.sequence) == 0);
 
 	bioseq_dna_destruct(&res_seq1);
 	bioseq_dna_destruct(&res_seq2);
@@ -291,8 +308,8 @@ void test_dna_split () {
 	
 	bioseq_dna_split(test_seq, index, &res_seq1, &res_seq2);
 	
-	ok(strcmp(res_str5, res_seq1.sequence) == 0, "%s == %s", res_str5, res_seq1.sequence);
-	ok(strcmp(res_str6, res_seq2.sequence) == 0, "%s == %s", res_str6, res_seq2.sequence);
+	test_int |= !(strcmp(res_str5, res_seq1.sequence) == 0);
+	test_int |= !(strcmp(res_str6, res_seq2.sequence) == 0);
 	
 	bioseq_dna_destruct(&res_seq1);
 	bioseq_dna_destruct(&res_seq2);
@@ -304,12 +321,14 @@ void test_dna_split () {
 	
 	bioseq_dna_split(test_seq, index, &res_seq1, &res_seq2);
 	
-	ok(strcmp(res_str7, res_seq1.sequence) == 0, "%s == %s", res_str7, res_seq1.sequence);
-	ok(strcmp(res_str8, res_seq2.sequence) == 0, "%s == %s", res_str8, res_seq2.sequence);
+	test_int |= !(strcmp(res_str7, res_seq1.sequence) == 0);
+	test_int |= !(strcmp(res_str8, res_seq2.sequence) == 0);
 
 	bioseq_dna_destruct(&res_seq1);
 	bioseq_dna_destruct(&res_seq2);
 	bioseq_dna_destruct(&test_seq);
+
+	ok(test_int == 0, "dna_split returns expected values.");
 }
 
 void test_dna_substitution () {
@@ -319,7 +338,7 @@ void test_dna_substitution () {
 		
 	bioseq_dna res_seq = bioseq_dna_substitution(test_seq, 4, 'T');
 	
-	ok(strcmp(res_seq.sequence, res_string) == 0, "dna_substitution returns appropriate sequence");
+	ok(strcmp(res_seq.sequence, res_string) == 0, "dna_substitution returns expected values.");
 	
 	bioseq_dna_destruct(&test_seq);
 	bioseq_dna_destruct(&res_seq);
@@ -332,7 +351,7 @@ void test_dna_deletion () {
 		
 	bioseq_dna res_seq = bioseq_dna_deletion(test_seq, 4);
 	
-	ok(strcmp(res_seq.sequence, res_string) == 0, "dna_delete returns appropriate sequence");
+	ok(strcmp(res_seq.sequence, res_string) == 0, "dna_delete returns expected values.");
 	
 	bioseq_dna_destruct(&test_seq);
 	bioseq_dna_destruct(&res_seq);
@@ -345,7 +364,7 @@ void test_dna_insertion () {
 		
 	bioseq_dna res_seq = bioseq_dna_insertion(test_seq, 4, 'T');
 	
-	if (!ok(strcmp(res_seq.sequence, res_string) == 0, "dna_insertion returns appropriate sequence")) diag("Expected: %s, actual: %s", res_string, res_seq.sequence);
+	if (!ok(strcmp(res_seq.sequence, res_string) == 0, "dna_insertion returns expected values.")) diag("Expected: %s, actual: %s", res_string, res_seq.sequence);
 	
 	bioseq_dna_destruct(&test_seq);
 	bioseq_dna_destruct(&res_seq);
@@ -358,7 +377,7 @@ void test_dna_insertion_block () {
 
 	bioseq_dna res_seq = bioseq_dna_insertion_block(test_seq, 5, "CAT");
 	
-	if (!ok(strcmp(res_seq.sequence, res_string) == 0, "dna_insertion_block returns appropriate sequence")) diag("Expected:; %s, actual: %s", res_string, res_seq.sequence);
+	if (!ok(strcmp(res_seq.sequence, res_string) == 0, "dna_insertion_block returns expected values.")) diag("Expected:; %s, actual: %s", res_string, res_seq.sequence);
 
 	bioseq_dna_destruct(&test_seq);
 	bioseq_dna_destruct(&res_seq);
@@ -366,6 +385,8 @@ void test_dna_insertion_block () {
 
 void test_protein_split () {
 	
+	int test_int = 0;
+
 	bioseq_protein test_seq = bioseq_protein_construct(TEST_SEQ_PROT);
 	bioseq_protein res_seq1;
 	bioseq_protein res_seq2;
@@ -378,8 +399,8 @@ void test_protein_split () {
 	
 	bioseq_protein_split(test_seq, index, &res_seq1, &res_seq2);
 	
-	ok(strcmp(res_str1, res_seq1.sequence) == 0, "%s == %s", res_str1, res_seq1.sequence);
-	ok(strcmp(res_str2, res_seq2.sequence) == 0, "%s == %s", res_str2, res_seq2.sequence);
+	test_int |= !(strcmp(res_str1, res_seq1.sequence) == 0);
+	test_int |= !(strcmp(res_str2, res_seq2.sequence) == 0);
 	
 	bioseq_protein_destruct(&res_seq1);
 	bioseq_protein_destruct(&res_seq2);
@@ -391,8 +412,8 @@ void test_protein_split () {
 	
 	bioseq_protein_split(test_seq, index, &res_seq1, &res_seq2);
 	
-	ok(strcmp(res_str3, res_seq1.sequence) == 0, "%s == %s", res_str3, res_seq1.sequence);
-	ok(strcmp(res_str4, res_seq2.sequence) == 0, "%s == %s", res_str4, res_seq2.sequence);
+	test_int |= !(strcmp(res_str3, res_seq1.sequence) == 0);
+	test_int |= !(strcmp(res_str4, res_seq2.sequence) == 0);
 
 	bioseq_protein_destruct(&res_seq1);
 	bioseq_protein_destruct(&res_seq2);
@@ -404,8 +425,8 @@ void test_protein_split () {
 	
 	bioseq_protein_split(test_seq, index, &res_seq1, &res_seq2);
 	
-	ok(strcmp(res_str5, res_seq1.sequence) == 0, "%s == %s", res_str5, res_seq1.sequence);
-	ok(strcmp(res_str6, res_seq2.sequence) == 0, "%s == %s", res_str6, res_seq2.sequence);
+	test_int |= !(strcmp(res_str5, res_seq1.sequence) == 0);
+	test_int |= !(strcmp(res_str6, res_seq2.sequence) == 0);
 
 	bioseq_protein_destruct(&res_seq1);
 	bioseq_protein_destruct(&res_seq2);
@@ -417,12 +438,14 @@ void test_protein_split () {
 	
 	bioseq_protein_split(test_seq, index, &res_seq1, &res_seq2);
 	
-	ok(strcmp(res_str7, res_seq1.sequence) == 0, "%s == %s", res_str7, res_seq1.sequence);
-	ok(strcmp(res_str8, res_seq2.sequence) == 0, "%s == %s", res_str8, res_seq2.sequence);
+	test_int |= !(strcmp(res_str7, res_seq1.sequence) == 0);
+	test_int |= !(strcmp(res_str8, res_seq2.sequence) == 0);
 
 	bioseq_protein_destruct(&res_seq1);
 	bioseq_protein_destruct(&res_seq2);
 	bioseq_protein_destruct(&test_seq);
+
+	ok(test_int == 0, "protein_split returns expected values.");
 }
 
 void test_frame_construct() {
@@ -432,12 +455,12 @@ void test_frame_construct() {
 	
 	int output = 0;
 	
-	output = output || strcmp(test_frame.frames[0].sequence,TEST_SEQ_PROT);
-	output = output || strcmp(test_frame.frames[1].sequence,TEST_SEQ_PROT_2);
-	output = output || strcmp(test_frame.frames[2].sequence,TEST_SEQ_PROT_3);
-	output = output || strcmp(test_frame.frames[3].sequence,TEST_SEQ_PROT_4);
-	output = output || strcmp(test_frame.frames[4].sequence,TEST_SEQ_PROT_5);
-	output = output || strcmp(test_frame.frames[5].sequence,TEST_SEQ_PROT_6);
+	output |= strcmp(test_frame.frames[0].sequence,TEST_SEQ_PROT);
+	output |= strcmp(test_frame.frames[1].sequence,TEST_SEQ_PROT_2);
+	output |= strcmp(test_frame.frames[2].sequence,TEST_SEQ_PROT_3);
+	output |= strcmp(test_frame.frames[3].sequence,TEST_SEQ_PROT_4);
+	output |= strcmp(test_frame.frames[4].sequence,TEST_SEQ_PROT_5);
+	output |= strcmp(test_frame.frames[5].sequence,TEST_SEQ_PROT_6);
 	
 	ok(output == 0, "frame_construct: Returning all appropriate sequences.");
 	
@@ -470,13 +493,25 @@ void test_frame_getopen() {
 }
 
 void test_string_similarity() {
+
+	char test_s1[] = "BASKET BALL FIRES";
+	char test_s2[] = "MASTER FALL DIRES";
 	
-	
-	// Case 1 - no frameshift
-	char test_s1[] = "ABCDEFG";
-	char test_s2[] = "ACBDEFG";
-	
-	ok1(bioseq_string_similarity(test_s1, test_s2) == 2); 
+	ok(bioseq_string_similarity(test_s1, test_s2) == 12, "string_similarity returns expected value."); 
+}
+
+void test_string_insertions() {
+
+	char test_s1[] = "ADGATDGATDGATGDGATTG";
+	char test_s2[] = "ADAATDGATGGATGDGATTG";
+	ok(bioseq_string_insertions(test_s1, test_s2) == 2, "string_insertions returns expected value."); 
+}
+
+void test_string_deletions() {
+
+	char test_s1[] = "ADGATDGATDGATGDGATTG";
+	char test_s2[] = "ADAATDGATGGATGDGATG";
+	ok(bioseq_string_deletions(test_s1, test_s2) == 3, "string_deletions returns expected value."); 
 }
 
 void run_tests () {
@@ -502,7 +537,8 @@ void run_tests () {
 	test_frame_destruct();
 	test_frame_getopen();
 	test_string_similarity();
-	
+	test_string_insertions();
+	test_string_deletions();
 }
 
 int main () {
@@ -510,7 +546,7 @@ int main () {
 	plan_no_plan();
 	// plan_tests(14);
 	
-	run_tests();	
+	run_tests();
 	
 	
 	return exit_status();

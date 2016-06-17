@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <dmp.h>
 
 // Reverses given string. Modifies string (FIX).
 void bioseq_string_reverse(char* str) {
@@ -121,22 +122,86 @@ void bioseq_string_dna_complement(char* str) {
 	}	
 }
 
+int bioseq_diff_equal(void* ref, dmp_operation_t op, const void* data, uint32_t len) {
+	
+	int* sum = ref;
 
-int bioseq_string_similarity(char* a, char* b) {
-	
-	int sim = 0;
-	int length_a = strlen(a);
-	int length_b = strlen(b);
-	
-	for (int i = 0; i < length_a; i++) {
-		
-		if (a[i] == b[i]) continue;
-		else sim++;
-		
-		for (int j = 0; j < length_b; j++) {
-			
-		}
+	if (op == DMP_DIFF_EQUAL) {
+		*sum += len;
 	}
 	
-	return sim;
+	return 0;
+}
+
+int bioseq_string_similarity(char* a, char* b) {
+
+	dmp_diff* diff = NULL;
+	int eq = 0;
+
+	if (dmp_diff_from_strs(&diff, NULL, a, b) != 0) {
+		puts("ERROR: dmp_diff");
+		exit(1);
+	}
+
+	dmp_diff_foreach(diff, bioseq_diff_equal, &eq);
+
+	dmp_diff_free(diff);
+	
+	return eq;
+}
+
+int bioseq_diff_insert(void* ref, dmp_operation_t op, const void* data, uint32_t len) {
+	
+	int* sum = ref;
+
+	if (op == DMP_DIFF_INSERT) {
+		*sum += len;
+	}
+
+	return 0;
+}
+
+int bioseq_string_insertions(char* a, char* b) {
+
+	dmp_diff* diff = NULL;
+	int eq = 0;
+
+	if (dmp_diff_from_strs(&diff, NULL, a, b) != 0) {
+		puts("ERROR: dmp_diff");
+		exit(1);
+	}
+	
+	dmp_diff_foreach(diff, bioseq_diff_insert, &eq);
+	
+	dmp_diff_free(diff);
+	
+	return eq;
+}
+
+int bioseq_diff_deletions(void* ref, dmp_operation_t op, const void* data, uint32_t len) {
+	
+	int* sum = ref;
+
+	if (op == DMP_DIFF_DELETE) {
+		*sum += len;
+	}
+
+	return 0;
+}
+
+int bioseq_string_deletions(char* a, char* b) {
+
+	dmp_diff* diff = NULL;
+	int eq = 0;
+
+	if (dmp_diff_from_strs(&diff, NULL, a, b) != 0) {
+		puts("ERROR: dmp_diff");
+		exit(1);
+	}
+	
+	dmp_diff_foreach(diff, bioseq_diff_deletions, &eq);
+	
+	dmp_diff_free(diff);
+	
+	return eq;
 }
