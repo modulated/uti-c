@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "list.h"
+#include "data.h"
 
 struct node {
     struct node* next;
@@ -9,6 +9,16 @@ struct node {
 struct list {
     struct node* first;
     struct node* last;
+};
+
+struct hashmap {
+	char* array[256];
+	int num;
+};
+
+struct hashnode {
+	void* name;
+	void* data;
 };
 
 struct list list_create(void* data) {
@@ -53,3 +63,8 @@ int list_prepend(struct list* list, void* data) {
 	
 // 	return rnode;
 // }
+
+struct hashmap data_hashmap_construct() {
+	struct hashmap out;
+	return out;
+}
