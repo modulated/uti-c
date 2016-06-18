@@ -11,11 +11,13 @@ struct list {
     struct node* last;
 };
 
-struct list list_create() {
+struct list list_create(void* data) {
 	struct list rlist;
 	struct node rnode;
 	rlist.first = &rnode;
 	rlist.last = &rnode;
+	rlist.first->data = data;
+	rlist.first->next = NULL;
 	return rlist;
 }
 
