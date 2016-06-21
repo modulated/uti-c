@@ -1,12 +1,12 @@
 CC=gcc
-CFLAGS=-g -std=c99 -Wall -pedantic -Werror -Wno-unused-value -Wno-unused-function -Isrc -Ideps -D_GNU_SOURCE
-LDLIBS=-lm $(TARGET) -ldmp
+CFLAGS=-g -std=c99 -Wall -pedantic -Werror -Wno-unused-value -Wno-unused-function -Isrc -Ideps -D_GNU_SOURCE 
+LDLIBS=-lm $(TARGET) $(DIFF)
 PREFIX?=/usr/local
 
 SOURCES=$(wildcard src/libuti/*.c)
 HEADERS=$(wildcard src/libuti/*.h)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
-
+DIFF=./deps/libdmp.a
 TEST_LIB=deps/tap.c
 TEST_SRC=$(wildcard tests/*.test.c)
 TESTS=$(patsubst %.c,%,$(TEST_SRC))
@@ -15,9 +15,6 @@ TARGET=build/libuti.a
 
 # The Target Build
 all: $(TARGET) tests
-
-prod: CFLAGS=-O2 -Isrc -Wall -Wextra
-prod: all
 
 $(TARGET): build $(OBJECTS)
 	ar rcs $@ $(OBJECTS)

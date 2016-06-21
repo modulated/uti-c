@@ -10,7 +10,7 @@
 
 # Libraries
 *.lib
-[!libxdiff]*.a
+[!libdmp]*.a
 *.la
 *.lo
 
