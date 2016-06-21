@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "data.h"
 
 struct node {
@@ -18,6 +19,7 @@ struct hashmap {
 
 struct hashnode {
 	void* name;
+	char hash;
 	void* data;
 };
 
@@ -66,5 +68,12 @@ int list_prepend(struct list* list, void* data) {
 
 struct hashmap data_hashmap_construct() {
 	struct hashmap out;
+	out.num = 0;
+
 	return out;
+}
+
+void data_hashmap_destruct(struct hashmap* hash) {
+	
+	free(hash->array);
 }

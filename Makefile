@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-g -std=c99 -Wall -pedantic -Werror -Wno-unused-value -Wno-unused-function -Isrc -D_GNU_SOURCE
+CFLAGS=-g -std=c99 -Wall -pedantic -Werror -Wno-unused-value -Wno-unused-function -Isrc -Ideps -D_GNU_SOURCE
 LDLIBS=-lm $(TARGET) -ldmp
 PREFIX?=/usr/local
 
@@ -7,7 +7,7 @@ SOURCES=$(wildcard src/libuti/*.c)
 HEADERS=$(wildcard src/libuti/*.h)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
-TEST_LIB=tests/tap.c
+TEST_LIB=deps/tap.c
 TEST_SRC=$(wildcard tests/*.test.c)
 TESTS=$(patsubst %.c,%,$(TEST_SRC))
 
