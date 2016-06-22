@@ -10,7 +10,7 @@
 
 # Libraries
 *.lib
-[!libdmp]*.a
+*.a
 *.la
 *.lo
 

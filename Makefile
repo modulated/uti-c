@@ -6,7 +6,9 @@ PREFIX?=/usr/local
 SOURCES=$(wildcard src/libuti/*.c)
 HEADERS=$(wildcard src/libuti/*.h)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
-DIFF=./deps/libdmp.a
+DIFF=deps/libdmp.a
+DIFF_SRC=deps/dmp.c deps/dmp_pool.c
+DIFF_OBJ=$(patsubst %.c,%.o,$(DIFF_SRC))
 TEST_LIB=deps/tap.c
 TEST_SRC=$(wildcard tests/*.test.c)
 TESTS=$(patsubst %.c,%,$(TEST_SRC))
@@ -16,7 +18,7 @@ TARGET=build/libuti.a
 # The Target Build
 all: $(TARGET) tests
 
-$(TARGET): build $(OBJECTS)
+$(TARGET): build $(OBJECTS) $(DIFF)
 	ar rcs $@ $(OBJECTS)
 
 build:
@@ -28,12 +30,15 @@ tests: LDLIBS +=$(TEST_LIB)
 tests: $(TESTS)
 	sh ./tests/runall.sh
 
+$(DIFF): $(DIFF_OBJ)
+	ar rcs $@ $(DIFF_OBJ)
+
 valgrind:
 	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
 
 # The Cleaner
 clean:
-	rm -rf build $(OBJECTS) $(TESTS)
+	rm -rf build $(OBJECTS) $(TESTS) $(DIFF) $(DIFF_OBJ)
 	rm -f tests/tests.log
 	find . -name "*.gc*" -exec rm {} \;
 	rm -rf `find . -name "*.dSYM" -print`
