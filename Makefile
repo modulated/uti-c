@@ -6,9 +6,11 @@ PREFIX?=/usr/local
 SOURCES=$(wildcard src/libuti/*.c)
 HEADERS=$(wildcard src/libuti/*.h)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
+
 DIFF=deps/libdmp.a
 DIFF_SRC=deps/dmp.c deps/dmp_pool.c
 DIFF_OBJ=$(patsubst %.c,%.o,$(DIFF_SRC))
+
 TEST_LIB=deps/tap.c
 TEST_SRC=$(wildcard tests/*.test.c)
 TESTS=$(patsubst %.c,%,$(TEST_SRC))
