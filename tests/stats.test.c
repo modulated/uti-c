@@ -8,7 +8,7 @@
 void test_all(void);
 
 int main() {
-	plan_no_plan();
+	plan();
 	test_all();
 	
 	return exit_status();
@@ -36,9 +36,8 @@ void test_numbers_sort() {
 	stats_numbers test_set = stats_numbers_construct_varargs(4, TEST_SET);
 	test_set = stats_numbers_sort(test_set);
 	
-	int expected_3 = test_set.array[2];	
+	int expected_3 = test_set.array[2];
 	int expected_4 = test_set.array[3];
-	stats_numbers_print(test_set);
 	
 	ok(expected_4 == 4 && expected_3 == 3, "stats_numbers_sort: Returns expected value") || diag("Expecting: %d and %d", 3, 4) || diag("Actual: %d and %d", expected_3, expected_4);
 	

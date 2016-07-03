@@ -543,7 +543,7 @@ void run_tests () {
 
 int main () {
 	
-	plan_no_plan();
+	plan();
 	// plan_tests(14);
 	
 	run_tests();

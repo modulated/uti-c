@@ -24,6 +24,7 @@
  * SUCH DAMAGE.
  */
 
+extern char* filebuff;
 /**
  * plan_tests - announce the number of tests you plan to run
  * @tests: the number of tests
@@ -37,6 +38,7 @@
  * Example:
  *	plan_tests(13);
  */
+
 int plan_tests(unsigned int tests);
 
 #if (!defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L) && !defined(__GNUC__)
@@ -223,7 +225,10 @@ int exit_status(void);
  *		ok1(some_test());
  *	exit(exit_status());
  */
+
 int plan_no_plan(void);
+
+#define plan() filebuff = __FILE__; plan_no_plan(); 
 
 /**
  * plan_skip_all - Indicate that you will skip all tests.

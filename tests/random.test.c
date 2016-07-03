@@ -5,7 +5,7 @@
 void test_run(void);
 
 int main() {
-    plan_tests(4);
+    plan();
 
     test_run();
     

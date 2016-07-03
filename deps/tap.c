@@ -43,6 +43,7 @@ static int todo = 0;
 static int test_died = 0;
 static const  int exit_die  = 255;       /* exit-code on die() */
 
+char* filebuff;
 
 /* Encapsulate the pthread code in a conditional.  In the absence of
    libpthread the code does nothing */
@@ -185,7 +186,7 @@ _tap_init(void)
 	
 	// mods
 	puts("TAP version 13");
-	
+
 	UNLOCK;
 }
 
@@ -210,6 +211,8 @@ plan_no_plan(void)
 	have_plan = 1;
 	no_plan = 1;
 
+	printf("# %s\n", filebuff);
+	
 	UNLOCK;
 
 	return 1;
@@ -412,9 +415,8 @@ _cleanup(void)
 	if (failures > 0) {
 		printf("# fail %d\n", failures);
 	}
-	else {
-		puts("");
-		puts("# ok");
+	else {		
+		puts("# ok");		
 	}
 	
 	/* If plan_no_plan() wasn't called, and we don't have a plan,
@@ -436,7 +438,7 @@ _cleanup(void)
 	/* No plan provided, but now we know how many tests were run, and can
 	   print the header at the end */
 	if(!skip_all && (no_plan || !have_plan)) {
-		printf("1..%d\n", test_count);
+		printf("1..%d\n", test_count);		
 	}
 
 	if((have_plan && !no_plan) && e_tests < test_count) {
@@ -456,6 +458,8 @@ _cleanup(void)
 	if(failures)
 		diag("Looks like you failed %d test%s of %d.", 
 		     failures, failures == 1 ? "":"s", test_count);
+
+	puts("");
 
 	UNLOCK;
 }

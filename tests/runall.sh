@@ -9,3 +9,7 @@ fi
 tests/stats.test
 if [ $? -ne 0 ]; then exit; 
 fi
+
+tests/data.test
+if [ $? -ne 0 ]; then exit; 
+fi

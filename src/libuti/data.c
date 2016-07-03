@@ -3,30 +3,9 @@
 #include <string.h>
 #include "data.h"
 
-struct data_node {
-	struct data_node* next;
-	void* data;
-};
-
-struct data_list {
-	struct data_node* first;
-	struct data_node* last;
-};
-
-struct data_hashmap {
-	char* array[256];
-	int num;
-};
-
-struct data_hashnode {
-	void* name;
-	char hash;
-	void* data;
-};
-
-struct data_list list_create(void* data) {
+struct data_list data_list_construct(int data) {
 	struct data_list rlist;
-	struct data_node rnode;
+	struct data_list_node rnode;
 	rlist.first = &rnode;
 	rlist.last = &rnode;
 	rlist.first->data = data;
@@ -34,8 +13,8 @@ struct data_list list_create(void* data) {
 	return rlist;
 }
 
-int list_append(struct data_list* list, void* data) {
-	struct data_node new;
+int data_list_append(struct data_list* list, int data) {
+	struct data_list_node new;
 	new.data = data;
 	new.next = NULL;
 
@@ -46,8 +25,8 @@ int list_append(struct data_list* list, void* data) {
 
 }
 
-int list_prepend(struct data_list* list, void* data) {
-	struct data_node new;
+int data_list_prepend(struct data_list* list, int data) {
+	struct data_list_node new;
 	new.data = data;
 	new.next = list->first;
 

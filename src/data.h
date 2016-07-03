@@ -1,15 +1,34 @@
 #ifndef _LIST_H
 #define _LIST_H
 
-struct data_list list_create(void* data);
+struct data_list_node {
+	struct data_list_node* next;
+	int data;
+};
 
-int list_append(struct data_list* list, void* data);
+struct data_list {
+	struct data_list_node* first;
+	struct data_list_node* last;
+};
 
-int list_prepend(struct data_list* list, void* data);
+struct data_hashmap {
+	char* array[256];
+	int num;
+};
 
-struct data_node list_iterate(struct data_list* list);
+struct data_hashnode {
+	void* name;
+	char hash;
+	void* data;
+};
 
-struct data_node list_find(struct data_list* list, void* data);
+struct data_list data_list_construct (int data);
+
+int data_list_append(struct data_list* list, int data);
+
+int data_list_prepend(struct data_list* list, int data);
+
+int data_list_find(struct data_list* list, int data);
 
 
 #endif
