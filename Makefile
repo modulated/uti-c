@@ -20,6 +20,7 @@ TARGET=build/libuti.a
 # The Target Build
 all: $(TARGET) tests
 
+# Archive built objects to TARGET
 $(TARGET): build $(OBJECTS) $(DIFF)
 	ar rcs $@ $(OBJECTS)
 
@@ -27,10 +28,18 @@ build:
 	@mkdir -p build
 
 # The Unit Tests
+
 .PHONY: tests
-tests: LDLIBS +=$(TEST_LIB)
+tests: LDLIBS += $(TEST_LIB)
 tests: $(TESTS)
-	sh ./tests/runall.sh
+	# sh ./tests/runall.sh
+	@for f in tests/*.test; \
+	do \
+		$$f; \
+		if [ $$? -ne 0 ]; \
+			then exit; \
+		fi; \
+	done;
 
 $(DIFF): $(DIFF_OBJ)
 	ar rcs $@ $(DIFF_OBJ)
