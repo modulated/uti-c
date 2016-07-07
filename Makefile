@@ -47,6 +47,10 @@ $(DIFF): $(DIFF_OBJ)
 valgrind:
 	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
 
+seqc: $(TARGET) 
+	$(CC) $(CFLAGS) -o bin/seqc.test src/seqc.c $(LDLIBS)
+
+
 # The Cleaner
 clean:
 	rm -rf build $(OBJECTS) $(TESTS) $(DIFF) $(DIFF_OBJ)
