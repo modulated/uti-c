@@ -66,7 +66,7 @@ unsigned char data_hash_minihash(char* in) {
 		xor ^= (unsigned char)in[i];
 		xor ^= xor<<(length%8) | xor>>(8-(length%8));
 	}
-	int rotator = (length*7^xor)%8;
+	int rotator = (length*3^xor)%8;
 	xor ^= xor<<rotator | xor>>(8-rotator);
 	return xor;
 }
