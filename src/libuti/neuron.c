@@ -4,9 +4,9 @@ static double neuron_relu(double input) {
 	return input > 0 ? input : 0;
 }
 
-neuron_t neuron_create(double bias) {
+neuron_t neuron_create(double thresh) {
 	neuron_t neuron;
-	neuron.bias = bias;
+	neuron.thresh = thresh;
 	return neuron;
 }
 
@@ -24,7 +24,7 @@ void neuron_clear(neuron_t* neuron) {
 }
 
 double neuron_calc(neuron_t* neuron) {
-	neuron->output = neuron_relu(neuron->input + neuron->bias);
+	neuron->output = neuron_relu(neuron->input + neuron->thresh);
 	return neuron->output;
 }
 
