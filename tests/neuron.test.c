@@ -80,7 +80,7 @@ void test_neuron_network_get_num_weights()
 
 void test_neuron_network_get_weights()
 {
-	neuron_network_t test_network = neuron_network_construct(1,1,2,2);
+	neuron_network_t test_network = neuron_network_construct(1,2,4,1);
 	int length = neuron_network_get_num_weights(&test_network);
 	double expected[length]; 
 	double* array = neuron_network_get_weights(&test_network);
@@ -97,7 +97,10 @@ void test_all() {
 	test_neuron_destruct();
 	test_neuron_layer_construct();
 	test_neuron_layer_destruct();
-	
+    test_neuron_network_construct();
+    test_neuron_network_destruct();
+    test_neuron_network_get_num_weights();
+    test_neuron_network_get_weights();    
 }
 
 int main(void) {

@@ -15,7 +15,17 @@ static double neuron_relu_bounded (double input, double max)
 	return input;
 }
 
-static double neuron_random_weight ()
+static double neuron_sigmoid(double in)
+{
+    double output;
+       
+    output = 1.0;
+    return output;
+}
+
+static double neuron_sigmoid_adjusted(double in);
+
+static double neuron_random_weight () // Double between 0.0 and 1.0
 {
 	return rand() / (RAND_MAX + 1.0);
 }
@@ -24,6 +34,8 @@ static double neuron_random_range (double min, double max)
 {
 	return min + (rand() / (RAND_MAX + (max-min)));
 }
+
+static void neuron_network_weight_iterator(double* input_array, int offset, neuron_network_t* network);
 
 /*
 ** Public Functions
@@ -111,17 +123,44 @@ void neuron_network_destruct(neuron_network_t* network)
 
 double* neuron_network_get_weights(neuron_network_t* network) 
 {
-	int num = neuron_network_get_num_weights(network);
-	return malloc(num * sizeof(double));	
+	int num_weights = neuron_network_get_num_weights(network);
+	double* array = malloc(num_weights * sizeof(double));
+    int inputs = network->net_inputs;
+    int outputs = network->net_outputs;
+    int layer_num = network->hidden_layer_num;
+    int layer_size = network->hidden_layer_size;
+
+    for (int i = 0; i < layer_size; i++)
+    {
+    //    for (int j = 0; j < inputs; j++)
+    //    {
+        int j = 0;
+           array[i + j * inputs] = network->layers[0].neurons[i].weights[j];
+            printf("i: %d j: %d x: %f\n", i, j, array[i + j * inputs]); 
+    //    }
+    }
+
+
+    for (int k = 0; k < outputs; k++)
+    {
+        for (int l = 0; l < layer_size; l++)
+        {
+            array[k + l * layer_size] = network->layers[layer_num].neurons[k].weights[l];
+            printf("k: %d l: %d x: %f\n", k, l, array[k + l * layer_size]);
+        }
+    }
+
+    return array;
+}
+
+static void neuron_network_weight_iterator(double* input_array, int offset, neuron_network_t* network)
+{
+    for (int i = 0; i < n
 }
 
 int neuron_network_get_num_weights(neuron_network_t* network)
 {
-	int num = 0;
-	
-	num += network->net_inputs * network->hidden_layer_size; // first layer
-	num += (network->hidden_layer_size * network->hidden_layer_num) * (network->hidden_layer_num - 1); // hidden layers
-	num += network->net_outputs * network->hidden_layer_size;
+	int num = (network->net_inputs + network->net_outputs + (network->hidden_layer_num -1) * network->hidden_layer_size) * network->hidden_layer_size; // (in + out + num - 1) * size
 
 	return num;
 }

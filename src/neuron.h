@@ -7,8 +7,6 @@ typedef struct
 	double* weights;
 } neuron_t;
 
-
-
 typedef struct 
 {
 	int size;
