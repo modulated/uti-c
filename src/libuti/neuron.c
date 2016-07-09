@@ -140,22 +140,26 @@ double* neuron_network_get_weights(neuron_network_t* network)
     //    }
     }
 
-
-    for (int k = 0; k < outputs; k++)
-    {
-        for (int l = 0; l < layer_size; l++)
-        {
-            array[k + l * layer_size] = network->layers[layer_num].neurons[k].weights[l];
-            printf("k: %d l: %d x: %f\n", k, l, array[k + l * layer_size]);
-        }
-    }
+	neuron_network_weight_iterator(array, network, 0, 0, layer_size, inputs) // First layer
+	for (int mid_layer = 1; mid_layer < layer_num-1; mid_layer++)// Middle layers
+	{
+		neuron_network_weight_iterator(array, network, (inputs * layer_size) + ((i-1) * layer_size * layer_size), mid_layer, layer_size, layzer_size);
+	}
+	neuron_network_weight_iterator(array, network, num_weights - (outputs*layer_size), layer_num-1, outputs, layer_size); //Last layer
 
     return array;
 }
 
-static void neuron_network_weight_iterator(double* input_array, int offset, neuron_network_t* network)
+static void neuron_network_weight_iterator(double* input_array, neuron_network_t* network, int offset, int layer, int num_neurons, int num_inputs)
 {
-    for (int i = 0; i < n
+    for (int neuron = 0; neuron < num_neurons; neuron++)
+	{
+		for (int input = 0; input < num_inputs; input++)
+		{
+			input_array[neuron + input * num_inputs] = network->layers[layer].neurons[neuron].weights[input];
+		}
+	}
+
 }
 
 int neuron_network_get_num_weights(neuron_network_t* network)
