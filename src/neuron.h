@@ -7,17 +7,18 @@ typedef struct
 	int length;
 } neuron_array_t;
 
-typedef struct 
+typedef struct
 {
 	int inputs;
 	neuron_array_t weights;
 	double bias;
-} neuron_t;
+} neuron_unit_t;
 
 typedef struct 
 {
 	int size;
-	neuron_t* neurons;
+	neuron_unit_t* neurons;
+	int num_weights;
 } neuron_layer_t;
 
 typedef struct 
@@ -25,9 +26,9 @@ typedef struct
 	int num_inputs;
 	int num_outputs;
 	int num_layers;
-	int hidden_layer_size;
-	neuron_layer_t* layers;
+	int layer_size;
 	int num_weights;
+	neuron_layer_t* layers;
 } neuron_network_t;
 
 
@@ -36,10 +37,12 @@ typedef struct
 neuron_array_t neuron_array_construct(int length);
 void neuron_array_destruct(neuron_array_t* array);
 void neuron_array_set(neuron_array_t* array, int index, double value);
+void neuron_array_copy(neuron_array_t* dest_array, int index_dest, neuron_array_t* source_array, int index_source, int length);
+neuron_array_t neuron_array_slice(neuron_array_t* dest_array, int index, int length);
 double neuron_array_get(neuron_array_t* array, int index);
 
-neuron_t neuron_construct(int inputs);
-void neuron_destruct(neuron_t* neuron);
+neuron_unit_t neuron_construct(int inputs);
+void neuron_destruct(neuron_unit_t* neuron);
 
 neuron_layer_t neuron_layer_construct(int number_of_neurons, int inputs_per_neuron);
 void neuron_layer_destruct(neuron_layer_t* layer);
