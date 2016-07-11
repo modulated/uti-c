@@ -21,7 +21,7 @@ TARGET=build/libuti.a
 all: $(TARGET) tests
 
 # Archive built objects to TARGET
-$(TARGET): build $(OBJECTS) $(DIFF)
+$(TARGET): build $(OBJECTS) $(DIFF) $(SOURCES)
 	ar rcs $@ $(OBJECTS)
 
 build:

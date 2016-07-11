@@ -1,10 +1,17 @@
 #ifndef _NEURON_H
 #define _NEURON_H
 
+typedef struct
+{
+	double* array;
+	int length;
+} neuron_array_t;
+
 typedef struct 
 {
 	int inputs;
-	double* weights;
+	neuron_array_t weights;
+	double bias;
 } neuron_t;
 
 typedef struct 
@@ -15,14 +22,21 @@ typedef struct
 
 typedef struct 
 {
-	int net_inputs;
-	int net_outputs;
-	int hidden_layer_num;
+	int num_inputs;
+	int num_outputs;
+	int num_layers;
 	int hidden_layer_size;
 	neuron_layer_t* layers;
+	int num_weights;
 } neuron_network_t;
 
 
+
+
+neuron_array_t neuron_array_construct(int length);
+void neuron_array_destruct(neuron_array_t* array);
+void neuron_array_set(neuron_array_t* array, int index, double value);
+double neuron_array_get(neuron_array_t* array, int index);
 
 neuron_t neuron_construct(int inputs);
 void neuron_destruct(neuron_t* neuron);
@@ -32,10 +46,9 @@ void neuron_layer_destruct(neuron_layer_t* layer);
 
 neuron_network_t neuron_network_construct(int net_inputs, int net_outputs, int hidden_layer_num, int hidden_layer_size);
 void neuron_network_destruct(neuron_network_t* network);
-double* neuron_network_get_weights(neuron_network_t* network);
+neuron_array_t neuron_network_get_weights(neuron_network_t* network);
 int neuron_network_get_num_weights(neuron_network_t* network);
-void neuron_network_set_weights(neuron_network_t* network, double* weights);
-double* neuron_network_update(neuron_network_t* network, double* inputs);
-double neuron_network_get_sigmoid(neuron_network_t* network, double activation, double response);
+void neuron_network_set_weights(neuron_network_t* network, neuron_array_t* weights);
+neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* inputs);
 
 #endif
