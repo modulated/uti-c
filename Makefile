@@ -32,7 +32,6 @@ build:
 .PHONY: tests
 tests: LDLIBS += $(TEST_LIB)
 tests: $(TESTS)
-	# sh ./tests/runall.sh
 	@for f in tests/*.test; \
 	do \
 		$$f; \
