@@ -330,26 +330,20 @@ neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* 
 {
 	neuron_array_t outputs; // Stores outputs from each layer
 	
-	// For each layer
-	for (int i = 0; i < network->num_layers + 1; i++)
+	
+	for (int i = 0; i < network->num_layers + 1; i++) // For each layer (+1 for outputs)
 	{
-		int inputs_size;
 		if (i > 0) 
 		{
 			inputs = &outputs; //save previous layers output;
 			neuron_array_destruct(&outputs);
-			inputs_size = network->layer_size;
-		}
-		else
-		{
-			 inputs_size = network->num_inputs;
 		}
 
 		// Initiate output for each layer
 		int outputs_size = network->layers[i].size;
 		outputs = neuron_array_construct(outputs_size);
 
-		printf("Layer: %d Inputs size: %d Outputs size: %d\n", i, inputs_size, outputs_size);
+		printf("Layer: %d Inputs size: %d Outputs size: %d\n", i, inputs->length, outputs.length);
 		printf("Inputs: ");
 		for (int k = 0; k < inputs->length; k++)
 		{
@@ -358,15 +352,16 @@ neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* 
 		puts("");
 
 
-		for (int j = 0; j < outputs_size; j++)
+		for (int j = 0; j < outputs.length; j++)
 		{
 			double sum_inputs = 0;
 
 			neuron_unit_t current_neuron = network->layers[i].neurons[j];
 
-			if (network->layers[i].num_weights != inputs->length) 
+			if (network->layers[i].neurons->inputs != inputs->length) 
 			{
 				puts("ERROR: inputs not equal to layer weights.");
+				printf("inputs: %d, weights: %d\n", network->layers[i].neurons->inputs, inputs->length);
 				exit(1);
 			}
 
@@ -391,5 +386,3 @@ neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* 
 	
 	return outputs;
 }
-
-double neuron_network_get_sigmoid(neuron_network_t* network, double activation, double response);
