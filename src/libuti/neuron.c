@@ -3,12 +3,8 @@
 #include <stdio.h>
 #include <math.h>
 
-static double neuron_relu_unbound (double input)
-{
-	return input > 0 ? input : 0;
-}
 
-static double neuron_relu_bounded (double input, double max) 
+double neuron_relu (double input, double max) 
 {
 	input = input > 0 ? input : 0;
 	input = input < max ? input : max;
@@ -16,12 +12,7 @@ static double neuron_relu_bounded (double input, double max)
 	return input;
 }
 
-static double neuron_sigmoid(double input)
-{
-	return 1.0 / (1.0 + exp(-input * 1));
-}
-
-static double neuron_sigmoid_adjusted(double input, double response)
+double neuron_sigmoid(double input, double response)
 {
 	return 1.0 / (1.0 + exp(-input * response));
 }
@@ -89,6 +80,16 @@ neuron_array_t neuron_array_construct(int length)
 	array.array[length] = NAN;
 
 	return array;
+}
+
+neuron_array_t neuron_array_duplicate(neuron_array_t* array)
+{
+	neuron_array_t output = neuron_array_construct(array->length);
+	for (int i = 0; i < array->length; i++)
+	{
+		output.array[i] = array->array[i];
+	}
+	return output;
 }
 
 void neuron_array_set(neuron_array_t* array, int index, double value)
@@ -206,13 +207,14 @@ void neuron_layer_destruct(neuron_layer_t* layer)
 	layer->size = 0;
 }
 
-neuron_network_t neuron_network_construct(int num_inputs, int num_outputs, int num_layers, int layer_size)
+neuron_network_t neuron_network_construct(int num_inputs, int num_outputs, int num_layers, int layer_size, double (*summing_function)(double, double))
 {
 	neuron_network_t network;
 	network.num_inputs = num_inputs;
 	network.num_outputs = num_outputs;
 	network.num_layers = num_layers;
 	network.layer_size = layer_size;
+	network.summing_function = summing_function;
 
 	network.layers = malloc((num_layers + 1) * sizeof (neuron_layer_t)); // Last = output row
 	
@@ -232,7 +234,7 @@ neuron_network_t neuron_network_construct(int num_inputs, int num_outputs, int n
 
 void neuron_network_destruct(neuron_network_t* network) 
 {
-	for (int i = 0; i < network->num_layers; i++)
+	for (int i = 0; i < network->num_layers + 1; i++)
 	{
 		neuron_layer_destruct(&network->layers[i]);
 	}
@@ -254,19 +256,26 @@ neuron_array_t neuron_network_get_weights(neuron_network_t* network)
 	int mid_layer_length = layer_size * layer_size;
 	int last_layer_length = outputs * layer_size;
 	
+
 	neuron_array_t first_layer_weights = neuron_layer_get_weights(&network->layers[0]);	
 	neuron_array_copy(&output_array, 0, &first_layer_weights, 0, first_layer_length);
+	neuron_array_destruct(&first_layer_weights);
+	
 	
 	for (int mid_layer = 0; mid_layer < layer_num-2; mid_layer++)
 	{	
 		int offset_mid_layer = first_layer_length + (mid_layer) * mid_layer_length;
 		neuron_array_t mid_layer_weights = neuron_layer_get_weights(&network->layers[mid_layer + 1]);
 		neuron_array_copy(&output_array, offset_mid_layer, &mid_layer_weights, 0, mid_layer_length);
+		neuron_array_destruct(&mid_layer_weights);
 	}
+	
 	
 	neuron_array_t last_layer_weights = neuron_layer_get_weights(&network->layers[layer_num - 1]);
 	int offset_last_layer = num_weights - last_layer_length;	
 	neuron_array_copy(&output_array, offset_last_layer, &last_layer_weights, 0, last_layer_length);
+	neuron_array_destruct(&last_layer_weights);
+
 
 	return output_array;
 }
@@ -335,30 +344,33 @@ neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* 
 	{
 		if (i > 0) 
 		{
-			inputs = &outputs; //save previous layers output;
+			neuron_array_destruct(inputs);
+			*inputs = neuron_array_duplicate(&outputs); //save previous layers output;
 			neuron_array_destruct(&outputs);
 		}
 
 		// Initiate output for each layer
-		int outputs_size = network->layers[i].size;
-		outputs = neuron_array_construct(outputs_size);
+		neuron_layer_t* current_layer = &network->layers[i];
+		outputs = neuron_array_construct(network->layers[i].size);
 
-		printf("Layer: %d Inputs size: %d Outputs size: %d\n", i, inputs->length, outputs.length);
-		printf("Inputs: ");
-		for (int k = 0; k < inputs->length; k++)
-		{
-			printf("%d: %f ", k, neuron_array_get(inputs, k));
-		}
-		puts("");
-
+		// Debugging
+		// printf("Input size %d\n", inputs->length);
+		// printf("Layer: %d Inputs size: %d Outputs size: %d\n", i, inputs->length, outputs.length);
+		// printf("Inputs: ");
+		// for (int k = 0; k < inputs->length; k++)
+		// {
+		// 	printf("%d: %f ", k, neuron_array_get(inputs, k));
+		// }
+		// puts("");
+		// Debugging
 
 		for (int j = 0; j < outputs.length; j++)
 		{
 			double sum_inputs = 0;
 
-			neuron_unit_t current_neuron = network->layers[i].neurons[j];
+			neuron_unit_t current_neuron = current_layer->neurons[j];
 
-			if (network->layers[i].neurons->inputs != inputs->length) 
+			if (network->layers[i].neurons->weights.length != inputs->length) 
 			{
 				puts("ERROR: inputs not equal to layer weights.");
 				printf("inputs: %d, weights: %d\n", network->layers[i].neurons->inputs, inputs->length);
@@ -376,12 +388,13 @@ neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* 
 			// Add in the bias
 			sum_inputs += network->layers[i].neurons[j].bias;
 
-			// Sigmoid for each neuron total
-			 double sigmoid_output = neuron_sigmoid(sum_inputs);
+			// Sigmoid for each neuron total	 
+			 double sigmoid_output = network->summing_function(sum_inputs, 1);
 			 neuron_array_set(&outputs, j, sigmoid_output);
 
-			 printf("Out: %f -> Sigmoid: %f\n", sum_inputs, sigmoid_output);
+			//  printf("Output size: %d, Sig %f -> %f\n", outputs.length, sum_inputs, sigmoid_output);
 		}
+
 	}
 	
 	return outputs;

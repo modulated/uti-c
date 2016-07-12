@@ -69,12 +69,12 @@ void test_neuron_layer_destruct()
 {
 	neuron_layer_t test_layer = neuron_layer_construct(4,4);
 	neuron_layer_destruct(&test_layer);
-	ok1((test_layer.neurons == NULL) && (test_layer.size == 0));
+	ok((test_layer.neurons == NULL) && (test_layer.size == 0), "neuron_layer_destruct.");
 }
 
 void test_neuron_network_construct()
 {
-	neuron_network_t test_network = neuron_network_construct(1,1,2,2);
+	neuron_network_t test_network = neuron_network_construct(1,1,2,2, neuron_relu);
 
 	ok(
 		(test_network.num_inputs == 1) &&
@@ -88,7 +88,7 @@ void test_neuron_network_construct()
 
 void test_neuron_network_destruct()
 {
-	neuron_network_t test_network = neuron_network_construct(1,1,2,4);
+	neuron_network_t test_network = neuron_network_construct(1,1,2,4, neuron_relu);
 	neuron_network_destruct(&test_network);
 
 	ok(test_network.layers == NULL, "neuron_network_destruct.");
@@ -97,7 +97,7 @@ void test_neuron_network_destruct()
 
 void test_neuron_network_get_num_weights()
 {
-	neuron_network_t test_network = neuron_network_construct(1,1,3,4);
+	neuron_network_t test_network = neuron_network_construct(1,1,3,4, neuron_relu);
 	int num = neuron_network_get_num_weights(&test_network);
 	int expected = 40;
 	ok(num == expected, "neuron_network_get_num_weights.");
@@ -107,7 +107,7 @@ void test_neuron_network_get_num_weights()
 
 void test_neuron_network_get_weights()
 {
-	neuron_network_t test_network = neuron_network_construct(1,1,2,2);
+	neuron_network_t test_network = neuron_network_construct(1,1,2,2, neuron_relu);
 	
 	neuron_array_t result = neuron_network_get_weights(&test_network);
 
@@ -124,7 +124,7 @@ void test_neuron_network_get_weights()
 
 void test_neuron_network_set_weights()
 {
-	neuron_network_t test_network = neuron_network_construct(1,1,2,2);	
+	neuron_network_t test_network = neuron_network_construct(1,1,2,2, neuron_relu);	
 	
 	neuron_array_t array = neuron_array_construct(test_network.num_weights);
 	for (int i = 0; i < array.length; i++) 
@@ -142,23 +142,24 @@ void test_neuron_network_set_weights()
 	ok(check == 0, "neuron_network_set_weights.");
 
 	neuron_array_destruct(&result);
+	neuron_array_destruct(&array);
 	neuron_network_destruct(&test_network);
 }
 
 void test_neuron_network_update() {
-	neuron_network_t test_network = neuron_network_construct(2,2,4,4);	
+	neuron_network_t test_network = neuron_network_construct(2,2,4,4, neuron_relu);	
 	neuron_array_t input = neuron_array_construct(2);
-	neuron_array_set(&input, 0, 0);
-	neuron_array_set(&input, 1, 0);
-	
+	neuron_array_set(&input, 0, 1.0);
+	neuron_array_set(&input, 1, 1.0);	
+
 	neuron_array_t output = neuron_network_update(&test_network, &input);
+
 
 	int err_counter = 0;
 	for (int i = 0; i < output.length; i++)
 	{
 		double weight = neuron_array_get(&output, i);
-		if (weight > 1.0 || weight < 0.0) err_counter++;
-		printf("Out %d: %f\n", i, weight);
+		if (weight > 1.0 || weight < 0.0) err_counter++;		
 	}
 	
 	
@@ -166,6 +167,7 @@ void test_neuron_network_update() {
 	diag("output not within range 0.0 to 1.0");
 	
 	neuron_array_destruct(&output);
+	neuron_array_destruct(&input);
 	neuron_network_destruct(&test_network);
 }
 void test_neuron_network_get_sigmoid() {

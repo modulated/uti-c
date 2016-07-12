@@ -28,6 +28,7 @@ typedef struct
 	int num_layers;
 	int layer_size;
 	int num_weights;
+	double (*summing_function)(double, double);
 	neuron_layer_t* layers;
 } neuron_network_t;
 
@@ -36,10 +37,13 @@ typedef struct
 
 neuron_array_t neuron_array_construct(int length);
 void neuron_array_destruct(neuron_array_t* array);
+neuron_array_t neuron_array_duplicate(neuron_array_t* array);
 void neuron_array_set(neuron_array_t* array, int index, double value);
 void neuron_array_copy(neuron_array_t* dest_array, int index_dest, neuron_array_t* source_array, int index_source, int length);
 neuron_array_t neuron_array_slice(neuron_array_t* dest_array, int index, int length);
 double neuron_array_get(neuron_array_t* array, int index);
+double neuron_relu (double input, double max);
+double neuron_sigmoid(double input, double response);
 
 neuron_unit_t neuron_construct(int inputs);
 void neuron_destruct(neuron_unit_t* neuron);
@@ -47,7 +51,7 @@ void neuron_destruct(neuron_unit_t* neuron);
 neuron_layer_t neuron_layer_construct(int number_of_neurons, int inputs_per_neuron);
 void neuron_layer_destruct(neuron_layer_t* layer);
 
-neuron_network_t neuron_network_construct(int net_inputs, int net_outputs, int hidden_layer_num, int hidden_layer_size);
+neuron_network_t neuron_network_construct(int net_inputs, int net_outputs, int hidden_layer_num, int hidden_layer_size, double (*summing_function)(double, double));
 void neuron_network_destruct(neuron_network_t* network);
 neuron_array_t neuron_network_get_weights(neuron_network_t* network);
 int neuron_network_get_num_weights(neuron_network_t* network);
