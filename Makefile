@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-g -std=c99 -Wall -pedantic -Werror -Wno-unused-value -Wno-unused-function -Isrc -Ideps -D_GNU_SOURCE 
-LDLIBS=-lm $(TARGET) $(DIFF)
+LDLIBS=$(TARGET) $(DIFF) -lm
 PREFIX?=/usr/local
 
 SOURCES=$(wildcard src/libuti/*.c)
