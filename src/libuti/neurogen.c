@@ -57,10 +57,10 @@ void neurogen_genome_mutate (neurogen_genome_t* genome, double probability)
 {
 	for (int i = 0; i < genome->chromosome.length; i++)
 	{
-		double random_prob = (float) rand()/RAND_MAX;
+		double random_prob = (double) rand()/RAND_MAX;
 		if (random_prob <= probability)
 		{
-			double random_val = (float) rand()/RAND_MAX;
+			double random_val = (double) rand()/RAND_MAX;
 			neuron_array_set(&genome->chromosome, i, random_val);
 		}
 	}

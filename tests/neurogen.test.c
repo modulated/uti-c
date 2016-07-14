@@ -122,11 +122,11 @@ void test_neurogen_genome_mutate()
 	}
 	ok(
 		(dirtycheck(sum, 0.0) != 1) &&
-		(dirtycheck(unchanged, 0.0) == 1),
+		dirtycheck(unchanged, 0.0),
 		"neurogen_genome_mutate.") ||
 
-	diag("Unchanged: expected %f got %f\n.", 0.0, unchanged) ||
-	diag("Mutated: Did not expect %f got %f\n.", 0.0, sum);
+	diag("Unchanged: expected %f got %f.", 0.0, unchanged) ||
+	diag("Mutated: Did not expect %f got %f.", 0.0, sum);
 
 	neurogen_genome_destruct(&genome);
 	neuron_array_destruct(&array);
