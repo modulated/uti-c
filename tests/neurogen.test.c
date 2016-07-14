@@ -100,7 +100,7 @@ void test_neurogen_genome_crossover()
 void test_neurogen_genome_mutate()
 {
 	int expected_length = 24;
-	double prob = 0.05;
+	double prob = 0.1;
 	neuron_array_t array = neuron_array_construct(expected_length);
 	neurogen_genome_t genome = neurogen_genome_construct(&array);
 	
