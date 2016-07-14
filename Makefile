@@ -31,6 +31,7 @@ build:
 
 .PHONY: tests
 tests: LDLIBS += $(TEST_LIB)
+tests: $(TEST_SRC) $(TARGET)
 tests: $(TESTS)
 	@for f in tests/*.test; \
 	do \

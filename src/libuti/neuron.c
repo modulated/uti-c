@@ -76,9 +76,13 @@ neuron_array_t neuron_array_construct(int length)
 {
 	neuron_array_t array;
 	array.length = length;
-	array.array = (double*)malloc((length + 1) * sizeof(double));
+	array.array = malloc((length + 1) * sizeof(double));
 	array.array[length] = NAN;
 
+	for (int i = 0; i < length; i++)
+	{
+		array.array[i] = 0.0;
+	}
 	return array;
 }
 
@@ -127,6 +131,26 @@ void neuron_array_copy(neuron_array_t* dest_array, int index_dest, neuron_array_
 	error:
 		puts("ERROR: array copy bounds check.");
 		exit(1);
+}
+
+neuron_array_t neuron_array_crossover(neuron_array_t* array_start, neuron_array_t* array_end, int index)
+{
+	if (array_start->length != array_end->length)
+	{
+		puts("ERROR: arrays not same length.");
+		exit(1);
+	}
+
+	neuron_array_t output = neuron_array_construct(array_start->length);
+	for (int i = 0; i < index; i++)
+	{
+		output.array[i] = array_start->array[i];
+	}
+	for (int i = index; i < array_start->length; i++)
+	{
+		output.array[i] = array_end->array[i];
+	}
+	return output;
 }
 
 neuron_array_t neuron_array_slice(neuron_array_t* dest_array, int index, int length)
