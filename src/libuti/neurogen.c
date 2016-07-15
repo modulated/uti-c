@@ -111,6 +111,19 @@ void neurogen_population_destruct (neurogen_population_t* population)
 	population->fittest_genome = NULL;
 }
 
+void neurogen_population_update(neurogen_population_t* population)
+{
+	for (int i = 0; i < population->population_size; i++)
+	{
+		// Run neural network
+		// Calculate fitness / error
+		// Mutation and Crossover
+	}
+
+	population->generation++;
+}
+
+
 void neurogen_population_calculate_statistics (neurogen_population_t* population)
 {
 	double total_fitness = 0.0;

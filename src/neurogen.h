@@ -35,6 +35,7 @@ void neurogen_genome_mutate (neurogen_genome_t* array, double probability);
 neurogen_population_t neurogen_population_construct (int population_size, int genome_length, double mutation_rate, double crossover_rate);
 void neurogen_population_destruct (neurogen_population_t* population);
 void neurogen_population_calculate_statistics (neurogen_population_t* population);
+void neurogen_population_update(neurogen_population_t* population);
 neurogen_genome_t* neurogen_population_roulette_selection(neurogen_population_t* population);
 
 
