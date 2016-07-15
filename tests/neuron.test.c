@@ -19,22 +19,22 @@ void test_neuron_array_construct()
 	neuron_array_destruct(&array);
 }
 
-void test_neuron_construct()
+void test_neuron_unit_construct()
 {
-	neuron_unit_t test_neuron = neuron_construct(2);
+	neuron_unit_t test_neuron = neuron_unit_construct(2);
 	
-	ok( (test_neuron.inputs == 2), "neuron_create.") || 
+	ok( (test_neuron.inputs == 2), "neuron_unit_construct.") || 
 	diag("Inputs: expected %d, got %d.", 2, test_neuron.inputs);
 	
-	neuron_destruct(&test_neuron);
+	neuron_unit_destruct(&test_neuron);
 }
 
-void test_neuron_destruct()
+void test_neuron_unit_destruct()
 {
-	neuron_unit_t test_neuron = neuron_construct(10);
-	neuron_destruct(&test_neuron);
+	neuron_unit_t test_neuron = neuron_unit_construct(10);
+	neuron_unit_destruct(&test_neuron);
 
-	ok( (test_neuron.weights.array == NULL && test_neuron.inputs == 0), "neuron_destruct.");
+	ok( (test_neuron.weights.array == NULL && test_neuron.inputs == 0), "neuron_unit_destruct.");
 }
 
 void test_neuron_layer_construct()
@@ -178,8 +178,8 @@ void test_all() {
 	srand(0);
 
 	test_neuron_array_construct();
-	test_neuron_construct();
-	test_neuron_destruct();
+	test_neuron_unit_construct();
+	test_neuron_unit_destruct();
 	test_neuron_layer_construct();
 	test_neuron_layer_destruct();
 	test_neuron_network_construct();

@@ -58,8 +58,8 @@ double neuron_array_get(neuron_array_t* array, int index);
 double neuron_relu (double input, double max);
 double neuron_sigmoid(double input, double response);
 
-neuron_unit_t neuron_construct(int inputs);
-void neuron_destruct(neuron_unit_t* neuron);
+neuron_unit_t neuron_unit_construct(int inputs);
+void neuron_unit_destruct(neuron_unit_t* neuron);
 
 neuron_layer_t neuron_layer_construct(int number_of_neurons, int inputs_per_neuron);
 void neuron_layer_destruct(neuron_layer_t* layer);
