@@ -423,3 +423,68 @@ neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* 
 	
 	return outputs;
 }
+
+
+neuron_io_t neuron_io_construct(neuron_array_t* input, neuron_array_t* expected)
+{
+	neuron_io_t io;
+	io.input = neuron_array_duplicate(input);
+	io.expected = neuron_array_duplicate(expected);
+
+	return io;
+}
+
+void neuron_io_destruct(neuron_io_t* io)
+{
+	neuron_array_destruct(&io->input);
+	neuron_array_destruct(&io->expected);
+}
+
+neuron_dataset_t neuron_dataset_construct()
+{
+	neuron_dataset_t set;
+	set.length = 0;
+	set.data = malloc(32 * sizeof(neuron_io_t)); // hardcoded limit
+	return set;
+}
+
+void neuron_dataset_push(neuron_dataset_t* set, int num_inputs, double inputs[], int num_outputs, double outputs[])
+{
+	if (set->length > 32) 
+	{
+		puts("ERROR: Overloaded struct.");
+		exit(1);
+	}
+
+	neuron_array_t array_in = neuron_array_construct(num_inputs);
+
+	for (int i = 0; i < num_inputs; i++)
+	{
+		neuron_array_set(&array_in, i, inputs[i]);
+	}
+
+	set->data[set->length].input = array_in;
+
+	neuron_array_t array_out = neuron_array_construct(num_outputs);
+
+	for (int i = 0; i < num_inputs; i++)
+	{
+		neuron_array_set(&array_out, i, inputs[i]);
+	}
+
+	set->data[set->length].expected = array_out;
+
+	set->length++;
+}
+
+void neuron_dataset_destruct(neuron_dataset_t* set)
+{
+	for (int i = 0; i < set->length; i++)
+	{
+		neuron_array_destruct(&set->data[i].input);
+		neuron_array_destruct(&set->data[i].expected);
+	}
+	free(set->data);
+	set->data = NULL;
+	set->length = 0;
+}

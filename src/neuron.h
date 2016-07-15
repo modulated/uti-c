@@ -32,6 +32,18 @@ typedef struct
 	neuron_layer_t* layers;
 } neuron_network_t;
 
+typedef struct
+{
+	neuron_array_t input;
+	neuron_array_t expected;
+} neuron_io_t;
+
+typedef struct
+{
+	neuron_io_t* data;
+	int length;
+} neuron_dataset_t;
+
 
 
 
@@ -58,5 +70,11 @@ neuron_array_t neuron_network_get_weights(neuron_network_t* network);
 int neuron_network_get_num_weights(neuron_network_t* network);
 void neuron_network_set_weights(neuron_network_t* network, neuron_array_t* weights);
 neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* inputs);
+
+neuron_io_t neuron_io_construct(neuron_array_t* inputs, neuron_array_t* outputs);
+void neuron_io_destruct(neuron_io_t* io);
+neuron_dataset_t neuron_dataset_construct();
+void neuron_dataset_push(neuron_dataset_t* set, int num_inputs, double inputs[], int num_outputs, double outputs[]);
+void neuron_dataset_destruct(neuron_dataset_t* set);
 
 #endif
