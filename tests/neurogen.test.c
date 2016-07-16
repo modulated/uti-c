@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "tap.h"
-#include "../src/neuron.h"
-#include "../src/neurogen.h"
+#include "neuron.h"
+#include "neurogen.h"
 
 
 #define dirtycheck(num, equals) (num > equals-0.0000000001 && num < equals+0.0000000001)

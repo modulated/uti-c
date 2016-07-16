@@ -1,5 +1,5 @@
 #include "tap.h"
-#include "../src/data.h"
+#include "data.h"
 #include <stdlib.h>
 
 void test_all(void);

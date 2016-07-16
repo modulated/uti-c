@@ -1,6 +1,6 @@
 #include "tap.h"
 #include <limits.h>
-#include "../src/random.h"
+#include "random.h"
 
 void test_run(void);
 

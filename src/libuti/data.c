@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../data.h"
+#include "data.h"
 
 struct data_list data_list_construct(int data) {
 	struct data_list rlist;

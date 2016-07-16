@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "tap.h"
-#include "../src/neuron.h"
+#include "neuron.h"
 #include "float.h"
 
 // #define abs(a) (a >= 0 ? a : -a)

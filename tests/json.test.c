@@ -1,5 +1,5 @@
 #include "tap.h"
-#include "../src/json.h"
+#include "json.h"
 #include <stdlib.h>
 
 void test_all(void);

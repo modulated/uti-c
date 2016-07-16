@@ -1,10 +1,11 @@
 CC=gcc
-CFLAGS=-g -O0 -std=c99 -Wall -pedantic -Werror -Wno-unused-value -Wno-unused-function -Isrc -Ideps -D_GNU_SOURCE 
+CFLAGS=-g -O0 -std=c99 -Wall -pedantic -Werror -Wno-unused-value -Wno-unused-function -I$(HEADER_DIR) -Ideps -D_GNU_SOURCE 
 LDLIBS=$(TARGET) $(DIFF) -lm
 PREFIX?=/usr/local
 
+HEADER_DIR=include
 SOURCES=$(wildcard src/libuti/*.c)
-HEADERS=$(wildcard src/libuti/*.h)
+HEADERS=$(wildcard include/*.h)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
 DIFF=deps/libdmp.a
