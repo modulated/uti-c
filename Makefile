@@ -14,12 +14,12 @@ DIFF_OBJ=$(patsubst %.c,%.o,$(DIFF_SRC))
 
 TEST_LIB=deps/tap.c
 TEST_SRC=$(wildcard tests/*.test.c)
-TESTS=$(patsubst %.c,%,$(TEST_SRC))
+TEST=$(patsubst %.c,%,$(TEST_SRC))
 
 TARGET=build/libuti.a
 
 # The Target Build
-all: $(TARGET) tests
+all: $(TARGET) test
 
 # Archive built objects to TARGET
 $(TARGET): build $(OBJECTS) $(DIFF) $(SOURCES)
@@ -30,10 +30,10 @@ build:
 
 # The Unit Tests
 
-.PHONY: tests
-tests: LDLIBS += $(TEST_LIB)
-tests: $(TEST_SRC) $(TARGET)
-tests: $(TESTS)
+.PHONY: test
+test: LDLIBS += $(TEST_LIB)
+test: $(TEST_SRC) $(TARGET)
+test: $(TEST)
 	@for f in tests/*.test; \
 	do \
 		$$f; \
@@ -54,8 +54,8 @@ seqc: $(TARGET)
 
 # The Cleaner
 clean:
-	rm -rf build $(OBJECTS) $(TESTS) $(DIFF) $(DIFF_OBJ)
-	rm -f tests/tests.log
+	rm -rf build $(OBJECTS) $(TEST) $(DIFF) $(DIFF_OBJ)
+	rm -f test/test.log
 	find . -name "*.gc*" -exec rm {} \;
 	rm -rf `find . -name "*.dSYM" -print`
 
