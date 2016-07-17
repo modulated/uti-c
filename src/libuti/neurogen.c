@@ -111,18 +111,38 @@ void neurogen_population_destruct (neurogen_population_t* population)
 	population->fittest_genome = NULL;
 }
 
-void neurogen_population_update(neurogen_population_t* population)
+void neurogen_population_update(neuron_network_t* network, neurogen_population_t* population, neuron_dataset_t* set)
 {
 	for (int i = 0; i < population->population_size; i++)
 	{
 		// Run neural network
-		// Calculate fitness / error
+		neurogen_genome_t current = population->genomes[i];
+		double fitness = neurogen_genome_calculate_fitness(network, &current, set);
+		neurogen_genome_set_fitness(&current, fitness);
+		
 		// Mutation and Crossover
 	}
 
 	population->generation++;
 }
 
+
+double neurogen_genome_calculate_fitness (neuron_network_t* network, neurogen_genome_t* genome, neuron_dataset_t* set){
+
+	double fitness = 0.0;
+
+	neuron_network_set_weights(network, &genome->chromosome);
+
+	for (int i = 0; i < set->length; i++)
+	{		
+		neuron_array_t output = neuron_network_update(network, &set->data[i].input);
+		double current_fitness = neuron_array_difference(&output, &set->data[i].expected);
+		fitness += current_fitness;
+		// printf("Dataset: %d \t Fitness: %f\n", i, current_fitness);
+	}
+	
+	return fitness;
+}
 
 void neurogen_population_calculate_statistics (neurogen_population_t* population)
 {

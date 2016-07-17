@@ -26,6 +26,7 @@ typedef struct
 
 neurogen_genome_t neurogen_genome_construct (neuron_array_t* source);
 void neurogen_genome_set_fitness (neurogen_genome_t* genome, double fitness);
+double neurogen_genome_calculate_fitness (neuron_network_t* network, neurogen_genome_t* genome, neuron_dataset_t* set);
 neurogen_genome_t* neurogen_genome_compare (neurogen_genome_t* genome_a, neurogen_genome_t* genome_b);
 void neurogen_genome_destruct (neurogen_genome_t* genome);
 
@@ -35,7 +36,8 @@ void neurogen_genome_mutate (neurogen_genome_t* array, double probability);
 neurogen_population_t neurogen_population_construct (int population_size, int genome_length, double mutation_rate, double crossover_rate);
 void neurogen_population_destruct (neurogen_population_t* population);
 void neurogen_population_calculate_statistics (neurogen_population_t* population);
-void neurogen_population_update(neurogen_population_t* population);
+void neurogen_population_update(neuron_network_t* network, neurogen_population_t* population, neuron_dataset_t* set);
+void neurogen_population_get_fitness (neuron_network_t* network, neurogen_genome_t* population, neuron_dataset_t* set);
 neurogen_genome_t* neurogen_population_roulette_selection(neurogen_population_t* population);
 
 

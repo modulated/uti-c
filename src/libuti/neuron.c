@@ -173,6 +173,24 @@ neuron_array_t neuron_array_slice(neuron_array_t* dest_array, int index, int len
 		exit(1);
 }
 
+double neuron_array_difference(neuron_array_t* const array_a, neuron_array_t* const array_b)
+{
+	if (array_a->length != array_b->length)
+	{
+		puts("ERROR: arrays are not equal length, cannot compare.");
+		exit(1);
+	}
+
+	double difference = 0.0;
+
+	for (int i = 0; i < array_a->length; i++)
+	{
+		difference += fabs(neuron_array_get(array_a, i) - neuron_array_get(array_b, i));
+	}
+
+	return difference;
+}
+
 void neuron_array_destruct(neuron_array_t* array)
 {
 	free(array->array);
@@ -423,17 +441,17 @@ void neuron_network_set_weights(neuron_network_t* network, neuron_array_t* weigh
 	neuron_array_destruct(&last_array);
 }
 
-neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* inputs)
+neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* in)
 {
 	neuron_array_t outputs; // Stores outputs from each layer
-	
+	neuron_array_t inputs = neuron_array_duplicate(in);
 	
 	for (int i = 0; i < network->num_layers + 1; i++) // For each layer (+1 for outputs)
 	{
 		if (i > 0) 
 		{
-			neuron_array_destruct(inputs);
-			*inputs = neuron_array_duplicate(&outputs); //save previous layers output;
+			neuron_array_destruct(&inputs);
+			inputs = neuron_array_duplicate(&outputs); //save previous layers output;
 			neuron_array_destruct(&outputs);
 		}
 
@@ -458,17 +476,17 @@ neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* 
 
 			neuron_unit_t current_neuron = current_layer->neurons[j];
 
-			if (network->layers[i].neurons->weights.length != inputs->length) 
+			if (network->layers[i].neurons->weights.length != inputs.length) 
 			{
 				puts("ERROR: inputs not equal to layer weights.");
-				printf("inputs: %d, weights: %d\n", network->layers[i].neurons->inputs, inputs->length);
+				printf("inputs: %d, weights: %d\n", network->layers[i].neurons->inputs, inputs.length);
 				exit(1);
 			}
 
 			// Sum each weight * input
 			for (int k = 0; k < current_neuron.weights.length; k++)
 			{
-				double current_input = neuron_array_get(inputs, k);
+				double current_input = neuron_array_get(&inputs, k);
 				double current_weight = neuron_array_get(&current_neuron.weights, k);
 				sum_inputs += current_input * current_weight;
 			}

@@ -51,6 +51,9 @@ valgrind:
 seqc: $(TARGET) 
 	$(CC) $(CFLAGS) -o bin/seqc.test src/seqc.c $(LDLIBS)
 
+net: $(TARGET) 
+	$(CC) $(CFLAGS) -o bin/net.test src/net-trainer.c $(LDLIBS)
+
 
 # The Cleaner
 clean:
