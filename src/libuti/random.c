@@ -1,8 +1,4 @@
-/* 				TODO 
-** - Include more output types (8bit, 16bit, 32bit, 64bit, unsigned, char).
-** - Optimise read loop - only read urandom once.
-*/
-
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -51,3 +47,44 @@ char random_llong() {
 	free(ptr);	
 	return out;
 }
+
+/*
+**  Pseudorandom
+*/
+
+void prandom_seed(unsigned int seed)
+{
+    srandom(seed);
+}
+
+int prandom_int()
+{
+    return (int) random();
+}
+
+int prandom_int_range(int min, int max)
+{
+    int input = prandom_int();
+    double slope = (max - min) / (RAND_MAX - 0);
+    
+    int output = floor(slope * input + 0.5);
+    output += min;
+
+    return output;
+}
+
+double prandom_double()
+{
+    double out = random();
+    return out;
+}
+
+double prandom_double_range(double min, double max)
+{
+    double input = prandom_double();
+    double slope = (max - min) / (RAND_MAX - 0);
+
+    double output = slope * input + min;
+    return output;
+}
+
