@@ -89,13 +89,18 @@ void test_neurogen_genome_crossover_index()
 
 	neurogen_genome_t child1;
 	neurogen_genome_t child2;
-	neurogen_genome_crossover_index(&parent1, &parent2, &child1, &child2, expected_length/2/* always */);
+	neurogen_genome_crossover_index(&parent1, &parent2, &child1, &child2, expected_length/2);
+
+	// neuron_array_print(&parent1.chromosome);
+	// neuron_array_print(&parent2.chromosome);
+	// neuron_array_print(&child1.chromosome);
+	// neuron_array_print(&child2.chromosome);
 
 	ok(
 		(child1.chromosome.array[13] < 0.4) ||
 		(child2.chromosome.array[13] < 0.4),
 		"neurogen_genome_crossover_index.") ||
-	diag("Expected %f, %f got %f, %f", 0.5, 0.3, child1.chromosome.array[13], child2.chromosome.array[13]);	
+	diag("Expected %f, %f got %f, %f", 0.5, 0.3, child1.chromosome.array[expected_length/2], child2.chromosome.array[expected_length/2]);	
 
 	// neurogen_genome_destruct(&parent1);
 	// neurogen_genome_destruct(&parent2);

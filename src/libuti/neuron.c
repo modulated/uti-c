@@ -178,15 +178,17 @@ void neuron_io_destruct(neuron_io_t* io)
 	neuron_array_destruct(&io->expected);
 }
 
-neuron_dataset_t neuron_dataset_construct()
+neuron_dataset_t neuron_dataset_construct(size_t inputs, size_t outputs)
 { // TODO - dynamic realloc based on 32 byte multiples
 	neuron_dataset_t set;
 	set.length = 0;
+	set.inputs = inputs;
+	set.outputs = outputs;
 	set.data = malloc(32 * sizeof(neuron_io_t)); // hardcoded limit
 	return set;
 }
 
-void neuron_dataset_push(neuron_dataset_t* set, int num_inputs, double inputs[], int num_outputs, double outputs[])
+void neuron_dataset_add(neuron_dataset_t* set, double inputs[], double outputs[])
 {
 	if (set->length > 32) 
 	{
@@ -194,18 +196,18 @@ void neuron_dataset_push(neuron_dataset_t* set, int num_inputs, double inputs[],
 		exit(1);
 	}
 
-	neuron_array_t array_in = neuron_array_construct(num_inputs);
+	neuron_array_t array_in = neuron_array_construct(set->inputs);
 
-	for (int i = 0; i < num_inputs; i++)
+	for (int i = 0; i < set->inputs; i++)
 	{
 		neuron_array_set(&array_in, i, inputs[i]);
 	}
 
 	set->data[set->length].input = array_in;
 
-	neuron_array_t array_out = neuron_array_construct(num_outputs);
+	neuron_array_t array_out = neuron_array_construct(set->outputs);
 
-	for (int i = 0; i < num_outputs; i++)
+	for (int i = 0; i < set->outputs; i++)
 	{
 		neuron_array_set(&array_out, i, outputs[i]);
 	}

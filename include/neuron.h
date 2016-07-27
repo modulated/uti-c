@@ -49,6 +49,8 @@ typedef struct
 {
 	neuron_io_t* data;
 	size_t length;
+	size_t inputs;
+	size_t outputs;
 } neuron_dataset_t;
 
 // ===========================

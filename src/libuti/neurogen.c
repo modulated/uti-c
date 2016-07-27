@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../include/random.h"
-#include "../../include/neurogen.h"
-#include "../../include/neuron.h"
+#include "random.h"
+#include "neurogen.h"
+#include "neuron.h"
 
 /*
 ** Public Functions
