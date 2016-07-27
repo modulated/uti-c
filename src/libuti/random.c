@@ -78,6 +78,7 @@ double prandom_double()
     double out = random();
     return out;
 }
+// ((MAX_VAL) / (RAND_MAX)) * (rand());
 
 double prandom_double_range(double min, double max)
 {

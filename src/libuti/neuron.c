@@ -1,4 +1,4 @@
-#include "neuron.h"
+#include "../../include/neuron.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -112,6 +112,16 @@ double neuron_array_get(neuron_array_t* array, int index)
 		exit(1);
 	}
 	return array->array[index];
+}
+
+void neuron_array_print(neuron_array_t* array)
+{
+	printf("Array length: %d\n", array->length);
+	for (int i = 0; i < array->length; i++)
+	{
+		printf("%f ", array->array[i]);
+	}
+	puts("");
 }
 
 void neuron_array_copy(neuron_array_t* dest_array, int index_dest, neuron_array_t* source_array, int index_source, int length)

@@ -1,14 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "tap.h"
-#include "neuron.h"
-#include "neurogen.h"
-
+#include "../include/neuron.h"
+#include "../include/neurogen.h"
 
 #define dirtycheck(num, equals) (num > equals-0.0000000001 && num < equals+0.0000000001)
 
+
+
 void test_neurogen_genome_construct()
-{
+{	
 	int expected_length = 24;
 	neuron_array_t array = neuron_array_construct(expected_length);	
 	neurogen_genome_t genome = neurogen_genome_construct(&array);
@@ -73,6 +74,37 @@ void test_neurogen_genome_compare()
 	neuron_array_destruct(&array2);
 }
 
+void test_neurogen_genome_crossover_index()
+{
+	int expected_length = 24;	
+	neuron_array_t array1 = neuron_array_construct(expected_length);
+	neuron_array_t array2 = neuron_array_construct(expected_length);
+	for (int i = 0; i < expected_length; i++)
+	{
+		array1.array[i] = 0.5;
+		array2.array[i] = 0.2;
+	}
+	neurogen_genome_t parent1 = neurogen_genome_construct(&array1);
+	neurogen_genome_t parent2 = neurogen_genome_construct(&array2);
+
+	neurogen_genome_t child1;
+	neurogen_genome_t child2;
+	neurogen_genome_crossover_index(&parent1, &parent2, &child1, &child2, expected_length/2/* always */);
+
+	ok(
+		(child1.chromosome.array[13] < 0.4) ||
+		(child2.chromosome.array[13] < 0.4),
+		"neurogen_genome_crossover_index.") ||
+	diag("Expected %f, %f got %f, %f", 0.5, 0.3, child1.chromosome.array[13], child2.chromosome.array[13]);	
+
+	// neurogen_genome_destruct(&parent1);
+	// neurogen_genome_destruct(&parent2);
+	// neurogen_genome_destruct(&child1);
+	// neurogen_genome_destruct(&child2);
+	// neuron_array_destruct(&array1);
+	// neuron_array_destruct(&array2);
+}
+
 void test_neurogen_genome_crossover()
 {
 	int expected_length = 24;	
@@ -83,7 +115,7 @@ void test_neurogen_genome_crossover()
 
 	neurogen_genome_t child1;
 	neurogen_genome_t child2;
-	neurogen_genome_crossover(&parent1, &parent2, &child1, &child2);
+	neurogen_genome_crossover(&parent1, &parent2, &child1, &child2, 1.0 /* always */);
 
 	ok(
 		(child1.chromosome.length == child2.chromosome.length),
@@ -143,7 +175,7 @@ void test_neurogen_population_construct()
 	double mutation_rate = 0.05;
 	double crossover_rate = 0.5;
 
-	neurogen_population_t population = neurogen_population_construct(population_size, genome_length, mutation_rate, crossover_rate);
+	neurogen_population_t population = neurogen_population_construct(population_size, genome_length, mutation_rate, crossover_rate, neurogen_errorfunction_simple);
 
 	ok(
 		(population.population_size == population_size) &&
@@ -163,7 +195,7 @@ void test_neurogen_population_destruct()
 	double mutation_rate = 0.05;
 	double crossover_rate = 0.5;
 
-	neurogen_population_t population = neurogen_population_construct(population_size, genome_length, mutation_rate, crossover_rate);
+	neurogen_population_t population = neurogen_population_construct(population_size, genome_length, mutation_rate, crossover_rate, neurogen_errorfunction_simple);
 	
 	neurogen_population_destruct(&population);
 
@@ -184,7 +216,7 @@ void test_neurogen_population_calculate_statistics()
 	double min_fitness = 0.1;
 	double expected_average = 0.501;
 
-	neurogen_population_t population = neurogen_population_construct(population_size, genome_length, mutation_rate, crossover_rate);
+	neurogen_population_t population = neurogen_population_construct(population_size, genome_length, mutation_rate, crossover_rate, neurogen_errorfunction_simple);
 
 	neurogen_genome_set_fitness(&population.genomes[0], min_fitness);
 	for (int i = 1; i < population_size-1; i++)
@@ -205,17 +237,27 @@ void test_neurogen_population_calculate_statistics()
 	neurogen_population_destruct(&population);
 }
 
-void test_all() {
+void test_neurogen_genome ()
+{
 	test_neurogen_genome_construct();
 	test_neurogen_genome_destruct();
 	test_neurogen_genome_set_fitness();
 	test_neurogen_genome_compare();
+	test_neurogen_genome_crossover_index();
 	test_neurogen_genome_crossover();
 	test_neurogen_genome_mutate();
+}
 
+void test_neurogen_population ()
+{
 	test_neurogen_population_construct();
 	test_neurogen_population_destruct();
 	test_neurogen_population_calculate_statistics();
+}
+
+void test_all() {
+	test_neurogen_genome();
+	test_neurogen_population();
 }
 
 int main(void) {

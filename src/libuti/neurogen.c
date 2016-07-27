@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "neurogen.h"
-#include "neuron.h"
+#include "../../include/random.h"
+#include "../../include/neurogen.h"
+#include "../../include/neuron.h"
 
 /*
 ** Public Functions
@@ -30,10 +31,25 @@ void neurogen_genome_destruct (neurogen_genome_t* genome)
 	neuron_array_destruct(&genome->chromosome);
 }
 
+void neurogen_genome_crossover_index (neurogen_genome_t* parent_a, neurogen_genome_t* parent_b, 
+
+neurogen_genome_t* child_a, neurogen_genome_t* child_b, unsigned int index)
+{
+	neuron_array_t array_a = neuron_array_crossover(&parent_a->chromosome, &parent_b->chromosome, index);
+	
+	child_a->chromosome = neuron_array_duplicate(&array_a);
+
+	neuron_array_t array_b = neuron_array_crossover(&parent_b->chromosome, &parent_a->chromosome, index);
+	neuron_array_t res_array = neuron_array_duplicate(&array_b);
+	*child_b = neurogen_genome_construct(&res_array);
+
+	// neuron_array_destruct(&array_a);
+	// neuron_array_destruct(&array_b);
+}
 
 void neurogen_genome_crossover (neurogen_genome_t* parent_a, neurogen_genome_t* parent_b, 
 
-neurogen_genome_t* child_a, neurogen_genome_t* child_b)
+neurogen_genome_t* child_a, neurogen_genome_t* child_b, double probability)
 {
 	if (parent_a->chromosome.length != parent_b->chromosome.length)
 	{
@@ -41,32 +57,32 @@ neurogen_genome_t* child_a, neurogen_genome_t* child_b)
 		exit(1);
 	}
 	
-	int crossover_loc = ((parent_a->chromosome.length) / (RAND_MAX)) * (rand());
-
-	neuron_array_t array_a = neuron_array_crossover(&parent_a->chromosome, &parent_b->chromosome, crossover_loc);
-	*child_a = neurogen_genome_construct(&array_a);
-
-	neuron_array_t array_b = neuron_array_crossover(&parent_b->chromosome, &parent_a->chromosome, crossover_loc);
-	*child_b = neurogen_genome_construct(&array_b);
-
-	neuron_array_destruct(&array_a);
-	neuron_array_destruct(&array_b);
+	double random_prob = prandom_double_range(0.0, 1.0);
+	if (random_prob <= probability)
+	{
+		neuron_array_print(&parent_a->chromosome);
+		neuron_array_print(&parent_b->chromosome);
+		int crossover_loc = prandom_int_range(0, parent_a->chromosome.length);
+		neurogen_genome_crossover_index(parent_a, parent_b, child_a, child_b, crossover_loc);
+		neuron_array_print(&child_a->chromosome);
+		neuron_array_print(&child_b->chromosome);
+	}	
 }
 
 void neurogen_genome_mutate (neurogen_genome_t* genome, double probability)
 {
 	for (int i = 0; i < genome->chromosome.length; i++)
 	{
-		double random_prob = (double) rand()/RAND_MAX;
+		double random_prob = prandom_double_range(0.0, 1.0);
 		if (random_prob <= probability)
 		{
-			double random_val = (double) rand()/RAND_MAX;
+			double random_val = prandom_double_range(0.0, 1.0);
 			neuron_array_set(&genome->chromosome, i, random_val);
 		}
 	}
 }
 
-neurogen_population_t neurogen_population_construct (int population_size, int genome_length, double mutation_rate, double crossover_rate)
+neurogen_population_t neurogen_population_construct (int population_size, int genome_length, double mutation_rate, double crossover_rate,  double (*error_function)(neuron_array_t*, neuron_array_t*))
 {
 	neurogen_population_t population;
 	population.population_size = population_size;
@@ -78,6 +94,8 @@ neurogen_population_t neurogen_population_construct (int population_size, int ge
 	population.best_fitness = 0;
 	population.total_fitness = 0;
 	population.generation = 0;
+	population.children_per_parent = 10;
+	population.error_function = error_function;
 	population.fittest_genome = NULL;
 	population.genomes = malloc(population_size * sizeof(neurogen_genome_t));
 	
@@ -113,35 +131,34 @@ void neurogen_population_destruct (neurogen_population_t* population)
 
 void neurogen_population_update(neuron_network_t* network, neurogen_population_t* population, neuron_dataset_t* set)
 {
-	for (int i = 0; i < population->population_size; i++)
-	{
-		// Run neural network
-		neurogen_genome_t current = population->genomes[i];
-		double fitness = neurogen_genome_calculate_fitness(network, &current, set);
-		neurogen_genome_set_fitness(&current, fitness);
-		
-		// Mutation and Crossover
-	}
+	neurogen_genome_run_network(network, population, set);
+	neurogen_population_calculate_statistics(population);	
+	neurogen_population_evolve(population);
 
-	population->generation++;
 }
 
 
-double neurogen_genome_calculate_fitness (neuron_network_t* network, neurogen_genome_t* genome, neuron_dataset_t* set){
+void neurogen_genome_run_network (neuron_network_t* network, neurogen_population_t* population, neuron_dataset_t* set){
 
-	double fitness = 0.0;
+	double fitness;
 
-	neuron_network_set_weights(network, &genome->chromosome);
-
-	for (int i = 0; i < set->length; i++)
+	for (int i = 0; i < population->population_size; i++)
 	{		
-		neuron_array_t output = neuron_network_update(network, &set->data[i].input);
-		double current_fitness = neuron_array_difference(&output, &set->data[i].expected);
-		fitness += current_fitness;
-		// printf("Dataset: %d \t Fitness: %f\n", i, current_fitness);
+		fitness = 0.0;
+
+		neuron_network_set_weights(network, &population->genomes[i].chromosome);
+
+		for (int j = 0; j < set->length; j++)
+		{		
+			neuron_array_t output = neuron_network_update(network, &set->data[j].input);
+			double current_fitness = population->error_function(&output, &set->data[j].expected);
+			fitness += current_fitness;
+		}
+
+		// printf("Genome: %d \t Fitness: %f\n", i, fitness); // DEBUG
+		neurogen_genome_set_fitness(&population->genomes[i], fitness);
 	}
-	
-	return fitness;
+
 }
 
 void neurogen_population_calculate_statistics (neurogen_population_t* population)
@@ -152,19 +169,84 @@ void neurogen_population_calculate_statistics (neurogen_population_t* population
 
 	for (int i = 0; i < population->population_size; i++)
 	{
-		double val = population->genomes[i].fitness;
+		double val = population->genomes[i].fitness;		
 		total_fitness += val;
 		
-		if (val >= current_best)
+		if (val > current_best)
 		{
+			
 			current_best = val;
 			population->fittest_genome = &population->genomes[i];
 		}
-		if (val <= current_worst) current_worst = val;
+		if (val < current_worst) current_worst = val;
 	}
 
 	population->average_fitness = total_fitness / (double) population->population_size;
 	population->total_fitness = total_fitness;
 	population->best_fitness = current_best;
 	population->worst_fitness = current_worst;
+}
+
+neurogen_genome_t* neurogen_population_roulette_selection(neurogen_population_t* population)
+{
+	double total = population->total_fitness;
+	double random = prandom_double_range(0.0, total);
+
+	double sum = 0;
+
+	for (int i = 0; i < population->population_size; i++)
+	{
+		double current = population->genomes[i].fitness;
+
+		// printf("Total: %f, sum: %f, current: %f, random: %f\n", total, sum, current, random);
+
+		if ((random - sum) < current)
+		{
+			return &population->genomes[i];
+		}
+		else {
+			sum += current;
+		}
+	}
+	
+	puts("ERROR: did not return genome");
+	exit(1);
+}
+
+double neurogen_errorfunction_simple(neuron_array_t* output, neuron_array_t* expected)
+{
+	return neuron_array_difference(output, expected);
+}
+
+void neurogen_population_evolve (neurogen_population_t* population)
+{
+
+	for (int i = 0; i < population->population_size; i += population->children_per_parent)
+	{
+		neurogen_genome_t* parent_a = neurogen_population_roulette_selection(population); // randomly selects two parents 
+		neurogen_genome_t* parent_b = neurogen_population_roulette_selection(population); // based on fitness weighting.
+
+		neurogen_genome_t child_a = neurogen_genome_construct(&parent_a->chromosome);
+		neurogen_genome_t child_b = neurogen_genome_construct(&parent_a->chromosome);
+
+		for (int j = 0; j < population->children_per_parent; j += 2)
+		{
+			// puts("Crossover");
+			neurogen_genome_crossover(parent_a, parent_b, &child_a, &child_b, population->crossover_rate);
+			// puts("Mutate");
+			printf("len A %d\n", child_a.chromosome.length);
+			printf("len B %d\n", child_b.chromosome.length);
+			neurogen_genome_mutate(&child_a, population->mutation_rate);
+			neurogen_genome_mutate(&child_b, population->mutation_rate);
+			// puts("Assigning");
+			population->genomes[i+j] = child_a;
+			population->genomes[i+j+1] = child_b;
+		}
+
+
+		neurogen_genome_destruct(parent_a);
+		neurogen_genome_destruct(parent_b);
+	}
+
+	population->generation++; // advance generation
 }

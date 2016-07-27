@@ -50,12 +50,13 @@ typedef struct
 neuron_array_t neuron_array_construct(int length);
 void neuron_array_destruct(neuron_array_t* array);
 neuron_array_t neuron_array_duplicate(neuron_array_t* array);
-void neuron_array_set(neuron_array_t* array, int index, double value);
 void neuron_array_copy(neuron_array_t* dest_array, int index_dest, neuron_array_t* source_array, int index_source, int length);
 neuron_array_t neuron_array_crossover(neuron_array_t* array_start, neuron_array_t* array_end, int index);
 neuron_array_t neuron_array_slice(neuron_array_t* dest_array, int index, int length);
 double neuron_array_difference(neuron_array_t* const array_a, neuron_array_t* const array_b);
 double neuron_array_get(neuron_array_t* array, int index);
+void neuron_array_set(neuron_array_t* array, int index, double value);
+void neuron_array_print(neuron_array_t* array);
 double neuron_relu (double input, double max);
 double neuron_sigmoid(double input, double response);
 
