@@ -1,8 +1,12 @@
 #include "../../include/neuron.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
+#include <math.h> // exp(), fabs()
 
+
+// ===========================
+// Utility Functions
+// ===========================
 
 double neuron_relu (double input, double max) 
 {
@@ -17,76 +21,26 @@ double neuron_sigmoid(double input, double response)
 	return 1.0 / (1.0 + exp(-input * response));
 }
 
-static double neuron_random_weight () // Double between 0.0 and 1.0
-{
-	return rand() / (RAND_MAX + 1.0);
-}
 
-static double neuron_random_range (double min, double max)
-{
-	return min + (rand() / (RAND_MAX + (max-min)));
-}
+// ===========================
+// Array Functions
+// ===========================
 
-static neuron_array_t neuron_layer_get_weights(neuron_layer_t* layer)
-{
-	int num_inputs = layer->neurons->inputs;
-	int num_neurons = layer->size;
-
-	neuron_array_t output_array = neuron_array_construct(num_inputs * num_neurons);
-
-	for (int neuron = 0; neuron < layer->size; neuron++)
-	{
-		neuron_array_t* neuron_weights =  &layer->neurons[neuron].weights;
-
-		for (int input = 0; input < num_inputs; input++)
-		{
-			double neuron_weight = neuron_array_get(neuron_weights, input);
-			
-			int output_index = (neuron * num_inputs) + input;
-			neuron_array_set(&output_array, output_index, neuron_weight);
-		}
-	}
-
-	return output_array;
-}
-
-static void neuron_layer_set_weights(neuron_layer_t* layer, neuron_array_t* input_array)
-{
-	if (input_array->length != layer->num_weights)
-	{
-		puts("ERROR: input weight length not matching network weight length");
-		printf("input: %d, layer: %d\n", input_array->length, layer->num_weights);
-		exit(1);
-	}
-
-	for (int neuron = 0; neuron < layer->size; neuron++)
-	{
-		neuron_array_t* neuron_weights =  &layer->neurons[neuron].weights;
-		int offset = neuron * neuron_weights->length;
-		neuron_array_copy(neuron_weights, 0, input_array, offset, neuron_weights->length);
-	}
-}
-
-
-/*
-** Public Functions
-*/
-
-neuron_array_t neuron_array_construct(int length) 
+neuron_array_t neuron_array_construct(size_t length) 
 {
 	neuron_array_t array;
 	array.length = length;
 	array.array = malloc((length + 1) * sizeof(double));
 	array.array[length] = NAN;
 
-	for (int i = 0; i < length; i++)
+	for (size_t i = 0; i < length; i++)
 	{
 		array.array[i] = 0.0;
 	}
 	return array;
 }
 
-neuron_array_t neuron_array_duplicate(neuron_array_t* array)
+neuron_array_t neuron_array_duplicate(const neuron_array_t* array)
 {
 	neuron_array_t output = neuron_array_construct(array->length);
 	for (int i = 0; i < array->length; i++)
@@ -96,7 +50,7 @@ neuron_array_t neuron_array_duplicate(neuron_array_t* array)
 	return output;
 }
 
-void neuron_array_set(neuron_array_t* array, int index, double value)
+void neuron_array_set(neuron_array_t* array, size_t index, double value)
 {
 	if (index >= array->length) {
 		puts("ERROR: array write overflow.");
@@ -105,7 +59,7 @@ void neuron_array_set(neuron_array_t* array, int index, double value)
 	array->array[index] = value;
 }
 
-double neuron_array_get(neuron_array_t* array, int index)
+double neuron_array_get(const neuron_array_t* array, size_t index)
 {
 	if (index >= array->length) {
 		puts("ERROR: array read overflow.");
@@ -114,28 +68,26 @@ double neuron_array_get(neuron_array_t* array, int index)
 	return array->array[index];
 }
 
-void neuron_array_print(neuron_array_t* array)
+void neuron_array_print(const neuron_array_t* array)
 {
-	printf("Array length: %d\n", array->length);
+	printf("Array length: %lu\n", array->length);
 	for (int i = 0; i < array->length; i++)
 	{
-		printf("%f ", array->array[i]);
+		printf("%.2f ", array->array[i]);
 	}
 	puts("");
 }
 
-void neuron_array_copy(neuron_array_t* dest_array, int index_dest, neuron_array_t* source_array, int index_source, int length)
+void neuron_array_copy(neuron_array_t* dest, size_t index_dest, const neuron_array_t* src, size_t index_source, size_t length)
 {
-	if (index_source + length > source_array->length) goto error;
-	if (index_dest + length > dest_array->length) goto error;
-	if (index_dest < 0 || length < 0 || index_source < 0) goto error;
+	if (index_source + length > src->length) goto error;
+	if (index_dest + length > dest->length) goto error;
 
 	for (int i = 0; i < length; i++)
 	{
-		double val = neuron_array_get(source_array, index_source + i);
-		neuron_array_set(dest_array, index_dest + i, val);
+		double val = neuron_array_get(src, index_source + i);
+		neuron_array_set(dest, index_dest + i, val);
 	}
-
 	return;
 
 	error:
@@ -143,7 +95,7 @@ void neuron_array_copy(neuron_array_t* dest_array, int index_dest, neuron_array_
 		exit(1);
 }
 
-neuron_array_t neuron_array_crossover(neuron_array_t* array_start, neuron_array_t* array_end, int index)
+neuron_array_t neuron_array_crossover(const neuron_array_t* array_start, const neuron_array_t* array_end, size_t index)
 {
 	if (array_start->length != array_end->length)
 	{
@@ -163,27 +115,25 @@ neuron_array_t neuron_array_crossover(neuron_array_t* array_start, neuron_array_
 	return output;
 }
 
-neuron_array_t neuron_array_slice(neuron_array_t* dest_array, int index, int length)
+neuron_array_t neuron_array_slice(const neuron_array_t* dest, size_t index, size_t length)
 {
-	if (index + length > dest_array->length) goto error;	
-	if (index < 0 || length < 0) goto error;
+	if (index + length > dest->length) {
+		puts("ERROR: array copy bounds check.");
+		exit(1);
+	}
 
 	neuron_array_t output_array = neuron_array_construct(length);
 
 	for (int i = 0; i < length; i++)
 	{
-		double val = neuron_array_get(dest_array, index + i);
+		double val = neuron_array_get(dest, index + i);
 		neuron_array_set(&output_array, i, val);
 	}
 
 	return output_array;
-
-	error:
-		puts("ERROR: array copy bounds check.");
-		exit(1);
 }
 
-double neuron_array_difference(neuron_array_t* const array_a, neuron_array_t* const array_b)
+double neuron_array_difference(const neuron_array_t* array_a, const neuron_array_t* array_b)
 {
 	if (array_a->length != array_b->length)
 	{
@@ -208,6 +158,11 @@ void neuron_array_destruct(neuron_array_t* array)
 	array->length = 0;
 }
 
+
+// ===========================
+// Dataset Functions
+// ===========================
+
 neuron_io_t neuron_io_construct(neuron_array_t* input, neuron_array_t* expected)
 {
 	neuron_io_t io;
@@ -224,7 +179,7 @@ void neuron_io_destruct(neuron_io_t* io)
 }
 
 neuron_dataset_t neuron_dataset_construct()
-{
+{ // TODO - dynamic realloc based on 32 byte multiples
 	neuron_dataset_t set;
 	set.length = 0;
 	set.data = malloc(32 * sizeof(neuron_io_t)); // hardcoded limit
@@ -272,19 +227,21 @@ void neuron_dataset_destruct(neuron_dataset_t* set)
 	set->length = 0;
 }
 
-neuron_unit_t neuron_unit_construct (int inputs)
+// ===========================
+// Neuron Component Functions
+// ===========================
+
+neuron_unit_t neuron_unit_construct (size_t inputs)
 {
 	neuron_unit_t neuron;
 	neuron.inputs = inputs;
 	neuron.weights = neuron_array_construct(inputs);
 	
-	for (int i = 0; i < inputs; i++) // Last weight is Bias. Bias = -1 x Threshold 
+	for (size_t i = 0; i < inputs; i++)
 	{
-		neuron_array_set(&neuron.weights, i, neuron_random_weight());
-		
+		neuron_array_set(&neuron.weights, i, 0.0);
 	}
-
-	neuron.bias = neuron_random_weight() * -1;
+	neuron.bias = -1.0;
 
 	return neuron;
 }
@@ -295,14 +252,14 @@ void neuron_unit_destruct (neuron_unit_t* neuron)
 	neuron->inputs = 0;
 }
 
-neuron_layer_t neuron_layer_construct(int number_of_neurons, int inputs_per_neuron)
+neuron_layer_t neuron_layer_construct(size_t number_of_neurons, size_t inputs_per_neuron)
 {
 	neuron_layer_t layer;
 	layer.size = number_of_neurons;
 	layer.num_weights = number_of_neurons * inputs_per_neuron;
 	layer.neurons = malloc(number_of_neurons * sizeof(neuron_unit_t));
 	 
-	for (int i = 0; i < number_of_neurons; i++)
+	for (size_t i = 0; i < number_of_neurons; i++)
 	{
 		layer.neurons[i] = neuron_unit_construct(inputs_per_neuron);
 	}
@@ -323,27 +280,67 @@ void neuron_layer_destruct(neuron_layer_t* layer)
 	layer->size = 0;
 }
 
-neuron_network_t neuron_network_construct(int num_inputs, int num_outputs, int num_layers, int layer_size, double (*summing_function)(double, double))
+static neuron_array_t neuron_layer_get_weights(const neuron_layer_t* layer)
+{
+	int num_inputs = layer->neurons->inputs;
+	int num_neurons = layer->size;
+
+	neuron_array_t output_array = neuron_array_construct(num_inputs * num_neurons);
+
+	for (int neuron = 0; neuron < layer->size; neuron++)
+	{
+		neuron_array_t* neuron_weights =  &layer->neurons[neuron].weights;
+
+		for (int input = 0; input < num_inputs; input++)
+		{
+			double neuron_weight = neuron_array_get(neuron_weights, input);
+			
+			int output_index = (neuron * num_inputs) + input;
+			neuron_array_set(&output_array, output_index, neuron_weight);
+		}
+	}
+
+	return output_array;
+}
+
+static void neuron_layer_set_weights(neuron_layer_t* layer, const neuron_array_t* input_array)
+{
+	if (input_array->length != layer->num_weights)
+	{
+		puts("ERROR: input weight length not matching network weight length");
+		printf("input: %lu, layer: %lu\n", input_array->length, layer->num_weights);
+		exit(1);
+	}
+
+	for (int neuron = 0; neuron < layer->size; neuron++)
+	{
+		neuron_array_t* neuron_weights =  &layer->neurons[neuron].weights;
+		size_t offset = neuron * neuron_weights->length;
+		neuron_array_copy(neuron_weights, 0, input_array, offset, neuron_weights->length);
+	}
+}
+
+neuron_network_t neuron_network_construct(size_t num_inputs, size_t num_outputs, size_t num_layers, size_t layer_size)
 {
 	neuron_network_t network;
 	network.num_inputs = num_inputs;
 	network.num_outputs = num_outputs;
 	network.num_layers = num_layers;
 	network.layer_size = layer_size;
-	network.summing_function = summing_function;
+	network.summing_function = neuron_relu;
 
 	network.layers = malloc((num_layers + 1) * sizeof (neuron_layer_t)); // Last = output row
 	
 	network.layers[0] = neuron_layer_construct(layer_size, num_inputs); // First layer recieves from inputs 
 
-	for (int i = 1; i < num_layers; i++)
+	for (size_t i = 1; i < num_layers; i++)
 	{
 		network.layers[i] = neuron_layer_construct(layer_size, layer_size);
 	}
 
 	network.layers[num_layers] = neuron_layer_construct(num_outputs, layer_size); // Last layer is output
 	
-	network.num_weights = neuron_network_get_num_weights(&network);
+	network.num_weights = neuron_network_size_weights(&network);
 
 	return network;
 }
@@ -359,7 +356,12 @@ void neuron_network_destruct(neuron_network_t* network)
 	network->layers = NULL;
 }
 
-neuron_array_t neuron_network_get_weights(neuron_network_t* network) 
+void neuron_network_set_summing(neuron_network_t* network, double (*summing_function)(double input, double param))
+{
+	network->summing_function = summing_function;
+}
+
+neuron_array_t neuron_network_get_weights(const neuron_network_t* network) 
 {
 	int num_weights = network->num_weights;
 	neuron_array_t output_array = neuron_array_construct(num_weights);
@@ -396,7 +398,7 @@ neuron_array_t neuron_network_get_weights(neuron_network_t* network)
 	return output_array;
 }
 
-int neuron_network_get_num_weights(neuron_network_t* network)
+size_t neuron_network_size_weights(const neuron_network_t* network)
 {
 	// int num = (network->num_inputs + network->num_outputs + (network->num_layers -1) * network->layer_size) * network->layer_size; // (in + out + num - 1 * size) * size
 
@@ -408,7 +410,7 @@ int neuron_network_get_num_weights(neuron_network_t* network)
 	return num_weights;
 }
 
-void neuron_network_set_weights(neuron_network_t* network, neuron_array_t* weights)
+void neuron_network_set_weights(neuron_network_t* network, const neuron_array_t* weights)
 {
 	int num_weights = network->num_weights;
 	if (num_weights != weights->length)
@@ -451,7 +453,7 @@ void neuron_network_set_weights(neuron_network_t* network, neuron_array_t* weigh
 	neuron_array_destruct(&last_array);
 }
 
-neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* in)
+neuron_array_t neuron_network_update(const neuron_network_t* network, const neuron_array_t* in)
 {
 	neuron_array_t outputs; // Stores outputs from each layer
 	neuron_array_t inputs = neuron_array_duplicate(in);
@@ -489,7 +491,7 @@ neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* 
 			if (network->layers[i].neurons->weights.length != inputs.length) 
 			{
 				puts("ERROR: inputs not equal to layer weights.");
-				printf("inputs: %d, weights: %d\n", network->layers[i].neurons->inputs, inputs.length);
+				printf("inputs: %lu, weights: %lu\n", network->layers[i].neurons->inputs, inputs.length);
 				exit(1);
 			}
 
@@ -515,4 +517,3 @@ neuron_array_t neuron_network_update(neuron_network_t* network, neuron_array_t* 
 	
 	return outputs;
 }
-

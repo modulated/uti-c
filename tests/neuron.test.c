@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "tap.h"
-#include "neuron.h"
+#include "../include/neuron.h"
 #include "float.h"
 
 // #define abs(a) (a >= 0 ? a : -a)
@@ -24,7 +24,7 @@ void test_neuron_unit_construct()
 	neuron_unit_t test_neuron = neuron_unit_construct(2);
 	
 	ok( (test_neuron.inputs == 2), "neuron_unit_construct.") || 
-	diag("Inputs: expected %d, got %d.", 2, test_neuron.inputs);
+	diag("Inputs: expected %d, got %lu.", 2, test_neuron.inputs);
 	
 	neuron_unit_destruct(&test_neuron);
 }
@@ -39,11 +39,11 @@ void test_neuron_unit_destruct()
 
 void test_neuron_layer_construct()
 {
-	int expected_size = 4;
-	int expected_inputs = 4;
+	size_t expected_size = 4;
+	size_t expected_inputs = 4;
 	neuron_layer_t test_layer = neuron_layer_construct(expected_size, expected_inputs);
 	
-	int err_counter = 0;
+	size_t err_counter = 0;
 	for (int i = 0; i < expected_size; i++)
 	{
 		neuron_unit_t neuron = test_layer.neurons[i];
@@ -59,7 +59,7 @@ void test_neuron_layer_construct()
 	}
 
 	ok( (test_layer.size == expected_size) && (err_counter == 0), "neuron_layer_construct.") || 
-	diag("Inputs: expected %d, got %d.", expected_size, test_layer.size) ||
+	diag("Inputs: expected %lu, got %lu.", expected_size, test_layer.size) ||
 	diag("Neuron: expected weight range 0.0 to 1.0.");
 	
 	neuron_layer_destruct(&test_layer);
@@ -74,7 +74,7 @@ void test_neuron_layer_destruct()
 
 void test_neuron_network_construct()
 {
-	neuron_network_t test_network = neuron_network_construct(1,1,2,2, neuron_relu);
+	neuron_network_t test_network = neuron_network_construct(1,1,2,2);
 
 	ok(
 		(test_network.num_inputs == 1) &&
@@ -88,7 +88,7 @@ void test_neuron_network_construct()
 
 void test_neuron_network_destruct()
 {
-	neuron_network_t test_network = neuron_network_construct(1,1,2,4, neuron_relu);
+	neuron_network_t test_network = neuron_network_construct(1,1,2,4);
 	neuron_network_destruct(&test_network);
 
 	ok(test_network.layers == NULL, "neuron_network_destruct.");
@@ -97,8 +97,8 @@ void test_neuron_network_destruct()
 
 void test_neuron_network_get_num_weights()
 {
-	neuron_network_t test_network = neuron_network_construct(1,1,3,4, neuron_relu);
-	int num = neuron_network_get_num_weights(&test_network);
+	neuron_network_t test_network = neuron_network_construct(1,1,3,4);
+	int num = neuron_network_size_weights(&test_network);
 	int expected = 40;
 	ok(num == expected, "neuron_network_get_num_weights.");
 
@@ -107,7 +107,7 @@ void test_neuron_network_get_num_weights()
 
 void test_neuron_network_get_weights()
 {
-	neuron_network_t test_network = neuron_network_construct(1,1,2,2, neuron_relu);
+	neuron_network_t test_network = neuron_network_construct(1,1,2,2);
 	
 	neuron_array_t result = neuron_network_get_weights(&test_network);
 
@@ -124,7 +124,7 @@ void test_neuron_network_get_weights()
 
 void test_neuron_network_set_weights()
 {
-	neuron_network_t test_network = neuron_network_construct(1,1,2,2, neuron_relu);	
+	neuron_network_t test_network = neuron_network_construct(1,1,2,2);	
 	
 	neuron_array_t array = neuron_array_construct(test_network.num_weights);
 	for (int i = 0; i < array.length; i++) 
@@ -147,7 +147,7 @@ void test_neuron_network_set_weights()
 }
 
 void test_neuron_network_update() {
-	neuron_network_t test_network = neuron_network_construct(2,2,4,4, neuron_relu);	
+	neuron_network_t test_network = neuron_network_construct(2,2,4,4);	
 	neuron_array_t input = neuron_array_construct(2);
 	neuron_array_set(&input, 0, 1.0);
 	neuron_array_set(&input, 1, 1.0);	

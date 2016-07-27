@@ -43,8 +43,8 @@ neurogen_genome_t* child_a, neurogen_genome_t* child_b, unsigned int index)
 	neuron_array_t res_array = neuron_array_duplicate(&array_b);
 	*child_b = neurogen_genome_construct(&res_array);
 
-	// neuron_array_destruct(&array_a);
-	// neuron_array_destruct(&array_b);
+	neuron_array_destruct(&array_a);
+	neuron_array_destruct(&array_b);
 }
 
 void neurogen_genome_crossover (neurogen_genome_t* parent_a, neurogen_genome_t* parent_b, 
@@ -234,8 +234,8 @@ void neurogen_population_evolve (neurogen_population_t* population)
 			// puts("Crossover");
 			neurogen_genome_crossover(parent_a, parent_b, &child_a, &child_b, population->crossover_rate);
 			// puts("Mutate");
-			printf("len A %d\n", child_a.chromosome.length);
-			printf("len B %d\n", child_b.chromosome.length);
+			printf("len A %lu\n", child_a.chromosome.length);
+			printf("len B %lu\n", child_b.chromosome.length);
 			neurogen_genome_mutate(&child_a, population->mutation_rate);
 			neurogen_genome_mutate(&child_b, population->mutation_rate);
 			// puts("Assigning");

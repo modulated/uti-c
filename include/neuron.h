@@ -93,23 +93,6 @@ double neuron_sigmoid(double input, double response);
 
 
 // ===========================
-// Neuron Component Functions
-// ===========================
-
-// Returns neuron with *inputs*. Weights are 0.0 by default and bias is -1.0.
-neuron_unit_t neuron_unit_construct(size_t inputs);
-
-// Cleans up neuron. Sets inputs to 0. 
-void neuron_unit_destruct(neuron_unit_t* neuron);
-
-// Returns neuron layer with *number_of_neurons* and *inputs_per_neuron*.
-neuron_layer_t neuron_layer_construct(size_t number_of_neurons, size_t inputs_per_neuron);
-
-// Cleans up neuron layer. Sets members to NULL and 0. 
-void neuron_layer_destruct(neuron_layer_t* layer);
-
-
-// ===========================
 // Dataset Functions
 // ===========================
 
@@ -130,17 +113,34 @@ void neuron_dataset_destruct(neuron_dataset_t* set);
 
 
 // ===========================
-// Dataset Functions
+// Neuron Component Functions
 // ===========================
 
-// Returns network with *inputs*, outputs, *hidden_layer_num* layers of size *hidden_layer_size*. The default summing function is neuron_array_difference. 
+// Returns neuron with *inputs*. Weights are 0.0 by default and bias is -1.0.
+neuron_unit_t neuron_unit_construct(size_t inputs);
+
+// Cleans up neuron. Sets inputs to 0. 
+void neuron_unit_destruct(neuron_unit_t* neuron);
+
+// Returns neuron layer with *number_of_neurons* and *inputs_per_neuron*.
+neuron_layer_t neuron_layer_construct(size_t number_of_neurons, size_t inputs_per_neuron);
+
+// Cleans up neuron layer. Sets members to NULL and 0. 
+void neuron_layer_destruct(neuron_layer_t* layer);
+
+
+// ===========================
+// Neuron Network Functions
+// ===========================
+
+// Returns network with *inputs*, outputs, *hidden_layer_num* layers of size *hidden_layer_size*. The default summing function is neuron_relu. 
 neuron_network_t neuron_network_construct(size_t inputs, size_t outputs, size_t hidden_layer_num, size_t hidden_layer_size);
 
 // Cleans up neuron network, including base components. Sets members to 0.
 void neuron_network_destruct(neuron_network_t* network);
 
 // Sets a custom summing function for updating.
-void neuron_network_set_summing(neuron_network_t* network, double (*summing_function)(double input, double output));
+void neuron_network_set_summing(neuron_network_t* network, double (*summing_function)(double input, double param));
 
 // Returns array of all neuron weights.
 neuron_array_t neuron_network_get_weights(const neuron_network_t* network);
