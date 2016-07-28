@@ -4,7 +4,7 @@ LDLIBS=$(TARGET) $(DIFF) -lm
 PREFIX?=/usr/local
 
 HEADER_DIR=include
-SOURCES=$(wildcard src/libuti/*.c)
+SOURCES=$(wildcard src/*.c)
 HEADERS=$(wildcard include/*.h)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
@@ -49,10 +49,10 @@ valgrind:
 	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
 
 seqc: $(TARGET) 
-	$(CC) $(CFLAGS) -o bin/seqc.test src/seqc.c $(LDLIBS)
+	$(CC) $(CFLAGS) -o bin/seqc.test bin/seqc.c $(LDLIBS)
 
 net: $(TARGET) 
-	$(CC) $(CFLAGS) -o bin/net.test src/net-trainer.c $(LDLIBS)
+	$(CC) $(CFLAGS) -o bin/net.test bin/net-trainer.c $(LDLIBS)
 
 
 # The Cleaner
