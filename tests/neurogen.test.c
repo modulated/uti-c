@@ -242,6 +242,22 @@ void test_neurogen_population_calculate_statistics()
 	neurogen_population_destruct(&population);
 }
 
+void test_neurogen_population_roulette_selection (void)
+{
+	neurogen_population_t pop = neurogen_population_construct(10, 4, 1, 1, neuron_array_difference);
+	
+	for (size_t i = 0; i < 10; i++)
+	{
+		pop.genomes[i].fitness = i;
+	}
+
+	neurogen_population_calculate_statistics(&pop);
+
+	neurogen_genome_t* selected_genome = neurogen_population_roulette_selection(&pop);
+	
+	ok(selected_genome->fitness > 0.9, "neurogen_population_roulette");
+}
+
 void test_neurogen_genome ()
 {
 	test_neurogen_genome_construct();
@@ -258,6 +274,7 @@ void test_neurogen_population ()
 	test_neurogen_population_construct();
 	test_neurogen_population_destruct();
 	test_neurogen_population_calculate_statistics();
+	test_neurogen_population_roulette_selection();
 }
 
 void test_all() {

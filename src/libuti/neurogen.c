@@ -82,7 +82,7 @@ void neurogen_genome_mutate (neurogen_genome_t* genome, double probability)
 	}
 }
 
-neurogen_population_t neurogen_population_construct (int population_size, int genome_length, double mutation_rate, double crossover_rate,  double (*error_function)(neuron_array_t*, neuron_array_t*))
+neurogen_population_t neurogen_population_construct (int population_size, int genome_length, double mutation_rate, double crossover_rate,  double (*error_function)(const neuron_array_t*, const neuron_array_t*))
 {
 	neurogen_population_t population;
 	population.population_size = population_size;
@@ -190,17 +190,18 @@ void neurogen_population_calculate_statistics (neurogen_population_t* population
 neurogen_genome_t* neurogen_population_roulette_selection(neurogen_population_t* population)
 {
 	double total = population->total_fitness;
-	double random = prandom_double_range(0.0, total);
+	double random = prandom_double_range(1.0, total);
 
 	double sum = 0;
+	double current = 0;
 
 	for (int i = 0; i < population->population_size; i++)
 	{
-		double current = population->genomes[i].fitness;
+		current = population->genomes[i].fitness;
 
-		// printf("Total: %f, sum: %f, current: %f, random: %f\n", total, sum, current, random);
-
-		if ((random - sum) < current)
+		printf("Total: %f, sum: %f, current: %f, random: %f\n", total, sum, current, random);		
+		
+		if (current + sum > random)
 		{
 			return &population->genomes[i];
 		}
@@ -213,7 +214,7 @@ neurogen_genome_t* neurogen_population_roulette_selection(neurogen_population_t*
 	exit(1);
 }
 
-double neurogen_errorfunction_simple(neuron_array_t* output, neuron_array_t* expected)
+double neurogen_errorfunction_simple(const neuron_array_t* output, const neuron_array_t* expected)
 {
 	return neuron_array_difference(output, expected);
 }
