@@ -49,10 +49,10 @@ valgrind:
 	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
 
 seqc: $(TARGET) 
-	$(CC) $(CFLAGS) -o bin/seqc.test bin/seqc.c $(LDLIBS)
+	$(CC) $(CFLAGS) -o bin/seqc.test tools/seqc.c $(LDLIBS)
 
 net: $(TARGET) 
-	$(CC) $(CFLAGS) -o bin/net.test bin/net-trainer.c $(LDLIBS)
+	$(CC) $(CFLAGS) -o bin/net.test tools/net-trainer.c $(LDLIBS)
 
 
 # The Cleaner

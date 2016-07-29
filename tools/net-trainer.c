@@ -37,7 +37,7 @@ int main (int argc, char* argv[])
 
 	for (int generation = 0; generation < GEN_MAX; generation++)
 	{		
-		neurogen_population_update(&network, &pop, &set);
+		pop = neurogen_population_update(&network, &pop, &set);
 		printf("Gen: %d \tBest Fitness %f \tAvg Fitness %f Total Fitness: %f\n", pop.generation, pop.best_fitness, pop.average_fitness, pop.total_fitness);
 
 	}
