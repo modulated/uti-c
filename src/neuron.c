@@ -179,21 +179,22 @@ void neuron_io_destruct(neuron_io_t* io)
 }
 
 neuron_dataset_t neuron_dataset_construct(size_t inputs, size_t outputs)
-{ // TODO - dynamic realloc based on 32 byte multiples
+{ 
 	neuron_dataset_t set;
 	set.length = 0;
+    set.block = 32;
 	set.inputs = inputs;
 	set.outputs = outputs;
-	set.data = malloc(32 * sizeof(neuron_io_t)); // hardcoded limit
+	
 	return set;
 }
 
 void neuron_dataset_add(neuron_dataset_t* set, double inputs[], double outputs[])
 {
-	if (set->length > 32) 
+	if (set->length % set->block == 0) 
 	{
-		puts("ERROR: Overloaded struct.");
-		exit(1);
+		set->data = realloc(set->data, (set->block * ((set->length + 32) / set->block)) * sizeof(neuron_io_t)); 
+        printf("realloc %lu\n", set->block * ((set->length + 32) / set->block));
 	}
 
 	neuron_array_t array_in = neuron_array_construct(set->inputs);
