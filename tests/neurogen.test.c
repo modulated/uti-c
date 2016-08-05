@@ -102,12 +102,12 @@ void test_neurogen_genome_crossover_index()
 		"neurogen_genome_crossover_index.") ||
 	diag("Expected %f, %f got %f, %f", 0.5, 0.3, child1.chromosome.array[expected_length/2], child2.chromosome.array[expected_length/2]);	
 
-	// neurogen_genome_destruct(&parent1);
-	// neurogen_genome_destruct(&parent2);
-	// neurogen_genome_destruct(&child1);
-	// neurogen_genome_destruct(&child2);
-	// neuron_array_destruct(&array1);
-	// neuron_array_destruct(&array2);
+	neurogen_genome_destruct(&parent1);
+	neurogen_genome_destruct(&parent2);
+	neurogen_genome_destruct(&child1);
+	neurogen_genome_destruct(&child2);
+	neuron_array_destruct(&array1);
+	neuron_array_destruct(&array2);
 }
 
 void test_neurogen_genome_crossover()
@@ -123,7 +123,9 @@ void test_neurogen_genome_crossover()
 	neurogen_genome_crossover(&parent1, &parent2, &child1, &child2, 1.0 /* always */);
 
 	ok(
-		(child1.chromosome.length == child2.chromosome.length),
+		(child1.chromosome.length == child2.chromosome.length) &&
+		child1.chromosome.array[0] == parent1.chromosome.array[0] &&
+		child1.chromosome.array[expected_length-1] == parent2.chromosome.array[expected_length-1],
 		"neurogen_genome_crossover.");
 
 	neurogen_genome_destruct(&parent1);
@@ -211,6 +213,34 @@ void test_neurogen_population_destruct()
 		"neurogen_population_construct");
 }
 
+void test_neurogen_population_duplicate()
+{
+	int population_size = 100;
+	int genome_length = 100;
+	double mutation_rate = 0.05;
+	double crossover_rate = 0.5;
+
+	neurogen_population_t test_population = neurogen_population_construct(population_size, genome_length, mutation_rate, crossover_rate, neurogen_errorfunction_simple);
+	neurogen_population_t test_copy = neurogen_population_duplicate(&test_population);
+
+	double errors = 0;
+	int length = 0;
+	for (size_t i = 0; i < population_size; i++)
+	{
+		errors += neuron_array_difference(&test_population.genomes[i].chromosome, &test_copy.genomes[i].chromosome);
+		
+		if (test_population.genomes[i].chromosome.length != test_copy.genomes[i].chromosome.length) length++;
+	}
+	ok(
+		dirtycheck(0.0, errors) &&
+		length == 0,
+		"neurogen_population_duplicate"
+	);
+
+	neurogen_population_destruct(&test_population);
+	neurogen_population_destruct(&test_copy);
+}
+
 void test_neurogen_population_calculate_statistics()
 {
 	int population_size = 100;
@@ -240,6 +270,39 @@ void test_neurogen_population_calculate_statistics()
 		"neurogen_population_calculate_statistics");
 
 	neurogen_population_destruct(&population);
+}
+
+void test_neurogen_population_evolve (void)
+{
+	int population_size = 50;
+	int genome_length = 10;
+	double mutation_rate = 0.05;
+	double crossover_rate = 0.5;
+
+	neurogen_population_t test_pop = neurogen_population_construct(population_size, genome_length, mutation_rate, crossover_rate, neurogen_errorfunction_simple);
+
+	for (size_t i = 0; i < test_pop.population_size; i++)
+	{
+		neurogen_genome_set_fitness(&test_pop.genomes[i], 1.0);
+	}
+
+	neurogen_population_t new_pop = neurogen_population_evolve(&test_pop);
+
+
+	size_t error = 0;
+	for (size_t i = 0; i < test_pop.population_size; i++)
+	{
+		if (test_pop.genomes[i].chromosome.length != new_pop.genomes[i].chromosome.length) error++;
+	}
+
+	ok(
+		error == 0 &&
+		test_pop.population_size == new_pop.population_size &&
+		test_pop.genome_length == new_pop.genome_length,
+		"neurogen_population_evolve");
+
+	// neurogen_population_destruct(&new_pop);
+	// neurogen_population_destruct(&test_pop);
 }
 
 void test_neurogen_population_roulette_selection (void)
@@ -273,6 +336,8 @@ void test_neurogen_population ()
 {
 	test_neurogen_population_construct();
 	test_neurogen_population_destruct();
+	test_neurogen_population_duplicate();
+	test_neurogen_population_evolve();
 	test_neurogen_population_calculate_statistics();
 	test_neurogen_population_roulette_selection();
 }
