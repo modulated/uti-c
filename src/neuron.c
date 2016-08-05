@@ -1,7 +1,7 @@
-#include "neuron.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h> // exp(), fabs()
+#include "../include/neuron.h"
+#include <stdlib.h> // malloc, free, exit
+#include <stdio.h> // printf
+#include <math.h> // exp, fabs
 
 
 // ===========================
@@ -70,10 +70,15 @@ double neuron_array_get(const neuron_array_t* array, size_t index)
 
 void neuron_array_print(const neuron_array_t* array)
 {
+	if (!array) {
+		puts("Array NULL.");
+		return;
+	}
+
 	printf("Array length: %lu\n", array->length);
 	for (int i = 0; i < array->length; i++)
 	{
-		printf("%.2f ", array->array[i]);
+		printf("%d:%.2f ", i, array->array[i]);
 	}
 	puts("");
 }
