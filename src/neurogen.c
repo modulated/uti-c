@@ -168,16 +168,6 @@ neurogen_population_t neurogen_population_duplicate (const neurogen_population_t
 	return output;
 }
 
-neurogen_population_t neurogen_population_update(neuron_network_t* network, neurogen_population_t* population, const neuron_dataset_t* set)
-{	
-	neurogen_population_run_network(network, population, set);
-	neurogen_population_calculate_statistics(population);
-	neurogen_population_t new_pop = neurogen_population_evolve(population);
-
-	return new_pop;
-}
-
-
 void neurogen_population_run_network (neuron_network_t* network, neurogen_population_t* population, const neuron_dataset_t* set)
 {
 	double fitness;
@@ -190,8 +180,9 @@ void neurogen_population_run_network (neuron_network_t* network, neurogen_popula
 		{		
 			neuron_array_t output = neuron_network_update(network, &set->data[j].input);
 			double current_fitness = population->error_function(&output, &set->data[j].expected);
-			fitness += current_fitness;
+			fitness += current_fitness;			
 		}
+
 
 		neurogen_genome_set_fitness(&population->genome_array[i], fitness);
 	}

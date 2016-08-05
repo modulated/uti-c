@@ -36,9 +36,13 @@ int main (int argc, char* argv[])
 	
 	for (int generation = 0; generation < GEN_MAX; generation++)
 	{
-		pop = neurogen_population_update(&network, &pop, &set);		
-		printf("Gen: %lu \tBest Fitness %f \tAvg Fitness %f Total Fitness: %f\n", pop.generation, pop.best_fitness, pop.average_fitness, pop.total_fitness);
+		if (generation > 0) pop = neurogen_population_evolve(&pop);
+		
+		neurogen_population_run_network(&network, &pop, &set);
+		neurogen_population_calculate_statistics(&pop);
 
+		printf("Gen: %lu \tBest Fitness %f \tAvg Fitness %f Total Fitness: %f\n", pop.generation, pop.best_fitness, pop.average_fitness, pop.total_fitness);
+		neuron_array_print(&pop.fittest_genome->array);
 	}
 
 	return EXIT_SUCCESS;

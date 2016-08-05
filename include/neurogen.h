@@ -74,9 +74,6 @@ neurogen_population_t neurogen_population_duplicate (const neurogen_population_t
 // Calculates and sets the statistics of population based on genome fitnesses.
 void neurogen_population_calculate_statistics (neurogen_population_t* population);
 
-// Runs the network, calculates the fitness and evolves the population.
-neurogen_population_t neurogen_population_update(neuron_network_t* network, neurogen_population_t* population, const neuron_dataset_t* set);
-
 // Runs the *network* with *set* as input and output on the *population* genomes, setting fitness of genomes in the population.
 void neurogen_population_run_network (neuron_network_t* network, neurogen_population_t* population, const neuron_dataset_t* set);
 
