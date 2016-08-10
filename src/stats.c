@@ -114,15 +114,7 @@ stats_numbers stats_numbers_random(int length, int min, int max) {
 	
 	for (int i = 0; i < length; i++) {
 		
-		int val = random_int();
-		
-		long int_range = (long)INT_MAX - (long)INT_MIN;
-		long new_range = max - min;
-		
-		long intermediate = ((long)val - (long)INT_MIN) * new_range;		
-		long divisor = (intermediate / int_range) + min;
-				
-		array[i] = (int)divisor;				
+		array[i] = random_int_range(min, max);
 	}
 	
 	out = stats_numbers_construct_array(length, array);	

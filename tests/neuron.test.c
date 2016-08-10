@@ -149,17 +149,16 @@ void test_neuron_network_set_weights()
 void test_neuron_network_update() {
 	neuron_network_t test_network = neuron_network_construct(2,2,4,4);	
 	neuron_array_t input = neuron_array_construct(2);
-	neuron_array_set(&input, 0, 1.0);
-	neuron_array_set(&input, 1, 1.0);	
+	neuron_array_set(&input, 0, 0.0);
+	neuron_array_set(&input, 1, 0.0);
 
 	neuron_array_t output = neuron_network_update(&test_network, &input);
-
-
+	
 	int err_counter = 0;
 	for (int i = 0; i < output.length; i++)
 	{
 		double weight = neuron_array_get(&output, i);
-		if (weight > 1.0 || weight < 0.0) err_counter++;		
+		if (weight > 1.0 || weight < 0.0) err_counter++;
 	}
 	
 	
@@ -170,8 +169,17 @@ void test_neuron_network_update() {
 	neuron_array_destruct(&input);
 	neuron_network_destruct(&test_network);
 }
-void test_neuron_network_get_sigmoid() {
 
+void test_neuron_relu() 
+{
+	double res1 = neuron_relu(0.0,1.0);
+	double res2 = neuron_relu(1.0,0.5);
+
+	ok(
+		dirtycheck(0.0, res1) &&
+		dirtycheck(0.5, res2),
+		"neuron_relu.") ||
+	diag("Expected: 0.5, got %f", res1);
 }
 
 void test_all() {
@@ -188,6 +196,7 @@ void test_all() {
 	test_neuron_network_get_weights();
 	test_neuron_network_set_weights();
 	test_neuron_network_update();
+	test_neuron_relu();
 }
 
 int main(void) {
