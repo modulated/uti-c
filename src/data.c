@@ -46,27 +46,3 @@ int data_list_prepend(struct data_list* list, int data) {
 // 	return rnode;
 // }
 
-struct data_hashmap data_hashmap_construct() {
-	struct data_hashmap out;
-	out.num = 0;
-
-	return out;
-}
-
-void data_hashmap_destruct(struct data_hashmap* hash) {
-	
-	free(hash->array);
-}
-
-unsigned char data_hash_minihash(char* in) {
-
-	int length = strlen(in);
-	unsigned char xor = (unsigned char)length;
-	for (int i = 0; i < length; i++) {
-		xor ^= (unsigned char)in[i];
-		xor ^= xor<<(length%8) | xor>>(8-(length%8));
-	}
-	int rotator = (length*3^xor)%8;
-	xor ^= xor<<rotator | xor>>(8-rotator);
-	return xor;
-}

@@ -11,17 +11,6 @@ struct data_list {
 	struct data_list_node* last;
 };
 
-struct data_hashmap {
-	char* array[256];
-	int num;
-};
-
-struct data_hashnode {
-	void* name;
-	char hash;
-	void* data;
-};
-
 struct data_list data_list_construct (int data);
 
 int data_list_append(struct data_list* list, int data);
