@@ -141,7 +141,7 @@ void test_all (void)
 
 int main ()
 {
-	plan_no_plan();
+	plan();
 	test_all();
 	return exit_status();
 }
