@@ -108,15 +108,23 @@ float stats_numbers_sd(stats_numbers nums) {
 
 
 stats_numbers stats_numbers_random(int length, int min, int max) {
-	
+
 	stats_numbers out;
 	int array[length];
-	
+
 	for (int i = 0; i < length; i++) {
-		
-		array[i] = random_int_range(min, max);
+
+		int val = random_int();
+		long int_range = (long)INT_MAX - (long)INT_MIN;
+		long new_range = max - min;
+
+        long intermediate = ((long)val - (long)INT_MIN) * new_range;
+        long divisor = (intermediate / int_range) + min;
+
+        array[i] = (int)divisor;
+
 	}
-	
-	out = stats_numbers_construct_array(length, array);	
+
+	out = stats_numbers_construct_array(length, array);
 	return out;
 }
