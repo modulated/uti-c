@@ -7,7 +7,11 @@
 #define MAX_QUEUE_SIZE 16
 #define MAX_RECEIVER_SIZE 32
 
-typedef void* entity_t;
+// RETURN CODES
+#define EV_OK 0
+#define EV_MEM -1
+#define EV_MIS -2
+
 
 typedef enum
 {
@@ -16,7 +20,10 @@ typedef enum
 	MOVED
 } message_action_t;
 
+
 typedef struct message_s message_t;
+typedef struct router_s router_t;
+
 
 struct message_s
 {
@@ -29,6 +36,14 @@ struct message_s
 };
 
 typedef struct
+{
+	int id;
+	router_t* router;
+
+} entity_t;
+
+
+struct router_s
 {	
 	message_t mqueue[MAX_QUEUE_SIZE];
 	size_t mqueue_size;
@@ -36,8 +51,12 @@ typedef struct
 	map_t receiver_map[MAX_RECEIVER_SIZE];
 	size_t receiver_size;
 
-	
-} router_t;
+	int (*subscribe)(router_t* this, entity_t* entity);
 
-message_t message_construct(uuid_t sender, uuid_t receiver, message_action_t action, const char data[]);
-router_t* router_construct();
+	
+} ;
+
+message_t message_new(uuid_t sender, uuid_t receiver, message_action_t action, const char data[]);
+
+router_t* router_new();
+void router_free();

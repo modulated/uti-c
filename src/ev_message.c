@@ -1,13 +1,13 @@
-#include "../include/message.h"
+#include "../include/ev.h"
 
 
 
-void uuid_copy(uuid_t dst, const uuid_t src)
-{
+// static void uuid_copy(uuid_t dst, const uuid_t src)
+// {
 
-	for (int i = 0; i < 16; i++)
-		dst[i] = src[i];
-}
+// 	for (int i = 0; i < 16; i++)
+// 		dst[i] = src[i];
+// }
 
 
 

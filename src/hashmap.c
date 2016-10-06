@@ -306,12 +306,13 @@ int hashmap_len(map_t this)
 
 void hashmap_free(map_t this)
 {
+
 	hashmap_map_t* m = (hashmap_map_t*) this;
 	if (m->data) free(m->data);
 	m->data = NULL;
 
-	if (m) free(m);
-	m = NULL;	
+	if (this) free(this);
+	this = NULL;
 }
 
 extern void hashmap_error(int error, char* buffer, size_t buffer_len)

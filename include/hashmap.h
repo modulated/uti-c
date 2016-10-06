@@ -25,21 +25,21 @@ extern map_t hashmap_new();
  * element *data* in hashmap. Function must return status 
  * code. Anything other than MAP_OK terminates traversal.
  */
-extern int hashmap_itr(map_t this, FPany fp, any_t item);
+extern int hashmap_itr(map_t map, FPany fp, any_t item);
 
 /* Add element to hashmap. Returns MAP_OK or MAP_OMEM. */
-extern int hashmap_add(map_t this, char* key, any_t value);
+extern int hashmap_add(map_t map, char* key, any_t value);
 
 /* Gets element from hashmap. Returns MAP_OK or MAP_MISSING. */
-extern int hashmap_get(map_t this, char* key, any_t* arg);
+extern int hashmap_get(map_t map, char* key, any_t* arg);
 
 /* Delete element from hashmap. Returns MAP_OK or MAP_MISSING. */
-extern int hashmap_del(map_t this, char* key);
+extern int hashmap_del(map_t map, char* key);
 
-extern int hashmap_len(map_t this);
+extern int hashmap_len(map_t map);
 
 /* Frees memory associated with hashmap. */
-extern void hashmap_free(map_t this);
+extern void hashmap_free(map_t map);
 
 /** Fills buffer with error string. Buffer should be >16 bytes. */
 extern void hashmap_error(int error, char* buffer, unsigned long buffer_len);

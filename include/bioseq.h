@@ -42,7 +42,7 @@ typedef struct {
 ** DNA Functions
 */
 
-#define NUCLEOTIDE_SANITIZE(x) (x == 'A' || x == 'C' || x == 'G' || x == 'T' || x == 'U')
+#define NUCLEOTIDE_SANITIZE(x) (x &= 0x20) //(x == 'A' || x == 'C' || x == 'G' || x == 'T' || x == 'U')
 
 bioseq_dna bioseq_dna_construct (char seq[]);
 

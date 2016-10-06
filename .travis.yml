@@ -1,3 +1,4 @@
 language: c
 compiler: clang
+install: apt-get install lib-uuid
 script: make
