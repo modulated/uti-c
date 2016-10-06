@@ -84,9 +84,9 @@ int bioseq_frame_getopen(bioseq_frame frame) {
 // Convert 3 char codon to single char protein code. (X = stop codon)
 char bioseq_dna_codon_protein(char a, char b, char c) {
 
-	a = toupper(a);
-	b = toupper(b);
-	c = toupper(c);
+	a = UPPERCASE(a);
+	b = UPPERCASE(b);
+	c = UPPERCASE(c);
 	
 	if (!NUCLEOTIDE_SANITIZE(a) || !NUCLEOTIDE_SANITIZE(b) || !NUCLEOTIDE_SANITIZE(c)) return '?';
 	

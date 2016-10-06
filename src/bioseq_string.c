@@ -84,7 +84,7 @@ void bioseq_string_split(char* input, int index, char* output1, char* output2) {
 void bioseq_string_capitalize (char* str) {
 	int i = 0;
 	while (str[i]) {
-		str[i] = toupper(str[i]);
+		str[i] = UPPERCASE(str[i]);
 		i++;
 	}
 }
