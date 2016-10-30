@@ -4,7 +4,7 @@ LDLIBS=$(TARGET) $(DIFF) -lm
 PREFIX?=/usr/local
 
 HEADER_DIR=include
-SOURCES=$(wildcard src/*.c)
+SOURCES=$(wildcard source/*.c)
 HEADERS=$(wildcard include/*.h)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
@@ -54,6 +54,8 @@ seqc: $(TARGET)
 net: $(TARGET) 
 	$(CC) $(CFLAGS) -o bin/net.test tools/net-trainer.c $(LDLIBS)
 
+syn: $(TARGET) tools/intcode.c
+	$(CC) $(CFLAGS) -o tools/intcode tools/intcode.c $(LDLIBS)
 
 # The Cleaner
 clean:
