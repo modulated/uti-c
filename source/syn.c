@@ -64,6 +64,23 @@ void op_mod() {
 	#endif
 }
 
+void op_ini() {
+	#ifdef DEBUG
+		puts("INI");
+	#endif
+
+	int i = 0;
+	scanf("%d", &i);
+	PUSH(i);
+}
+
+void op_out() {
+	#ifdef DEBUG
+		puts("OUT");
+	#endif
+
+	printf("%d\n", POP);
+}
 
 int execute_program(int* input, int* output)
 {
@@ -112,6 +129,14 @@ int execute_program(int* input, int* output)
 			
 			case MOD:
 				op_mod();
+				break;
+
+			case INI:
+				op_ini();
+				break;
+
+			case OUT:
+				op_out();
 				break;
 
 			case NOP: break;

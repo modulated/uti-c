@@ -54,8 +54,9 @@ seqc: $(TARGET)
 net: $(TARGET) 
 	$(CC) $(CFLAGS) -o bin/net.test tools/net-trainer.c $(LDLIBS)
 
-syn: $(TARGET) tools/intcode.c
-	$(CC) $(CFLAGS) -o tools/intcode tools/intcode.c $(LDLIBS)
+syn: $(TARGET) tools/interp.c tools/lexer.c
+	$(CC) $(CFLAGS) -o tools/interp tools/interp.c $(LDLIBS)
+	$(CC) $(CFLAGS) -o tools/lexer tools/lexer.c $(LDLIBS)
 
 # The Cleaner
 clean:

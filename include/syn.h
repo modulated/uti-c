@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-#define DEBUG
-
 #define STACK_SIZE 256
 #define OUT_SIZE 4
 
@@ -43,6 +41,10 @@ int output[OUT_SIZE];
 /* STRINGS */
 #define PST 	0x00000101 // Push string onto stack in reverse order
 #define GST 	0x00000102 // Get nul terminated string off stack in order
+
+/* INPUT & OUTPUT */
+#define INI 	0x00F00001 // Add int from stdin to stack
+#define OUT 	0x00F00011 // Print int from stack to stdout
 
 enum BYTE_ERROR {
 	ERR_UNKNOWN_ERROR,

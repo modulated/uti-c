@@ -1,4 +1,5 @@
 #include <syn.h>
+// #define DEBUG
 
 // Dummy Program, cont array of 4 bytes 
 int dummy[] = {
@@ -6,9 +7,12 @@ int dummy[] = {
 	SET, 0x2, // SET 2
 	SET, 0xF, // SET 15
 	ADD,
-	GET, // Return to output[0]
-	GET,
-	CLR, // Set output[0] to 0
+	OUT,
+	INI,
+	ADD,
+	INI,
+	OUT,
+	OUT,
 	END,
 };
 
@@ -40,7 +44,7 @@ int main(int argc, char* argv[])
 		dump_output();
 	#endif
 	
-	printf("Result: %d\n", output[0]);
+	printf("Output 0: %d\n", output[0]);
 
 	return 0;
 }
